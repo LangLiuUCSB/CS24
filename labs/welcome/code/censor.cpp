@@ -16,11 +16,10 @@ int main(int argc, char* argv[]){
     int wordSize = 0;
     bool isPrevSpace = false;
     bool firstWord = true;
-    int s = 0;
-    while(userSentence[s] == ' ' || userSentence[s] == '\t'){
-        s++;
+    while(userSentence[0] == ' ' || userSentence[0] == '\t'){
+        userSentence = userSentence.substr(1);
     }
-    for(unsigned int i = s; i != userSentence.size(); i++){
+    for(unsigned int i = 0; i != userSentence.size(); i++){
         if(userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
             isPrevSpace = false;
