@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
             isPrevSpace = true;
         }
     }
-    if(!isPrevSpace){
+    if(wordSize != censor && !isPrevSpace){
         std::cout << userSentence.substr(wordStart);
     }
     std::cout << std::endl;
