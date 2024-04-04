@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
             wordSize++;
         }
         else{
-            if(wordSize != censor){
+            if(wordSize != censor && userSentence[i-1] != ' '){
                 std::cout << userSentence.substr(wordStart, wordSize) << ' ';
             }
             wordSize = 0;
@@ -29,6 +29,6 @@ int main(int argc, char* argv[]){
     if(wordSize != censor){
         std::cout << userSentence.substr(wordStart);
     }
-    std::cout << ' ' << std::endl;
+    std::cout << std::endl;
     return 0;
 }
