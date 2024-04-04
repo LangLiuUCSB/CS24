@@ -14,7 +14,17 @@ int main(int argc, char* argv[]){
 
     int wordStart = 0;
     int wordSize = 0;
-    for(unsigned int i = 0; i != userSentence.size(); i++){
+    if(userSentence[0] != ' ' && userSentence[0] != '\t'){
+        wordSize++;
+    }
+    else{
+        if(wordSize != censor){
+                std::cout << userSentence.substr(wordStart, wordSize) << ' ';
+        }
+        wordSize = 0;
+        wordStart = 1;
+    }
+    for(unsigned int i = 1; i != userSentence.size(); i++){
         if(userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
         }
