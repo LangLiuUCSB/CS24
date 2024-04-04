@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
     bool isPrevSpace = false;
     bool first = true;
     for(unsigned int i = 0; i != userSentence.size(); i++){
-        if(userSentence[i] != ' ' && userSentence[i] != '\t'){
+        if(i != userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
             isPrevSpace = false;
         }
