@@ -15,6 +15,7 @@ int main(int argc, char* argv[]){
     int wordStart = 0;
     int wordSize = 0;
     bool isPrevSpace = false;
+    bool first = true;
     for(unsigned int i = 0; i != userSentence.size(); i++){
         if(userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
@@ -22,15 +23,16 @@ int main(int argc, char* argv[]){
         }
         else{
             if(wordSize != censor && !isPrevSpace){
-                std::cout << userSentence.substr(wordStart, wordSize) << ' ';
+                if(first){
+                    std::cout << userSentence.substr(wordStart, wordSize);
+                }else{
+                    std::cout << ' ' << userSentence.substr(wordStart, wordSize);
+                }
             }
             wordSize = 0;
             wordStart = i + 1;
             isPrevSpace = true;
         }
-    }
-    if(wordSize != censor && !isPrevSpace){
-        std::cout << userSentence.substr(wordStart, wordSize);
     }
     std::cout << std::endl;
     return 0;
