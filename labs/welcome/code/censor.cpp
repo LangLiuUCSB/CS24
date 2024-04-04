@@ -23,6 +23,7 @@ int main(int argc, char* argv[]){
     for(unsigned int i = s; i != userSentence.size(); i++){
         if(userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
+            isPrevSpace = false;
         }
         else{
             if(wordSize != censor && !isPrevSpace){
