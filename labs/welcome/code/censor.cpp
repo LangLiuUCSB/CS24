@@ -25,6 +25,7 @@ int main(int argc, char* argv[]){
             if(wordSize != censor && !isPrevSpace){
                 if(first){
                     std::cout << userSentence.substr(wordStart, wordSize);
+                    first = false;
                 }else{
                     std::cout << ' ' << userSentence.substr(wordStart, wordSize);
                 }
