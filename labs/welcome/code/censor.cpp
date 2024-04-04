@@ -29,5 +29,6 @@ int main(int argc, char* argv[]){
     if(wordSize != censor){
         std::cout << userSentence.substr(wordStart);
     }
+    std::cout << ' ' << std::endl;
     return 0;
 }
