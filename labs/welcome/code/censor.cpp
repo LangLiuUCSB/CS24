@@ -15,17 +15,21 @@ int main(int argc, char* argv[]){
     int wordStart = 0;
     int wordSize = 0;
     bool isPrevSpace = false;
-    bool first = true;
-    for(unsigned int i = 0; i != userSentence.size(); i++){
+    bool firstWord = true;
+    int s = 0;
+    while(userSentence[s] == ' '){
+        s++;
+    }
+    for(unsigned int i = s; i != userSentence.size(); i++){
         if(userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
             wordSize++;
             isPrevSpace = false;
         }
         else{
             if(wordSize != censor && !isPrevSpace){
-                if(first){
+                if(firstWord){
                     std::cout << userSentence.substr(wordStart, wordSize);
-                    first = false;
+                    firstWord = false;
                 }else{
                     std::cout << ' ' << userSentence.substr(wordStart, wordSize);
                 }
