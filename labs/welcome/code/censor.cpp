@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     int wordStart = 0;
     int wordSize = 0;
-    for(int i = 0; i < userSentence.size(); i++){
+    for(unsigned int i = 0; i != userSentence.size(); i++){
         if(userSentence[i] != ' '){
             wordSize++;
         }else{
