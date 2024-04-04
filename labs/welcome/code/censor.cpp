@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
             wordStart = i + 1;
             isPrevSpace = true;
         }
-        if(i = userSentence.size()-1){
+        if(i == userSentence.size()-1){
             std::cout << ' ' << userSentence.substr(wordStart, wordSize);
         }
     }
