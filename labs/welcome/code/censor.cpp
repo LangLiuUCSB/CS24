@@ -11,6 +11,7 @@ int main(int argc, char* argv[]){
 
     std::string userSentence;
     std::getline(std::cin, userSentence);
+    std::cout << userSentence << std::endl;
 
     int wordStart = 0;
     int wordSize = 0;
