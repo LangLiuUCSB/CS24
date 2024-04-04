@@ -11,14 +11,13 @@ int main(int argc, char* argv[]){
 
     std::string userSentence;
     std::getline(std::cin, userSentence);
-    std::cout << userSentence << std::endl;
 
     int wordStart = 0;
     int wordSize = 0;
     bool isPrevSpace = false;
     bool firstWord = true;
     int s = 0;
-    while(userSentence[s] == ' '){
+    while(userSentence[s] == ' ' || userSentence[s] == '\t'){
         s++;
     }
     for(unsigned int i = s; i != userSentence.size(); i++){
