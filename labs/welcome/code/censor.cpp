@@ -7,40 +7,40 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    int censor = std::stoi(argv[1]);
+    size_t censor = std::stoi(argv[1]);
 
-    std::string userSentence;
-    std::getline(std::cin, userSentence);
+    std::string inSentence;
+    std::cout << "Enter Sentence: ";
+    std::getline(std::cin, inSentence);
 
-    int wordStart = 0;
-    int wordSize = 0;
-    bool isPrevSpace = false;
-    bool firstWord = true;
-    while(userSentence[0] == ' ' || userSentence[0] == '\t'){
-        userSentence.erase(0);
+    bool prevNotSpace = inSentence[0] != ' ' || inSentence[0] != '\t';
+    size_t start = 0;
+    while(inSentence[start] == ' ' || inSentence[start] == '\t'){
+        start++;
     }
-    for(unsigned int i = 0; i != userSentence.size(); i++){
-        if(userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
-            wordSize++;
-            isPrevSpace = false;
-        }
-        else{
-            if(wordSize != censor && !isPrevSpace){
-                if(firstWord){
-                    std::cout << userSentence.substr(wordStart, wordSize);
-                    firstWord = false;
-                }else{
-                    std::cout << ' ' << userSentence.substr(wordStart, wordSize);
+    size_t wordSize = 0;
+    std::string outSentence;
+    for(size_t i = start; i != inSentence.size(); i++){
+        if(inSentence[i] == ' ' || inSentence[i] == '\t'){
+            if(prevNotSpace){
+                if(wordSize != censor){
+                    outSentence.append(inSentence.substr(start, wordSize));
+                    outSentence.push_back('_');
                 }
+                wordSize = 0;
+                prevNotSpace = false;
             }
-            wordSize = 0;
-            wordStart = i + 1;
-            isPrevSpace = true;
-        }
-        if(i == userSentence.size()-1 && wordSize != censor && !isPrevSpace){
-            std::cout << ' ' << userSentence.substr(wordStart, wordSize);
+            start = i + 1;
+        }else{
+            wordSize++;
+            prevNotSpace = true;
         }
     }
-    std::cout << std::endl;
+    if(prevNotSpace && wordSize != censor){
+            outSentence.append(inSentence.substr(start, wordSize));
+            outSentence.push_back('_');
+    }
+    outSentence.pop_back();
+    std::cout << outSentence << std::endl;
     return 0;
 }
