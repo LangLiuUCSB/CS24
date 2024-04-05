@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
     bool isPrevSpace = false;
     bool firstWord = true;
     while(userSentence[0] == ' ' || userSentence[0] == '\t'){
-        userSentence = userSentence.substr(1);
+        userSentence.erase(0);
     }
     for(unsigned int i = 0; i != userSentence.size(); i++){
         if(userSentence.size()-1 && userSentence[i] != ' ' && userSentence[i] != '\t'){
