@@ -10,7 +10,6 @@ int main(int argc, char* argv[]){
     size_t censor = std::stoi(argv[1]);
 
     std::string inSentence;
-    std::cout << "Enter Sentence: ";
     std::getline(std::cin, inSentence);
 
     bool prevNotSpace = inSentence[0] != ' ' || inSentence[0] != '\t';
@@ -25,7 +24,7 @@ int main(int argc, char* argv[]){
             if(prevNotSpace){
                 if(wordSize != censor){
                     outSentence.append(inSentence.substr(start, wordSize));
-                    outSentence.push_back('_');
+                    outSentence.push_back(' ');
                 }
                 wordSize = 0;
                 prevNotSpace = false;
@@ -38,7 +37,7 @@ int main(int argc, char* argv[]){
     }
     if(prevNotSpace && wordSize != censor){
             outSentence.append(inSentence.substr(start, wordSize));
-            outSentence.push_back('_');
+            outSentence.push_back(' ');
     }
     outSentence.pop_back();
     std::cout << outSentence << std::endl;
