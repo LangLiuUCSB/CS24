@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
 
     size_t censor = std::stoi(argv[1]);
 
-    std::string inSentence;
+    std::string inSentence, outSentence;
     std::getline(std::cin, inSentence);
 
     bool prevNotSpace = inSentence[0] != ' ' || inSentence[0] != '\t';
@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
         start++;
     }
     size_t wordSize = 0;
-    std::string outSentence;
+
     for(size_t i = start; i != inSentence.size(); i++){
         if(inSentence[i] == ' ' || inSentence[i] == '\t'){
             if(prevNotSpace){
@@ -35,11 +35,13 @@ int main(int argc, char* argv[]){
             prevNotSpace = true;
         }
     }
+    
     if(prevNotSpace && wordSize != censor){
             outSentence.append(inSentence.substr(start, wordSize));
             outSentence.push_back(' ');
     }
     outSentence.pop_back();
     std::cout << outSentence << std::endl;
+
     return 0;
 }
