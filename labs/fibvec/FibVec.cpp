@@ -72,7 +72,8 @@ int FibVec::lookup(unsigned long index) const
 int FibVec::pop()
 {
     vecCount--;
-    int poppedValue = vec[vecCount];
+    // int poppedValue = vec[vecCount];
+    /*
     unsigned long vecSizePrev = Fib(nthFib - 1);
     if (vecCount == vecSizePrev)
     {
@@ -86,7 +87,8 @@ int FibVec::pop()
         vec = temp;
         vecSize = vecSizePrev;
     }
-    return poppedValue;
+    */
+    return vec[vecCount];
 }
 void FibVec::push(int value)
 {
