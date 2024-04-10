@@ -43,7 +43,7 @@ unsigned long FibVec::count() const
 }
 void FibVec::insert(int value, unsigned long index)
 {
-    if (vecSize != 1 && index >= vecCount)
+    if (vecCount != 0 && index >= vecCount)
     {
         nthFib++;
         int *temp = new int[Fib(nthFib)];
