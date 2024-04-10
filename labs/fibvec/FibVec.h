@@ -21,10 +21,10 @@ public:
   ~FibVec();
 
   // Member Functions
-  unsigned long capacity();
-  unsigned long count();
+  unsigned long capacity() const;
+  unsigned long count() const;
   void insert(int value, unsigned long index);
-  int lookup(unsigned long index);
+  int lookup(unsigned long index) const;
   int pop();
   void push(int value);
   int remove(size_t index);
