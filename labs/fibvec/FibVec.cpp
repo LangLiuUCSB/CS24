@@ -111,7 +111,7 @@ int FibVec::remove(unsigned long index)
     vecCount--;
     unsigned long i;
     int removedValue = vec[index];
-    for (i = index; i < vecCount; i--)
+    for (i = index; i < vecCount; i++)
     {
         vec[i] = vec[i + 1];
     }

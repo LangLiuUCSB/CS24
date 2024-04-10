@@ -8,17 +8,29 @@ int main()
 {
   FibVec fibvec;
 
-  fibvec.push(747);
+  int removeH[] = {1, 2, 3, 6, 11, 23, 47, 106, 235, 551, 1301, 3159, 7741, 19320, 48629, 123867, 317955};
+  for (int n : removeH)
+  {
+    fibvec.push(n);
+  }
 
   std::cout << "capacity: " << fibvec.capacity() << "\n";
   std::cout << "count: " << fibvec.count() << "\n";
-  std::cout << "i = 0: " << fibvec.lookup(0) << "\n";
+  for (unsigned long i = 0; i < fibvec.count(); i++)
+  {
+    std::cout << " " << fibvec.lookup(i);
+  }
+  std::cout << "\n";
 
-  int x = fibvec.remove(0);
+  std::cout << "removed: " << fibvec.remove(0) << "\n";
 
   std::cout << "capacity: " << fibvec.capacity() << "\n";
   std::cout << "count: " << fibvec.count() << "\n";
-  std::cout << "removed: " << x << "\n";
+  for (unsigned long i = 0; i < fibvec.count(); i++)
+  {
+    std::cout << " " << fibvec.lookup(i);
+  }
+  std::cout << "\n";
 
   return 0;
 }
