@@ -63,7 +63,14 @@ void FibVec::insert(int value, unsigned long index)
     {
         vec[i] = vec[i - 1];
     }
-    vec[index] = value;
+    try
+    {
+        vec[index] = value;
+    }
+    catch (const std::out_of_range &oor)
+    {
+        std::cerr << "Out of Range error: " << oor.what() << '\n';
+    }
 }
 int FibVec::lookup(unsigned long index) const
 {
