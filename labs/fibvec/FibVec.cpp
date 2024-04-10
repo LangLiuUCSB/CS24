@@ -57,10 +57,10 @@ int FibVec::pop()
 }
 void FibVec::push(int value)
 {
-
     if (vecSize == vecCount)
     {
         int *temp = new int[Fib(nthFib + 1)];
+        nthFib++;
         for (unsigned long i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
@@ -69,7 +69,6 @@ void FibVec::push(int value)
         vec = temp;
         vecSize = Fib(nthFib + 1);
     }
-
     vec[0] = value;
     vecCount++;
 }
