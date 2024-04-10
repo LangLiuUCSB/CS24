@@ -69,7 +69,7 @@ void FibVec::push(int value)
         vec = temp;
         vecSize = Fib(nthFib + 1);
     }
-    vec[0] = value;
+    vec[vecCount] = value;
     vecCount++;
 }
 int FibVec::remove(unsigned long index)
