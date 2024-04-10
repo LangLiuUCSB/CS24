@@ -27,7 +27,7 @@ public:
   int lookup(unsigned long index) const;
   int pop();
   void push(int value);
-  int remove(size_t index);
+  int remove(unsigned long index);
 };
 
 #endif
