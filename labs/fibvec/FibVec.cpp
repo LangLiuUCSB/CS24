@@ -5,8 +5,6 @@
 #include <stdexcept>
 
 // FibVec Function Implementations
-
-// Helper Functions
 size_t FibVec::Fib(size_t n)
 {
     if (n == 0)
@@ -19,8 +17,6 @@ size_t FibVec::Fib(size_t n)
     }
     return Fib(n - 1) + Fib(n - 2);
 }
-
-// Constructor and Destructor
 FibVec::FibVec()
 {
     vec = new int[1];
@@ -32,8 +28,6 @@ FibVec::~FibVec()
 {
     delete[] vec;
 }
-
-// Member Functions
 unsigned long FibVec::capacity() const
 {
     return vecSize;
@@ -44,6 +38,10 @@ unsigned long FibVec::count() const
 }
 void FibVec::insert(int value, unsigned long index)
 {
+    if (index >= vecCount)
+    {
+        throw std::out_of_range("Out of Range");
+    }
     vecCount++;
     unsigned long i;
     if (vecCount > vecSize)
