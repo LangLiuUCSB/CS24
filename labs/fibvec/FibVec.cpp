@@ -35,13 +35,11 @@ FibVec::~FibVec()
 // Member Functions
 unsigned long FibVec::capacity() const
 {
-    return -1;
-    // return vecSize;
+    return vecSize;
 }
 unsigned long FibVec::count() const
 {
-    return -1;
-    // return vecCount;
+    return vecCount;
 }
 void FibVec::insert(int value, unsigned long index)
 {
