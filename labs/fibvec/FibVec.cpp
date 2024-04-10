@@ -115,7 +115,6 @@ int FibVec::remove(unsigned long index)
     {
         vec[i] = vec[i + 1];
     }
-    /*
     unsigned long vecSizePrev = Fib(nthFib - 1);
     if (vecCount + vecSizePrev < vecSize)
     {
@@ -129,6 +128,5 @@ int FibVec::remove(unsigned long index)
         vec = temp;
         vecSize = vecSizePrev;
     }
-    */
     return removedValue;
 }
