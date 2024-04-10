@@ -65,7 +65,7 @@ void FibVec::insert(int value, unsigned long index)
 }
 int FibVec::lookup(unsigned long index) const
 {
-    if (index > vecCount - 1)
+    if (index + 1 > vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
@@ -114,7 +114,7 @@ void FibVec::push(int value)
 }
 int FibVec::remove(unsigned long index)
 {
-    if (index > vecCount - 1)
+    if (index + 1 > vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
