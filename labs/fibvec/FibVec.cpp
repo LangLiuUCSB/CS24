@@ -44,6 +44,7 @@ unsigned long FibVec::count() const
 void FibVec::insert(int value, unsigned long index)
 {
     vec[index] = value;
+    vecCount++;
 }
 int FibVec::lookup(unsigned long index) const
 {
