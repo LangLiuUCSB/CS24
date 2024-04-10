@@ -7,6 +7,10 @@
 // FibVec Function Implementations
 size_t FibVec::Fib(size_t n)
 {
+    if (n == 0)
+    {
+        return 0;
+    }
     if (n == 1)
     {
         return 1;
@@ -61,11 +65,14 @@ void FibVec::insert(int value, unsigned long index)
 }
 int FibVec::lookup(unsigned long index) const
 {
-    if (index >= vecCount)
+    if (index > vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
-    return vec[index];
+    else
+    {
+        return vec[index];
+    }
 }
 int FibVec::pop()
 {
@@ -114,25 +121,28 @@ int FibVec::remove(unsigned long index)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
-    vecCount--;
-    unsigned long i;
-    int removedValue = vec[index];
-    for (i = index; i < vecCount; i++)
+    else
     {
-        vec[i] = vec[i + 1];
-    }
-    unsigned long vecSizePrev = Fib(nthFib - 1);
-    if (vecCount + vecSizePrev < vecSize)
-    {
-        nthFib--;
-        int *temp = new int[vecSizePrev];
-        for (unsigned long i = 0; i < vecSizePrev; i++)
+        vecCount--;
+        unsigned long i;
+        int removedValue = vec[index];
+        for (i = index; i < vecCount; i++)
         {
-            temp[i] = vec[i];
+            vec[i] = vec[i + 1];
         }
-        delete[] vec;
-        vec = temp;
-        vecSize = vecSizePrev;
+        unsigned long vecSizePrev = Fib(nthFib - 1);
+        if (vecCount + vecSizePrev < vecSize)
+        {
+            nthFib--;
+            int *temp = new int[vecSizePrev];
+            for (unsigned long i = 0; i < vecSizePrev; i++)
+            {
+                temp[i] = vec[i];
+            }
+            delete[] vec;
+            vec = temp;
+            vecSize = vecSizePrev;
+        }
+        return removedValue;
     }
-    return removedValue;
 }
