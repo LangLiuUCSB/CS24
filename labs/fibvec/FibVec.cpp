@@ -115,18 +115,6 @@ int FibVec::remove(unsigned long index)
     {
         vec[i] = vec[i + 1];
     }
-    unsigned long vecSizePrev = Fib(nthFib - 1);
-    if (vecCount + vecSizePrev < vecSize)
-    {
-        nthFib--;
-        int *temp = new int[vecSizePrev];
-        for (unsigned long i = 0; i < vecSizePrev; i++)
-        {
-            temp[i] = vec[i];
-        }
-        delete[] vec;
-        vec = temp;
-        vecSize = vecSizePrev;
-    }
+
     return poppedValue;
 }
