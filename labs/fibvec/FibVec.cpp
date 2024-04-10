@@ -7,10 +7,6 @@
 // FibVec Function Implementations
 size_t FibVec::Fib(size_t n)
 {
-    if (n == 0)
-    {
-        return 0;
-    }
     if (n == 1)
     {
         return 1;
@@ -65,7 +61,7 @@ void FibVec::insert(int value, unsigned long index)
 }
 int FibVec::lookup(unsigned long index) const
 {
-    if (index > vecCount)
+    if (index >= vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
@@ -114,7 +110,7 @@ void FibVec::push(int value)
 }
 int FibVec::remove(unsigned long index)
 {
-    if (index > vecCount)
+    if (index >= vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
