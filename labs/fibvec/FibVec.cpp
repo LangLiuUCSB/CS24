@@ -58,6 +58,7 @@ int FibVec::pop()
 }
 void FibVec::push(int value)
 {
+    /*
     if (vecSize == vecCount)
     {
         int *temp = new int[Fib(nthFib + 1)];
@@ -68,7 +69,8 @@ void FibVec::push(int value)
         delete[] vec;
         vec = temp;
     }
-    vec[vecCount] = value;
+    */
+    vec[0] = value;
 }
 int FibVec::remove(unsigned long index)
 {
