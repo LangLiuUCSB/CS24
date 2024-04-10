@@ -59,15 +59,11 @@ void FibVec::insert(int value, unsigned long index)
     }
     // vecCount = 1; [42]
     // index = 0 [69,42]
-    /*
+
     for (i = vecCount; i > index; i--)
     {
-        std::cout << i << "\n";
-
+        vec[i] = vec[i - 1];
     }
-    */
-    // vec[vecCount] = vec[index];
-    vec[vecCount] = vec[index];
     vec[index] = value;
     vecCount++;
 }
