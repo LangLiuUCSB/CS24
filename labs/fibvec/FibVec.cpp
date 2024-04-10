@@ -38,7 +38,7 @@ unsigned long FibVec::count() const
 }
 void FibVec::insert(int value, unsigned long index)
 {
-    if (index >= vecCount)
+    if (index > vecCount)
     {
         throw std::out_of_range("Out of Range");
     }
