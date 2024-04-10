@@ -40,7 +40,7 @@ void FibVec::insert(int value, unsigned long index)
 {
     if (index > vecCount)
     {
-        throw std::out_of_range("Out of Range");
+        throw std::out_of_range("Index out of Vector Range");
     }
     vecCount++;
     unsigned long i;
@@ -65,10 +65,18 @@ void FibVec::insert(int value, unsigned long index)
 }
 int FibVec::lookup(unsigned long index) const
 {
+    if (index > vecCount)
+    {
+        throw std::out_of_range("Index out of Vector Range");
+    }
     return vec[index];
 }
 int FibVec::pop()
 {
+    if (vecCount == 0)
+    {
+        throw std::underflow_error("Vector Already Empty");
+    }
     vecCount--;
     int poppedValue = vec[vecCount];
     unsigned long vecSizePrev = Fib(nthFib - 1);
@@ -106,6 +114,10 @@ void FibVec::push(int value)
 }
 int FibVec::remove(unsigned long index)
 {
+    if (index > vecCount)
+    {
+        throw std::out_of_range("Index out of Vector Range");
+    }
     vecCount--;
     unsigned long i;
     int removedValue = vec[index];
