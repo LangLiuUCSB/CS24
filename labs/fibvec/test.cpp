@@ -14,6 +14,7 @@ int main()
   fibvec.push(42);
 
   std::cout << "count: " << fibvec.count() << "\n";
+  std::cout << fibvec.lookup(0) << "\n";
 
   return 0;
 }

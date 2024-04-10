@@ -47,8 +47,7 @@ void FibVec::insert(int value, unsigned long index)
 }
 int FibVec::lookup(unsigned long index) const
 {
-    return -1;
-    // return vec[index];
+    return vec[index];
 }
 int FibVec::pop()
 {
