@@ -44,28 +44,26 @@ unsigned long FibVec::count() const
 }
 void FibVec::insert(int value, unsigned long index)
 {
+    vecCount++;
     unsigned long i;
-    if (vecSize == vecCount)
+    if (vecCount > vecSize)
     {
         nthFib++;
-        int *temp = new int[Fib(nthFib)];
+        unsigned long vecSizeNext = Fib(nthFib);
+        int *temp = new int[vecSizeNext];
         for (i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
         }
         delete[] vec;
         vec = temp;
-        vecSize = Fib(nthFib);
+        vecSize = vecSizeNext;
     }
-    // vecCount = 1; [42]
-    // index = 0 [69,42]
-
-    for (i = vecCount; i > index; i--)
+    for (i = vecCount - 1; i > index; i--)
     {
         vec[i] = vec[i - 1];
     }
     vec[index] = value;
-    vecCount++;
 }
 int FibVec::lookup(unsigned long index) const
 {
@@ -74,25 +72,39 @@ int FibVec::lookup(unsigned long index) const
 int FibVec::pop()
 {
     vecCount--;
-    return -1;
-    // return vec[vecCount + 1];
+    int poppedValue = vec[vecCount];
+    unsigned long vecSizePrev = Fib(nthFib - 1);
+    if (vecCount == vecSizePrev)
+    {
+        nthFib--;
+        int *temp = new int[vecSizePrev];
+        for (unsigned long i = 0; i < vecSizePrev; i++)
+        {
+            temp[i] = vec[i];
+        }
+        delete[] vec;
+        vec = temp;
+        vecSize = vecSizePrev;
+    }
+    return poppedValue;
 }
 void FibVec::push(int value)
 {
-    if (vecSize == vecCount)
+    vecCount++;
+    if (vecCount > vecSize)
     {
         nthFib++;
-        int *temp = new int[Fib(nthFib)];
+        unsigned long vecSizeNext = Fib(nthFib);
+        int *temp = new int[vecSizeNext];
         for (unsigned long i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
         }
         delete[] vec;
         vec = temp;
-        vecSize = Fib(nthFib);
+        vecSize = vecSizeNext;
     }
-    vec[vecCount] = value;
-    vecCount++;
+    vec[vecCount - 1] = value;
 }
 int FibVec::remove(unsigned long index)
 {

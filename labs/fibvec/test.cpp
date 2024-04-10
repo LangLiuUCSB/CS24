@@ -8,9 +8,6 @@ int main()
 {
   FibVec fibvec;
 
-  std::cout << "capacity: " << fibvec.capacity() << "\n";
-  std::cout << "count: " << fibvec.count() << "\n";
-
   // fibvec.push(42);
   fibvec.insert(42, 0);
 
