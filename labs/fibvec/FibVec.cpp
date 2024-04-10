@@ -59,7 +59,7 @@ void FibVec::push(int value)
     if (vecSize == vecCount)
     {
         int *temp = new int[Fib(nthFib + 1)];
-        for (int i = 0; i < vecSize; i++)
+        for (unsigned long i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
         }
