@@ -1,4 +1,5 @@
 #include "FibVec.h"
+#include <iostream>
 
 // This provides exception types:
 #include <stdexcept>
@@ -43,25 +44,33 @@ unsigned long FibVec::count() const
 }
 void FibVec::insert(int value, unsigned long index)
 {
-    vecCount++;
     unsigned long i;
-    if (vecCount > vecSize)
+    if (vecSize == vecCount)
     {
         nthFib++;
-        vecSize = Fib(nthFib);
-        int *temp = new int[vecSize];
-        for (unsigned long i = 0; i < vecSize; i++)
+        int *temp = new int[Fib(nthFib)];
+        for (i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
         }
         delete[] vec;
         vec = temp;
+        vecSize = Fib(nthFib);
     }
-    for (i = vecCount; i >= index; i--)
+    // vecCount = 1; [42]
+    // index = 0 [69,42]
+    /*
+    for (i = vecCount; i > index; i--)
     {
-        vec[i + 1] = vec[i];
+        std::cout << i << "\n";
+
     }
+    */
+    // vec[vecCount] = vec[index];
+    std::cout << vec[0] << "\n";
+    vec[vecCount] = vec[index];
     vec[index] = value;
+    vecCount++;
 }
 int FibVec::lookup(unsigned long index) const
 {
@@ -75,20 +84,20 @@ int FibVec::pop()
 }
 void FibVec::push(int value)
 {
-    vecCount++;
-    if (vecCount > vecSize)
+    if (vecSize == vecCount)
     {
         nthFib++;
-        vecSize = Fib(nthFib);
-        int *temp = new int[vecSize];
+        int *temp = new int[Fib(nthFib)];
         for (unsigned long i = 0; i < vecSize; i++)
         {
             temp[i] = vec[i];
         }
         delete[] vec;
         vec = temp;
+        vecSize = Fib(nthFib);
     }
     vec[vecCount] = value;
+    vecCount++;
 }
 int FibVec::remove(unsigned long index)
 {

@@ -8,17 +8,23 @@ int main()
 {
   FibVec fibvec;
 
+  std::cout << "capacity: " << fibvec.capacity() << "\n";
+  std::cout << "count: " << fibvec.count() << "\n";
+
+  // fibvec.push(42);
   fibvec.insert(42, 0);
 
   std::cout << "capacity: " << fibvec.capacity() << "\n";
   std::cout << "count: " << fibvec.count() << "\n";
-  std::cout << fibvec.lookup(0) << "\n";
+  std::cout << "i = 0: " << fibvec.lookup(0) << "\n";
 
-  fibvec.insert(69, 1);
+  // fibvec.push(69);
+  fibvec.insert(69, 0);
 
   std::cout << "capacity: " << fibvec.capacity() << "\n";
   std::cout << "count: " << fibvec.count() << "\n";
-  std::cout << fibvec.lookup(1) << "\n";
+  std::cout << "i = 0: " << fibvec.lookup(0) << "\n";
+  std::cout << "i = 1: " << fibvec.lookup(1) << "\n";
 
   return 0;
 }
