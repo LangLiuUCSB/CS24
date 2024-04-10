@@ -110,7 +110,7 @@ void FibVec::push(int value)
 }
 int FibVec::remove(unsigned long index)
 {
-    if (index >= vecCount)
+    if (index > vecCount)
     {
         throw std::out_of_range("Index out of Vector Range");
     }
