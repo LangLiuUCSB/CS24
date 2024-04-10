@@ -4,10 +4,16 @@
 // Use this file to test your FibVec class!
 // This file won't be graded - do whatever you want.
 
-int main() {
+int main()
+{
   FibVec fibvec;
 
-  std::cout << "This program doesn't do anything interesting yet...\n";
+  std::cout << "capacity: " << fibvec.capacity() << "\n";
+  std::cout << "count: " << fibvec.count() << "\n";
+
+  fibvec.push(42);
+
+  std::cout << "count: " << fibvec.count() << "\n";
 
   return 0;
 }
