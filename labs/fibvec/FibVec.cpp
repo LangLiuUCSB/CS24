@@ -24,7 +24,7 @@ FibVec::FibVec()
 {
     vec = new int[1];
     vecSize = 1;
-    vecCount = 1;
+    vecCount = 0;
     nthFib = 2;
 }
 FibVec::~FibVec()
