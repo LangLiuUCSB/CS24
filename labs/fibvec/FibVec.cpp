@@ -66,9 +66,9 @@ void FibVec::push(int value)
         delete[] vec;
         vec = temp;
     }
-    vec[vecCount + 1] = value;
+    vec[vecCount] = value;
 }
-int FibVec::remove(size_t index)
+int FibVec::remove(unsigned long index)
 {
     return -1;
 }
