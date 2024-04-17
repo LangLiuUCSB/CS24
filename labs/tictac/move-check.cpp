@@ -19,6 +19,10 @@ bool goodFormat(std::string input)
   {
     return false;
   }
+  while (std::isspace(input[2]))
+  {
+    input.erase(input.begin() + 2);
+  }
   char playerCode = input[2];
   if (playerCode != 'X' && playerCode != 'O' && playerCode != 'x' && playerCode != 'o')
   {
@@ -27,6 +31,10 @@ bool goodFormat(std::string input)
   if (!std::isspace(input[3]))
   {
     return false;
+  }
+  while (std::isspace(input[4]))
+  {
+    input.erase(input.begin() + 4);
   }
   char row = input[4];
   if (row != 'A' && row != 'B' && row != 'C' && row != 'a' && row != 'b' && row != 'c')

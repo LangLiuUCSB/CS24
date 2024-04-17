@@ -5,11 +5,21 @@
 Move::Move(const std::string &input)
 {
     number = static_cast<int>(input[0]);
-    player = input[2] == 'X' || input[2] == 'x' ? 'X' : 'O';
-    row = input[4] == 'A' || input[4] == 'a'   ? 1
-          : input[4] == 'B' || input[4] == 'b' ? 2
+    int i = 2;
+    while (std::isspace(input[i]))
+    {
+        i++;
+    }
+    player = input[i] == 'X' || input[i] == 'x' ? 'X' : 'O';
+    i += 2;
+    while (std::isspace(input[i]))
+    {
+        i++;
+    }
+    row = input[i] == 'A' || input[i] == 'a'   ? 1
+          : input[i] == 'B' || input[i] == 'b' ? 2
                                                : 3;
-    column = static_cast<int>(input[5]);
+    column = static_cast<int>(input[i + 1]);
 }
 
 std::string Move::to_string() const
