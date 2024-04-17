@@ -1,6 +1,7 @@
 #include "Board.h"
 #include "Move.h"
 #include "Helper.h"
+#include <string>
 #include <cctype>
 
 bool goodFormat(std::string input)

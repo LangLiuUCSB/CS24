@@ -40,7 +40,7 @@ bool Board::ended() const
             return true;
         }
     }
-    // Checks positive gradient diagonal for ending condition
+    // Check positive gradient diagonal for ending condition
     if (coor[0][0] != ' ' &&
         coor[0][0] == coor[1][1] &&
         coor[1][1] == coor[2][2] &&
@@ -48,7 +48,7 @@ bool Board::ended() const
     {
         return true;
     }
-    // Checks negative gradient diagonal for ending condition
+    // Check negative gradient diagonal for ending condition
     if (coor[0][2] != ' ' &&
         coor[0][2] == coor[1][1] &&
         coor[1][1] == coor[2][0] &&

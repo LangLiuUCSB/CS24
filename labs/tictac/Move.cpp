@@ -1,5 +1,7 @@
 #include "Errors.h"
 #include "Move.h"
+#include <string>
+#include <cctype>
 
 // Space for implementing Move functions.
 Move::Move(const std::string &input)
