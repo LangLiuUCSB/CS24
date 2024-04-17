@@ -4,8 +4,13 @@
 // Space for implementing Move functions.
 Move::Move(const std::string &input)
 {
-    number = static_cast<int>(input[0]);
-    int i = 2;
+    int i = 0;
+    while (std::isspace(input[i]))
+    {
+        i++;
+    }
+    number = static_cast<int>(input[i]);
+    i += 2;
     while (std::isspace(input[i]))
     {
         i++;

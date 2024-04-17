@@ -10,6 +10,10 @@ bool goodFormat(std::string input)
   {
     return false;
   }
+  while (std::isspace(input[0]))
+  {
+    input.erase(input.begin());
+  }
   char moveNum = input[0];
   if (moveNum > '9' || moveNum < '1')
   {
