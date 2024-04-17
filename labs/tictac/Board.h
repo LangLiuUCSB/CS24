@@ -1,7 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <map>
 #include "Move.h"
 
 struct Board
