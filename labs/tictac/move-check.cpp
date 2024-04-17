@@ -6,7 +6,7 @@
 
 bool goodFormat(std::string input)
 {
-  if (input.size() < 6 || input.size() == 7)
+  if (input.size() < 6)
   {
     return false;
   }
@@ -28,7 +28,7 @@ bool goodFormat(std::string input)
     input.erase(input.begin() + 2);
   }
   char playerCode = input[2];
-  if (!isalpha(playerCode))
+  if (playerCode != 'X' && playerCode != 'O' && playerCode != 'x' && playerCode != 'o')
   {
     return false;
   }
@@ -41,7 +41,7 @@ bool goodFormat(std::string input)
     input.erase(input.begin() + 4);
   }
   char row = input[4];
-  if (!isalpha(row))
+  if (row != 'A' && row != 'B' && row != 'C' && row != 'a' && row != 'b' && row != 'c')
   {
     return false;
   }
@@ -54,7 +54,7 @@ bool goodFormat(std::string input)
   {
     return false;
   }
-  for (unsigned int i = 7; input[i] != '#' && i < input.size(); i++)
+  for (unsigned int i = 6; input[i] != '#' && i < input.size(); i++)
   {
     if (!std::isspace(input[i]))
     {

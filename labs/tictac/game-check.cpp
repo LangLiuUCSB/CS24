@@ -5,7 +5,7 @@
 
 bool goodFormat(std::string input)
 {
-    if (input.size() < 6 || input.size() == 7)
+    if (input.size() < 6)
     {
         return false;
     }
@@ -53,7 +53,7 @@ bool goodFormat(std::string input)
     {
         return false;
     }
-    for (unsigned int i = 7; input[i] != '#' && i < input.size(); i++)
+    for (unsigned int i = 6; input[i] != '#' && i < input.size(); i++)
     {
         if (!std::isspace(input[i]))
         {
