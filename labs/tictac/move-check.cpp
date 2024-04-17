@@ -6,7 +6,7 @@
 
 bool goodFormat(std::string input)
 {
-  if (input.size() < 6)
+  if (input.size() < 6 || input.size() == 7)
   {
     return false;
   }
