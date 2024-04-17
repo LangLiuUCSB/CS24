@@ -22,6 +22,6 @@ std::string Move::to_string() const
     str += row == 1   ? 'A'
            : row == 2 ? 'B'
                       : 'C';
-    str += char(number);
+    str += char(column);
     return str;
 }
