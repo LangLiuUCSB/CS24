@@ -3,6 +3,8 @@
 #include "Helper.h"
 #include <iostream>
 
+#include "Helper.cpp"
+
 int main(int argc, char **argv)
 {
     Board game;

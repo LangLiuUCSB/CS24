@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "Helper.cpp"
+
 int main(int argc, char **argv)
 {
   bool verbose = false;
