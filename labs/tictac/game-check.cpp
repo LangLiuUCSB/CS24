@@ -1,5 +1,4 @@
 #include "Board.h"
-#include "Errors.h"
 #include "Move.h"
 #include <iostream>
 #include <map>
@@ -47,6 +46,7 @@ bool goodFormat(std::string input)
 
 bool validMove(Move m, Board b)
 {
+    return false;
 }
 
 int main()
@@ -69,7 +69,7 @@ int main()
                 return 2;
             }
 
-            if (game.coor[move.row][move.column] != ' ')
+            if (game.coor[move.row - 1][move.column - 1] != ' ')
             {
                 std::cout << "Invalid move.\n";
                 return 2;
@@ -79,7 +79,8 @@ int main()
                 std::cout << "Invalid move.\n";
                 return 2;
             }
-            game.coor[move.row][move.column], game.prevPlayer = move.player;
+            game.coor[move.row - 1][move.column - 1] = move.player;
+            game.prevPlayer = move.player;
             game.prevMoveNum = move.number;
         }
         else
