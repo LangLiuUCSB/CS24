@@ -37,7 +37,7 @@ bool goodFormat(std::string input)
     {
         return false;
     }
-    if (input.size() > 6 && (!std::isspace(input[6]) || input[7] != '#'))
+    if (input.size() > 6 && input[6] == '#')
     {
         return false;
     }
