@@ -72,7 +72,8 @@ int main(int argc, char **argv)
     }
     else
     {
-      throw(line);
+      std::cout << "Parse error.\n";
+      return 1;
     }
   }
   catch (const ParseError &e)
