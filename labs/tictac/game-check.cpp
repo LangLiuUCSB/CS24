@@ -49,11 +49,11 @@ bool goodFormat(std::string input)
     {
         return false;
     }
-    if (input.size() > 6 && input[6] == '#')
+    if (input.size() > 6 && !std::isspace(input[6]))
     {
         return false;
     }
-    for (unsigned int i = 6; input[i] != '#' && i < input.size(); i++)
+    for (unsigned int i = 7; input[i] != '#' && i < input.size(); i++)
     {
         if (!std::isspace(input[i]))
         {
