@@ -28,7 +28,7 @@ bool goodFormat(std::string input)
     input.erase(input.begin() + 2);
   }
   char playerCode = input[2];
-  if (playerCode != 'X' && playerCode != 'O' && playerCode != 'x' && playerCode != 'o')
+  if (!isalpha(playerCode))
   {
     return false;
   }
@@ -41,7 +41,7 @@ bool goodFormat(std::string input)
     input.erase(input.begin() + 4);
   }
   char row = input[4];
-  if (row != 'A' && row != 'B' && row != 'C' && row != 'a' && row != 'b' && row != 'c')
+  if (!isalpha(row))
   {
     return false;
   }
