@@ -42,6 +42,13 @@ bool goodFormat(std::string input)
   {
     return false;
   }
+  for (int i = 7; input[i] != '#' && i < input.size(); i++)
+  {
+    if (!std::isspace(input[i]))
+    {
+      return false;
+    }
+  }
   return true;
 }
 
