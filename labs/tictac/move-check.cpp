@@ -20,7 +20,7 @@ bool goodFormat(std::string input)
     return false;
   }
   char playerCode = input[2];
-  if (playerCode == 'X' || playerCode == 'O' || playerCode == 'x' || playerCode == 'o')
+  if (playerCode != 'X' && playerCode != 'O' && playerCode != 'x' && playerCode != 'o')
   {
     return false;
   }
@@ -29,7 +29,7 @@ bool goodFormat(std::string input)
     return false;
   }
   char row = input[4];
-  if (row == 'A' || row == 'B' || row == 'C' || row == 'a' || row == 'b' || row == 'c')
+  if (row != 'A' && row != 'B' && row != 'C' && row != 'a' && row != 'b' && row != 'c')
   {
     return false;
   }

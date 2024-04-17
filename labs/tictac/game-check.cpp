@@ -49,7 +49,7 @@ bool validMove(Move m, Board b)
     return false;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     Board game;
     std::string line;
