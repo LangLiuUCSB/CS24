@@ -8,15 +8,16 @@
 
 #include <string>
 
-struct Move {
+struct Move
+{
   // Member Variables
-  int  number;
+  int number;
   char player;
-  int  row;
-  int  column;
+  int row;
+  int column;
 
   // The constructor parses a string.
-  Move(const std::string& input);
+  Move(const std::string &input);
 
   // Helper to render a Move as text.
   std::string to_string() const;
