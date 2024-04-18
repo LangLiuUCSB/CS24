@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 {
     Board game;
     std::string line;
-    for (std::getline(std::cin, line); line != "q"; std::getline(std::cin, line))
+    for (std::getline(std::cin, line); line != ""; std::getline(std::cin, line))
     {
         Move move(line);
         if (move.goodFormat())
