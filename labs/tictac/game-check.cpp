@@ -1,12 +1,25 @@
 #include "Board.h"
 #include "Move.h"
 #include <iostream>
+#include <cctype>
+
+bool notEmpty(std::string str)
+{
+    for (char c : str)
+    {
+        if (!std::isspace(c))
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 int main(int argc, char **argv)
 {
     Board game;
     std::string line;
-    for (std::getline(std::cin, line); line != ""; std::getline(std::cin, line))
+    for (std::getline(std::cin, line); notEmpty(line); std::getline(std::cin, line))
     {
         Move move(line);
         if (move.goodFormat())
