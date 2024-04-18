@@ -1,10 +1,7 @@
 #include "Errors.h"
 #include "Move.h"
-#include "Helper.h"
 
 #include <iostream>
-
-#include "Helper.cpp"
 
 int main(int argc, char **argv)
 {
@@ -25,9 +22,10 @@ int main(int argc, char **argv)
 
   try
   {
-    if (goodFormat(line))
+    Move move(line);
+    if (move.goodFormat())
     {
-      Move move(line);
+      move.update();
       std::cout << move.to_string() << '\n';
       return 0;
     }

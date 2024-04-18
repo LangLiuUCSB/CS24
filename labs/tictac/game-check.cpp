@@ -1,9 +1,6 @@
 #include "Board.h"
 #include "Move.h"
-#include "Helper.h"
 #include <iostream>
-
-#include "Helper.cpp"
 
 int main(int argc, char **argv)
 {
@@ -11,10 +8,11 @@ int main(int argc, char **argv)
     std::string line;
     for (std::getline(std::cin, line); line != ""; std::getline(std::cin, line))
     {
-        if (goodFormat(line))
+        Move move(line);
+        if (move.goodFormat())
         {
-            Move move(line);
-            if (!validMove(move, game))
+            move.update();
+            if (!game.validMove(move))
             {
                 std::cout << "Invalid move.\n";
                 return 2;

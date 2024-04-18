@@ -58,3 +58,24 @@ bool Board::ended() const
     }
     return false;
 }
+
+bool Board::validMove(Move m) const
+{
+    if (m.player == prevPlayer)
+    {
+        return false;
+    }
+    if (prevMoveNum + 1 != m.number)
+    {
+        return false;
+    }
+    if (coor[m.row - 1][m.column - 1] != ' ')
+    {
+        return false;
+    }
+    if (ended())
+    {
+        return false;
+    }
+    return true;
+}

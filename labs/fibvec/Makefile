@@ -15,7 +15,6 @@ all: test
 test: test.o FibVec.o
 	${CXX} $(CXXFLAGS) -o $@ $+
 
-
 test.o: test.cpp FibVec.h
 	${CXX} $(CXXFLAGS) -c -o $@ $<
 

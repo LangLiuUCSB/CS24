@@ -13,8 +13,11 @@ struct Board
     // The constructor
     Board();
 
-    // Helper to check is game has met an ending condition.
+    // Helper to check if game has met an ending condition.
     bool ended() const;
+
+    // Helper to check if a valid move have been made on current state of the Board.
+    bool validMove(Move m) const;
 };
 
 #endif

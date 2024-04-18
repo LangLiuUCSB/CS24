@@ -11,13 +11,20 @@
 struct Move
 {
   // Member Variables
+  std::string raw;
   int number;
   char player;
   int row;
   int column;
 
-  // The constructor parses a string.
+  // Constructor
   Move(const std::string &input);
+
+  // Check if input line has good format.
+  bool goodFormat() const;
+
+  // Parses raw line into move information.
+  void update();
 
   // Helper to render a Move as text.
   std::string to_string() const;
