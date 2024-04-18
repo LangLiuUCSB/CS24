@@ -12,7 +12,6 @@ int main(int argc, char **argv)
         if (move.goodFormat())
         {
             move.update();
-            std::cout << move.number << " \n";
             if (!game.validMove(move))
             {
                 std::cout << "Invalid move.\n";
