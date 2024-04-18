@@ -1,5 +1,6 @@
 #include "Errors.h"
 #include "Board.h"
+#include <iostream>
 
 // Space for implementing Board functions.
 

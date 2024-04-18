@@ -6,12 +6,13 @@ int main(int argc, char **argv)
 {
     Board game;
     std::string line;
-    for (std::getline(std::cin, line); line != ""; std::getline(std::cin, line))
+    for (std::getline(std::cin, line); line != "q"; std::getline(std::cin, line))
     {
         Move move(line);
         if (move.goodFormat())
         {
             move.update();
+            std::cout << move.number << " \n";
             if (!game.validMove(move))
             {
                 std::cout << "Invalid move.\n";

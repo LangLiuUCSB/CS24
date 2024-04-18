@@ -73,7 +73,7 @@ bool Move::goodFormat() const
 
 void Move::update()
 {
-    number = static_cast<int>(raw[0]);
+    number = raw[0] - '0';
     int i = 2;
     while (std::isspace(raw[i]))
     {
@@ -85,23 +85,23 @@ void Move::update()
     {
         i++;
     }
-    row = raw[i] == 'A' || raw[i] == 'a'   ? 1
-          : raw[i] == 'B' || raw[i] == 'b' ? 2
-                                           : 3;
-    column = static_cast<int>(raw[i + 1]);
+    row = toupper(raw[i]) == 'A'   ? 1
+          : toupper(raw[i]) == 'B' ? 2
+                                   : 3;
+    column = raw[i + 1] - '0';
 }
 
 std::string Move::to_string() const
 {
     std::string str;
-    str += char(number);
+    str += '0' + char(number);
     str += ' ';
     str += player;
     str += ' ';
     str += row == 1   ? 'A'
            : row == 2 ? 'B'
                       : 'C';
-    str += char(column);
+    str += '0' + char(column);
     return str;
 }
 
