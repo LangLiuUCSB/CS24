@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     }
     if (game.ended())
     {
-        std::cout << "Game over: " << game.prevPlayer << "wins.\n";
+        std::cout << "Game over: " << game.prevPlayer << " wins.\n";
     }
     else
     {
