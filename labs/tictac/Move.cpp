@@ -2,6 +2,7 @@
 #include "Move.h"
 #include <string>
 #include <cctype>
+#include <iostream>
 
 // Space for implementing Move functions.
 Move::Move(const std::string &input)
@@ -54,15 +55,18 @@ bool Move::goodFormat() const
     i++;
     if (raw.size() > i)
     {
+        std::cout << "trailing ws\n";
         if (!std::isspace(raw[i]))
         {
+            std::cout << i << " bad\n";
             return false;
         }
         i++;
-        while (raw[i] != '#')
+        while (raw[i] != '#' && i < raw.size())
         {
             if (!std::isspace(raw[i]))
             {
+                std::cout << i << " bad\n";
                 return false;
             }
             i++;
