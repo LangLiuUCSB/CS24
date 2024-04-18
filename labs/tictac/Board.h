@@ -6,18 +6,20 @@
 struct Board
 {
     // Member Variables
-    char coor[3][3];
+    char tiles[3][3];
     char prevPlayer;
     int prevMoveNum;
 
-    // The constructor
+    // Constructor
     Board();
 
     // Helper to check if game has met an ending condition.
-    bool ended() const;
+    bool gameEnded() const;
 
-    // Helper to check if a valid move have been made on current state of the Board.
-    bool validMove(Move m) const;
+    // Helper to check validity of a move on the board in its current state.
+    bool invalidMove(Move m) const;
+
+    void printResult() const;
 };
 
 #endif

@@ -1,38 +1,25 @@
 #include "Board.h"
 #include "Move.h"
 #include <iostream>
-#include <cctype>
 
-bool notEmpty(std::string str)
+int main()
 {
-    for (char c : str)
+    Board board;
+    std::string currLine;
+    for (std::getline(std::cin, currLine); currLine != ""; std::getline(std::cin, currLine))
     {
-        if (!std::isspace(c))
+        Move currMove(currLine);
+        if (currMove.goodFormat())
         {
-            return true;
-        }
-    }
-    return false;
-}
-
-int main(int argc, char **argv)
-{
-    Board game;
-    std::string line;
-    for (std::getline(std::cin, line); notEmpty(line); std::getline(std::cin, line))
-    {
-        Move move(line);
-        if (move.goodFormat())
-        {
-            move.update();
-            if (!game.validMove(move))
+            currMove.parseRawLine();
+            if (board.invalidMove(currMove))
             {
                 std::cout << "Invalid move.\n";
                 return 2;
             }
-            game.coor[move.row - 1][move.column - 1] = move.player;
-            game.prevPlayer = move.player;
-            game.prevMoveNum = move.number;
+            board.tiles[currMove.row - 1][currMove.column - 1] = currMove.player;
+            board.prevPlayer = currMove.player;
+            board.prevMoveNum = currMove.number;
         }
         else
         {
@@ -40,31 +27,6 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    if (game.ended())
-    {
-        std::cout << "Game over: " << game.prevPlayer << " wins.\n";
-    }
-    else
-    {
-        if (game.prevMoveNum == 0)
-        {
-            std::cout << "Game in progress: New game.\n";
-        }
-        else if (game.prevMoveNum == 9)
-        {
-            std::cout << "Game over: Draw.\n";
-        }
-        else
-        {
-            if (game.prevPlayer == 'X')
-            {
-                std::cout << "Game in progress: O\'s turn.\n";
-            }
-            else
-            {
-                std::cout << "Game in progress: X\'s turn.\n";
-            }
-        }
-    }
+    board.printResult();
     return 0;
 }

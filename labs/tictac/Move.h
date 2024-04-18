@@ -11,7 +11,7 @@
 struct Move
 {
   // Member Variables
-  std::string raw;
+  std::string rawLine;
   int number;
   char player;
   int row;
@@ -24,7 +24,7 @@ struct Move
   bool goodFormat() const;
 
   // Parses raw line into move information.
-  void update();
+  void parseRawLine();
 
   // Helper to render a Move as text.
   std::string to_string() const;

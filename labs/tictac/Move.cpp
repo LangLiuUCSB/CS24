@@ -1,12 +1,10 @@
-#include "Errors.h"
 #include "Move.h"
 #include <string>
 #include <cctype>
 
-// Space for implementing Move functions.
 Move::Move(const std::string &input)
 {
-    raw = input;
+    rawLine = input;
     number = 0;
     player = ' ';
     row = 0;
@@ -15,53 +13,53 @@ Move::Move(const std::string &input)
 
 bool Move::goodFormat() const
 {
-    if (!std::isdigit(raw[0]) || raw[0] == '0')
+    if (!std::isdigit(rawLine[0]) || rawLine[0] == '0')
     {
         return false;
     }
-    if (!std::isspace(raw[1]))
+    if (!std::isspace(rawLine[1]))
     {
         return false;
     }
     unsigned int i = 2;
-    while (std::isspace(raw[i]))
+    while (std::isspace(rawLine[i]))
     {
         i++;
     }
-    if (toupper(raw[i]) != 'X' && toupper(raw[i]) != 'O')
+    if (toupper(rawLine[i]) != 'X' && toupper(rawLine[i]) != 'O')
     {
         return false;
     }
     i++;
-    if (!std::isspace(raw[i]))
+    if (!std::isspace(rawLine[i]))
     {
         return false;
     }
     i++;
-    while (std::isspace(raw[i]))
+    while (std::isspace(rawLine[i]))
     {
         i++;
     }
-    if (toupper(raw[i]) != 'A' && toupper(raw[i]) != 'B' && toupper(raw[i]) != 'C')
+    if (toupper(rawLine[i]) != 'A' && toupper(rawLine[i]) != 'B' && toupper(rawLine[i]) != 'C')
     {
         return false;
     }
     i++;
-    if (raw[i] != '1' && raw[i] != '2' && raw[i] != '3')
+    if (rawLine[i] != '1' && rawLine[i] != '2' && rawLine[i] != '3')
     {
         return false;
     }
     i++;
-    if (raw.size() > i)
+    if (rawLine.size() > i)
     {
-        if (!std::isspace(raw[i]))
+        if (!std::isspace(rawLine[i]))
         {
             return false;
         }
         i++;
-        while (raw[i] != '#' && i < raw.size())
+        while (rawLine[i] != '#' && i < rawLine.size())
         {
-            if (!std::isspace(raw[i]))
+            if (!std::isspace(rawLine[i]))
             {
                 return false;
             }
@@ -71,24 +69,24 @@ bool Move::goodFormat() const
     return true;
 };
 
-void Move::update()
+void Move::parseRawLine()
 {
-    number = raw[0] - '0';
+    number = rawLine[0] - '0';
     int i = 2;
-    while (std::isspace(raw[i]))
+    while (std::isspace(rawLine[i]))
     {
         i++;
     }
-    player = raw[i] == 'X' || raw[i] == 'x' ? 'X' : 'O';
+    player = toupper(rawLine[i]) == 'X' ? 'X' : 'O';
     i += 2;
-    while (std::isspace(raw[i]))
+    while (std::isspace(rawLine[i]))
     {
         i++;
     }
-    row = toupper(raw[i]) == 'A'   ? 1
-          : toupper(raw[i]) == 'B' ? 2
-                                   : 3;
-    column = raw[i + 1] - '0';
+    row = toupper(rawLine[i]) == 'A'   ? 1
+          : toupper(rawLine[i]) == 'B' ? 2
+                                       : 3;
+    column = rawLine[i + 1] - '0';
 }
 
 std::string Move::to_string() const
@@ -104,59 +102,3 @@ std::string Move::to_string() const
     str += '0' + char(column);
     return str;
 }
-
-/*
-    std::string input = raw;
-    if (raw.size() < 6)
-    {
-        return false;
-    }
-    char moveNum = input[0];
-    if (moveNum > '9' || moveNum < '1')
-    {
-        return false;
-    }
-    if (!std::isspace(input[1]))
-    {
-        return false;
-    }
-    while (std::isspace(input[2]))
-    {
-        input.erase(input.begin() + 2);
-    }
-    char playerCode = input[2];
-    if (playerCode != 'X' && playerCode != 'O' && playerCode != 'x' && playerCode != 'o')
-    {
-        return false;
-    }
-    if (!std::isspace(input[3]))
-    {
-        return false;
-    }
-    while (std::isspace(input[4]))
-    {
-        input.erase(input.begin() + 4);
-    }
-    char row = input[4];
-    if (row != 'A' && row != 'B' && row != 'C' && row != 'a' && row != 'b' && row != 'c')
-    {
-        return false;
-    }
-    char column = input[5];
-    if (column > '3' || column < '1')
-    {
-        return false;
-    }
-    if (input.size() > 6 && !std::isspace(input[6]))
-    {
-        return false;
-    }
-    for (unsigned int i = 7; input[i] != '#' && i < input.size(); i++)
-    {
-        if (!std::isspace(input[i]))
-        {
-            return false;
-        }
-    }
-    return true;
-    */
