@@ -7,7 +7,7 @@ int main()
 {
     Board board;
     std::string currLine;
-    for (std::getline(std::cin, currLine); currLine != ""; std::getline(std::cin, currLine))
+    while (std::getline(std::cin, currLine))
     {
         Move currMove(currLine);
         if (currMove.goodFormat())
