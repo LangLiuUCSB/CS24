@@ -5,6 +5,8 @@ int main()
 {
   Tree tree;
 
+  tree.print();
+
   tree.insert("red");
   tree.insert("orange");
   tree.insert("yellow");
@@ -23,6 +25,10 @@ int main()
   // std::cout << tree.find("white") << ": white\n";
 
   tree.print();
+  std::cout << tree.lookup(0) << "\n";
+  std::cout << tree.lookup(1) << "\n";
+  std::cout << tree.lookup(2) << "\n";
+  std::cout << tree.lookup(3) << "\n";
 
   tree.clear();
 

@@ -13,8 +13,6 @@ struct Node
   Node();
 
   Node(const std::string &s);
-
-  Node *next(const std::string &s) const;
 };
 
 #endif

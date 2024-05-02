@@ -1,5 +1,6 @@
 #include "Tree.h"
 #include <iostream>
+#include <stdexcept>
 
 //! Helpers
 // Helper function to insert a new node
@@ -22,7 +23,7 @@ Node *insertH(Node *currNodePtr, const std::string &s)
 }
 
 // Helper function to find the first occurrence of an item
-size_t findH(Node *currNodePtr, const std::string &s, size_t index)
+size_t findH(Node *currNodePtr, const std::string &s, size_t i)
 {
     if (currNodePtr == nullptr)
     {
@@ -30,24 +31,20 @@ size_t findH(Node *currNodePtr, const std::string &s, size_t index)
     }
     if (currNodePtr->right != nullptr)
     {
-        index -= currNodePtr->right->weight;
+        i -= currNodePtr->right->weight;
     }
     if (s == currNodePtr->data)
     {
-        return index;
+        return i;
+    }
+    if (s < currNodePtr->data)
+    {
+        return findH(currNodePtr->left, s, i - 1);
     }
     else
     {
-        if (s < currNodePtr->data)
-        {
-            return findH(currNodePtr->left, s, index - 1);
-        }
-        else
-        {
-            return findH(currNodePtr->right, s, currNodePtr->weight - 1);
-        }
+        return findH(currNodePtr->right, s, currNodePtr->weight - 1);
     }
-    return 1;
 }
 
 // Helper function to clear the tree
@@ -96,6 +93,27 @@ void printH(Node *currNodePtr)
     }
 }
 
+// Helper function to find the first occurrence of an item
+Node *lookupH(Node *currNodePtr, size_t index, size_t currIndex)
+{
+    if (currNodePtr->right != nullptr)
+    {
+        currIndex -= currNodePtr->right->weight;
+    }
+    if (currIndex == index)
+    {
+        return currNodePtr;
+    }
+    if (currIndex > index)
+    {
+        return lookupH(currNodePtr->left, index, currIndex - 1);
+    }
+    else
+    {
+        return lookupH(currNodePtr->right, index, currNodePtr->weight - 1);
+    }
+}
+
 //! Tree Function Implementations
 Tree::Tree()
 {
@@ -132,11 +150,18 @@ void Tree::insert(const std::string &s)
 }
 std::string Tree::lookup(size_t index) const
 {
-    return "";
+    if (rootNodePtr == nullptr || index >= rootNodePtr->weight)
+    {
+        throw std::out_of_range("Index out of Range of Tree");
+    }
+    return lookupH(rootNodePtr, index, rootNodePtr->weight - 1)->data;
 }
 void Tree::print() const
 {
-    printH(rootNodePtr);
+    if (rootNodePtr != nullptr)
+    {
+        printH(rootNodePtr);
+    }
     std::cout << '\n';
 }
 void Tree::remove(size_t index)
