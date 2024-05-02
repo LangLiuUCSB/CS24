@@ -138,6 +138,10 @@ size_t Tree::count() const
 }
 bool Tree::contains(const std::string &s) const
 {
+    if (rootNodePtr == nullptr)
+    {
+        return false;
+    }
     return findH(rootNodePtr, s, rootNodePtr->weight - 1) != (size_t)-1;
 }
 size_t Tree::find(const std::string &s) const
