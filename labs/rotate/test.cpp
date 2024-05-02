@@ -17,10 +17,12 @@ int main()
   std::cout << tree.find("orange") << ": " << tree.rootNodePtr->left->data << "\n";
   std::cout << tree.find("yellow") << ": " << tree.rootNodePtr->right->data << "\n";
   std::cout << tree.find("green") << ": " << tree.rootNodePtr->left->left->data << "\n";
-  std::cout << tree.find("blue") << ": " << tree.rootNodePtr->left->left->left->data << "\n";
-  std::cout << tree.find("indigo") << ": " << tree.rootNodePtr->left->left->right->data << "\n";
-  std::cout << tree.find("violet") << ": " << tree.rootNodePtr->right->left->data << "\n";
-  std::cout << tree.find("white") << ": white\n";
+  // std::cout << tree.find("blue") << ": " << tree.rootNodePtr->left->left->left->data << "\n";
+  // std::cout << tree.find("indigo") << ": " << tree.rootNodePtr->left->left->right->data << "\n";
+  // std::cout << tree.find("violet") << ": " << tree.rootNodePtr->right->left->data << "\n";
+  // std::cout << tree.find("white") << ": white\n";
+
+  tree.print();
 
   tree.clear();
 

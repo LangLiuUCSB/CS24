@@ -61,6 +61,41 @@ void clearH(Node *currNodePtr)
     }
 }
 
+// Helper function to print the tree in tree notation
+void printH(Node *currNodePtr)
+{
+    if (currNodePtr != nullptr)
+    {
+        if (currNodePtr->weight != 1)
+        {
+            std::cout << "(";
+        }
+        printH(currNodePtr->left);
+        if (currNodePtr->left == nullptr && currNodePtr->right != nullptr)
+        {
+            std::cout << "- ";
+        }
+        if (currNodePtr->left != nullptr)
+        {
+            std::cout << " ";
+        }
+        std::cout << currNodePtr->data;
+        if (currNodePtr->right != nullptr)
+        {
+            std::cout << " ";
+        }
+        printH(currNodePtr->right);
+        if (currNodePtr->left != nullptr && currNodePtr->right == nullptr)
+        {
+            std::cout << " -";
+        }
+        if (currNodePtr->weight != 1)
+        {
+            std::cout << ")";
+        }
+    }
+}
+
 //! Tree Function Implementations
 Tree::Tree()
 {
@@ -77,6 +112,10 @@ void Tree::clear()
 }
 size_t Tree::count() const
 {
+    if (rootNodePtr == nullptr)
+    {
+        return 0;
+    }
     return rootNodePtr->weight;
 }
 bool Tree::contains(const std::string &s) const
@@ -97,6 +136,8 @@ std::string Tree::lookup(size_t index) const
 }
 void Tree::print() const
 {
+    printH(rootNodePtr);
+    std::cout << '\n';
 }
 void Tree::remove(size_t index)
 {
