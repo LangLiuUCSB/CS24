@@ -4,7 +4,6 @@ In this lab,  you'll implement a program that can read recordings of tic-tac-toe
 games  and determine the results.  The games are saved as text, similar to chess
 notation.  For example, one possible recording is:
 
-```
 1 X B2
 2 O C2 # Oops...
 3 X C3
@@ -12,19 +11,16 @@ notation.  For example, one possible recording is:
 5 X B3
 6 O A3
 7 X B1
-```
 
 Your program will parse this record and understand that it represents this game,
 and that Player X won:
 
-```
    1   2   3
 A  O |   | O
   ---+---+---
 B  X | X | X
   ---+---+---
 C    | O | X
-```
 
 There are two parts to this lab.  The first part is the move parser; this parses
 a single line of text  and validates a single `Move` object.  The second part is
@@ -33,7 +29,6 @@ are valid; if they are, it prints the outcome of the game.  These two parts will
 create separate executables.
 
 Run `git pull upstream master` in your Git repo to get the starter code.
-
 
 ## Your Assignment
 
@@ -45,7 +40,6 @@ Run `git pull upstream master` in your Git repo to get the starter code.
   provided to make this easier.
 - Test your code locally!  Only the basic tests are visible on Gradescope; to
   earn full credit, think of and deal with all the corner cases.
-
 
 ## The Move Parser
 
@@ -79,7 +73,6 @@ When printing moves, your program should use the same format. When whitespace is
 required, it should always print a single space character. It should never print
 comments or the whitespace that precedes them. Player and row codes should be in
 upper case.
-
 
 ## The Game Evaluator
 
@@ -118,7 +111,6 @@ text may or may not end with a newline.
   allowed.
 - If all squares are claimed but no player has formed a line, the game is a
   draw; no further moves are allowed.
-
 
 ## Hints
 

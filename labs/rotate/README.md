@@ -5,7 +5,6 @@ a _binary search tree_ as the underlying concrete data structure.  In an attempt
 to keep the tree balanced,  you'll perform some simple tree rotations after each
 `insert()` or `remove()` operation.
 
-
 ## Your Assignment
 
 - Implement a binary search tree in the `.h` and `.cpp` files provided:
@@ -15,7 +14,6 @@ to keep the tree balanced,  you'll perform some simple tree rotations after each
 - You can't use any [container types][containers] from the standard library.
 - Make sure your final code doesn't print anything unexpected.
 - Make sure you don't have any memory leaks.
-
 
 ## The Tree
 
@@ -60,7 +58,6 @@ different node  that gets removed:  the smallest node in the target node's right
 subtree.  Call this node `n`, as above.  When considering promotions, you should
 start at `n`'s parent, not the parent of the original target.
 
-
 ## Promotions
 
 This tree uses a simple rotation scheme called a _promotion_ (sometimes known as
@@ -69,7 +66,6 @@ one of its children, and promotes  that child to be the new root of the subtree.
 For example, promoting `D` in the left tree below results in the right tree, and
 promoting `B` in the right tree results in the left tree.
 
-```
 ...              ...
   \                \
    B      ===>      D
@@ -77,7 +73,6 @@ promoting `B` in the right tree results in the left tree.
  a   D    <===    B   e
     / \          / \
    c   e        a   c
-```
 
 In an effort to keep itself balanced, the tree only promotes nodes under certain
 conditions. Specifically, it defines a metric called imbalance, an only promotes
@@ -102,13 +97,11 @@ The promotion shown above does not reduce imbalance (assuming lower case letters
 represent single nodes),  so you wouldn't perform that promotion.  But you would
 perform a promotion in the following case:
 
-```
 (1) a       (2) a       (3) b
      \           \         / \
       b           c       a   c
        \         /
         c       b
-```
 
 Suppose you have just attached node `c`,  generating tree `(1)`.  You would then
 look at the nodes you passed through to reach `c`, considering promotions.
@@ -124,28 +117,24 @@ look at the nodes you passed through to reach `c`, considering promotions.
 - You have now passed the root of the tree,  and there are no more promotions to
   consider.  The final result of the insert operation is tree `(3)`.
 
-
 ## Tree Notation
 
 A user-friendly depiction of a binary tree might look something like this:
 
-```
     d
    / \
   b   e
  / \   \
 a   c   f
-```
 
 But this is  very hard to print.  Tree notation  is an easier way to print trees
 while keeping the output somewhat readable.  For example,  the tree notation for
 the tree pictured above would be:
 
-```
 ((a b c) d (- e f))
-```
 
 More formally:
+
 - The tree notation for a leaf node is simply its value.
 - The tree notation for a non-existent node is a hyphen (`-`; ASCII value 45).
 - The tree notation for a non-leaf node is:
@@ -157,7 +146,6 @@ More formally:
   - the tree notation for its right subtree, followed by
   - a right parenthesis.
 - The tree notation for an empty tree is a hyphen.
-
 
 ## Hints
 
@@ -178,6 +166,5 @@ More formally:
   recursive helper functions global functions or static (class) functions.
 - The rotation scheme  described here doesn't guarantee that  the tree will have
   `O(log n)` performance.  Can you find an access pattern that's `O(n)`?
-
 
 [containers]: https://cplusplus.com/reference/stl/
