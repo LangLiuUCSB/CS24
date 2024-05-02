@@ -151,9 +151,9 @@ size_t Tree::find(const std::string &s) const
 {
     if (rootNodePtr == nullptr)
     {
-        return findH(rootNodePtr, s, rootNodePtr->weight - 1);
+        return (size_t)-1;
     }
-    return (size_t)-1;
+    return findH(rootNodePtr, s, rootNodePtr->weight - 1);
 }
 void Tree::insert(const std::string &s)
 {
@@ -172,8 +172,8 @@ void Tree::print() const
     if (rootNodePtr != nullptr)
     {
         printH(rootNodePtr);
+        std::cout << '\n';
     }
-    std::cout << '\n';
 }
 void Tree::remove(size_t index)
 {
