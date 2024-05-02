@@ -58,7 +58,7 @@ void clearH(Node *currNodePtr)
     }
 }
 
-// Helper function to print the tree in tree notation
+// Helper function to print the tree in in-order traversal notation
 void printH(Node *currNodePtr)
 {
     if (currNodePtr != nullptr)
@@ -93,7 +93,7 @@ void printH(Node *currNodePtr)
     }
 }
 
-// Helper function to find the first occurrence of an item
+// Helper function to find the string stored at an index
 Node *lookupH(Node *currNodePtr, size_t index, size_t currIndex)
 {
     if (currNodePtr->right != nullptr)
@@ -125,8 +125,11 @@ Tree::~Tree()
 }
 void Tree::clear()
 {
-    clearH(rootNodePtr);
-    rootNodePtr = nullptr;
+    if (rootNodePtr != nullptr)
+    {
+        clearH(rootNodePtr);
+        rootNodePtr = nullptr;
+    }
 }
 size_t Tree::count() const
 {
@@ -146,7 +149,11 @@ bool Tree::contains(const std::string &s) const
 }
 size_t Tree::find(const std::string &s) const
 {
-    return findH(rootNodePtr, s, rootNodePtr->weight - 1);
+    if (rootNodePtr == nullptr)
+    {
+        return findH(rootNodePtr, s, rootNodePtr->weight - 1);
+    }
+    return (size_t)-1;
 }
 void Tree::insert(const std::string &s)
 {
