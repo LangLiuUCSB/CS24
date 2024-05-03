@@ -224,6 +224,10 @@ void Tree::print() const
 }
 void Tree::remove(size_t index)
 {
+    if (rootNodePtr == nullptr || index >= rootNodePtr->weight)
+    {
+        throw std::out_of_range("Index out of Range of Tree");
+    }
 }
 
 /*
