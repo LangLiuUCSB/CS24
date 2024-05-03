@@ -3,6 +3,50 @@
 #include <stdexcept>
 
 //! Helpers
+Node *balance(Node *currNodePtr, size_t i)
+{
+    size_t leftWeight = 0;
+    size_t rightWeight = 0;
+    if (currNodePtr->left != nullptr)
+    {
+        leftWeight = currNodePtr->left->weight;
+    }
+    if (currNodePtr->right != nullptr)
+    {
+        rightWeight = currNodePtr->right->weight;
+    }
+    // std::cout << leftWeight << " " << i << currNodePtr->data << i << " " << rightWeight << ", ";
+    if (leftWeight > rightWeight + 1)
+    {
+        Node *tempNodePtr = currNodePtr;
+        currNodePtr->left->weight = currNodePtr->weight;
+        currNodePtr = currNodePtr->left;
+        tempNodePtr->left = currNodePtr->right;
+        currNodePtr->right = tempNodePtr;
+        tempNodePtr->weight = 1;
+        if (tempNodePtr->left != nullptr)
+        {
+            tempNodePtr->weight += tempNodePtr->left->weight;
+        }
+        tempNodePtr->weight += rightWeight;
+    }
+    if (rightWeight > leftWeight + 1)
+    {
+        Node *tempNodePtr = currNodePtr;
+        currNodePtr->right->weight = currNodePtr->weight;
+        currNodePtr = currNodePtr->right;
+        tempNodePtr->right = currNodePtr->left;
+        currNodePtr->left = tempNodePtr;
+        tempNodePtr->weight = 1;
+        if (tempNodePtr->right != nullptr)
+        {
+            tempNodePtr->weight += tempNodePtr->right->weight;
+        }
+        tempNodePtr->weight += leftWeight;
+    }
+    return currNodePtr;
+}
+
 // Helper function to insert a new node
 Node *insertH(Node *currNodePtr, const std::string &s)
 {
@@ -14,10 +58,12 @@ Node *insertH(Node *currNodePtr, const std::string &s)
     if (s <= currNodePtr->data)
     {
         currNodePtr->left = insertH(currNodePtr->left, s);
+        currNodePtr->left = balance(currNodePtr->left, 0);
     }
     else
     {
         currNodePtr->right = insertH(currNodePtr->right, s);
+        currNodePtr->right = balance(currNodePtr->right, 0);
     }
     return currNodePtr;
 }
@@ -113,58 +159,6 @@ Node *lookupH(Node *currNodePtr, size_t index, size_t currIndex)
     return lookupH(currNodePtr->right, index, currIndex + currNodePtr->right->weight);
 }
 
-Node *balance(Node *currNodePtr, size_t i)
-{
-    size_t leftWeight = 0;
-    size_t rightWeight = 0;
-    if (currNodePtr->left != nullptr)
-    {
-        leftWeight = currNodePtr->left->weight;
-    }
-    if (currNodePtr->right != nullptr)
-    {
-        rightWeight = currNodePtr->right->weight;
-    }
-    // std::cout << leftWeight << " " << i << currNodePtr->data << i << " " << rightWeight << ", ";
-    if (leftWeight > rightWeight + 1)
-    {
-        Node *tempNodePtr = currNodePtr;
-        currNodePtr->left->weight = currNodePtr->weight;
-        currNodePtr = currNodePtr->left;
-        tempNodePtr->left = currNodePtr->right;
-        currNodePtr->right = tempNodePtr;
-        tempNodePtr->weight = 1;
-        if (tempNodePtr->left != nullptr)
-        {
-            tempNodePtr->weight += tempNodePtr->left->weight;
-        }
-        tempNodePtr->weight += rightWeight;
-    }
-    if (rightWeight > leftWeight + 1)
-    {
-        Node *tempNodePtr = currNodePtr;
-        currNodePtr->right->weight = currNodePtr->weight;
-        currNodePtr = currNodePtr->right;
-        tempNodePtr->right = currNodePtr->left;
-        currNodePtr->left = tempNodePtr;
-        tempNodePtr->weight = 1;
-        if (tempNodePtr->right != nullptr)
-        {
-            tempNodePtr->weight += tempNodePtr->right->weight;
-        }
-        tempNodePtr->weight += leftWeight;
-    }
-    if (currNodePtr->left != nullptr)
-    {
-        currNodePtr->left = balance(currNodePtr->left, i + 1);
-    }
-    if (currNodePtr->right != nullptr)
-    {
-        currNodePtr->right = balance(currNodePtr->right, i + 1);
-    }
-    return currNodePtr;
-}
-
 //! Tree Function Implementations
 Tree::Tree()
 {
@@ -209,7 +203,6 @@ size_t Tree::find(const std::string &s) const
 void Tree::insert(const std::string &s)
 {
     rootNodePtr = insertH(rootNodePtr, s);
-    rootNodePtr = balance(rootNodePtr, 0);
 }
 std::string Tree::lookup(size_t index) const
 {
