@@ -6,8 +6,7 @@
 struct Node
 {
   std::string data;
-  Node *left;
-  Node *right;
+  Node *left, *right;
   size_t weight;
 
   Node();

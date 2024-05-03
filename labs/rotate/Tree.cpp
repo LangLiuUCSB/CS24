@@ -23,7 +23,7 @@ Node *insertH(Node *currNodePtr, const std::string &s)
 }
 
 // Helper function to find the first occurrence of an item
-size_t findH(Node *currNodePtr, const std::string &s, size_t i)
+size_t findH(Node *currNodePtr, const std::string &s, size_t currIndex)
 {
     if (currNodePtr == nullptr)
     {
@@ -31,19 +31,19 @@ size_t findH(Node *currNodePtr, const std::string &s, size_t i)
     }
     if (currNodePtr->right != nullptr)
     {
-        i -= currNodePtr->right->weight;
+        currIndex -= currNodePtr->right->weight;
     }
     if (s == currNodePtr->data)
     {
-        return i;
+        return currIndex;
     }
     if (s < currNodePtr->data)
     {
-        return findH(currNodePtr->left, s, i - 1);
+        return findH(currNodePtr->left, s, currIndex - 1);
     }
     else
     {
-        return findH(currNodePtr->right, s, currNodePtr->weight - 1);
+        return findH(currNodePtr->right, s, currIndex + currNodePtr->right->weight);
     }
 }
 
@@ -108,10 +108,7 @@ Node *lookupH(Node *currNodePtr, size_t index, size_t currIndex)
     {
         return lookupH(currNodePtr->left, index, currIndex - 1);
     }
-    else
-    {
-        return lookupH(currNodePtr->right, index, currNodePtr->weight - 1);
-    }
+    return lookupH(currNodePtr->right, index, currIndex + currNodePtr->right->weight);
 }
 
 //! Tree Function Implementations
@@ -169,7 +166,11 @@ std::string Tree::lookup(size_t index) const
 }
 void Tree::print() const
 {
-    if (rootNodePtr != nullptr)
+    if (rootNodePtr == nullptr)
+    {
+        std::cout << "-\n";
+    }
+    else
     {
         printH(rootNodePtr);
         std::cout << '\n';
