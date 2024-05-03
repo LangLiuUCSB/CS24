@@ -58,12 +58,10 @@ Node *insertH(Node *currNodePtr, const std::string &s)
     if (s <= currNodePtr->data)
     {
         currNodePtr->left = insertH(currNodePtr->left, s);
-        currNodePtr->left = balance(currNodePtr->left, 0);
     }
     else
     {
         currNodePtr->right = insertH(currNodePtr->right, s);
-        currNodePtr->right = balance(currNodePtr->right, 0);
     }
     return currNodePtr;
 }
