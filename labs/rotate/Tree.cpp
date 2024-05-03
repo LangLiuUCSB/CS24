@@ -41,10 +41,11 @@ size_t findH(Node *currNodePtr, const std::string &s, size_t currIndex)
     {
         return findH(currNodePtr->left, s, currIndex - 1);
     }
-    else
+    if (currNodePtr->right != nullptr)
     {
         return findH(currNodePtr->right, s, currIndex + currNodePtr->right->weight);
     }
+    return findH(currNodePtr->right, s, currIndex);
 }
 
 // Helper function to clear the tree
@@ -179,3 +180,33 @@ void Tree::print() const
 void Tree::remove(size_t index)
 {
 }
+
+/*
+size_t leftWeight = 0;
+    size_t rightWeight = 0;
+    if (rootNodePtr->left != nullptr)
+    {
+        leftWeight = rootNodePtr->left->weight;
+    }
+    if (rootNodePtr->right != nullptr)
+    {
+        rightWeight = rootNodePtr->right->weight;
+    }
+    if (leftWeight > rightWeight + 1)
+    {
+        Node *tempNodePtr = rootNodePtr;
+        rootNodePtr->left->weight = rootNodePtr->weight;
+        rootNodePtr = rootNodePtr->left;
+        tempNodePtr->left = rootNodePtr->right;
+        rootNodePtr->right = tempNodePtr;
+        tempNodePtr->weight = 1;
+        if (tempNodePtr->left != nullptr)
+        {
+            tempNodePtr->weight += tempNodePtr->left->weight;
+        }
+        if (tempNodePtr->right != nullptr)
+        {
+            tempNodePtr->weight += tempNodePtr->right->weight;
+        }
+    }
+*/
