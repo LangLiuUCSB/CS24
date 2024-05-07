@@ -27,14 +27,15 @@ AST *AST::parse(const std::string &expression)
     std::string token;
     std::istringstream stream(expression);
     Stack *stack = new Stack();
+    AST *currNode;
 
     while (stream >> token)
     {
-        AST *currNode;
         if (isArithOp(token))
         {
             if (stack->size() < 2)
             {
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             AST *operand2 = stack->pop();
@@ -45,6 +46,7 @@ AST *AST::parse(const std::string &expression)
         {
             if (stack->size() < 1)
             {
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             currNode = new NotNode(stack->pop());
@@ -55,16 +57,19 @@ AST *AST::parse(const std::string &expression)
         }
         else
         {
+            delete stack;
             throw std::runtime_error("Invalid token: " + token);
         }
         stack->push(currNode);
     }
     if (stack->size() < 1)
     {
+        delete stack;
         throw std::runtime_error("No input.");
     }
     if (stack->size() > 1)
     {
+        delete stack;
         throw std::runtime_error("Too many operands.");
     }
     AST *output = stack->pop();
