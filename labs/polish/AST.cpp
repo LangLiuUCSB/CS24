@@ -35,7 +35,6 @@ AST *AST::parse(const std::string &expression)
         {
             if (stack->size() < 2)
             {
-                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             AST *operand2 = stack->pop();
@@ -46,7 +45,6 @@ AST *AST::parse(const std::string &expression)
         {
             if (stack->size() < 1)
             {
-                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             currNode = new NotNode(stack->pop());
@@ -57,22 +55,19 @@ AST *AST::parse(const std::string &expression)
         }
         else
         {
-            delete stack;
             throw std::runtime_error("Invalid token: " + token);
         }
         stack->push(currNode);
     }
     if (stack->size() < 1)
     {
-        delete stack;
         throw std::runtime_error("No input.");
     }
     if (stack->size() > 1)
     {
-        delete stack;
         throw std::runtime_error("Too many operands.");
     }
-    AST* output = stack->pop();
+    AST *output = stack->pop();
     delete stack;
     return output;
 }
