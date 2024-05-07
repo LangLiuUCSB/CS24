@@ -12,13 +12,6 @@ private:
     {
         AST *nodePtr;
         Frame *next;
-        ~Frame() 
-        {
-            if (next != nullptr)
-            {
-                delete next;
-            }
-        }
     };
     Frame *topFramePtr;
     size_t count;

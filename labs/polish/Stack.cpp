@@ -3,7 +3,7 @@
 #include <iostream>
 
 Stack::Stack() : topFramePtr(nullptr), count(0) {}
-Stack::~Stack() { delete topFramePtr; }
+Stack::~Stack() { while (count != 0) { pop(); } }
 void Stack::push(AST *inputNodePtr)
 {
     count++;
