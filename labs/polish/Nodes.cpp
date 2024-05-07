@@ -48,6 +48,10 @@ double ArithNode::value() const
     }
     return left->value() / right->value();
   case ArithOp::Modulus:
+    if (right->value() == 0.0)
+    {
+      throw std::runtime_error("Division by zero.");
+    }
     return std::fmod(left->value(), right->value());
   }
   return std::numeric_limits<double>::min();
