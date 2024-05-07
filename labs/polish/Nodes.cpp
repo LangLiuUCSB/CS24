@@ -14,6 +14,15 @@ std::string format(double number)
   return stream.str();
 }
 
+void clearH(Node *currNodePtr)
+{
+    if (currNodePtr != nullptr)
+    {
+        clearH(currNodePtr->left);
+        clearH(currNodePtr->right);
+        delete currNodePtr;
+    }
+}
 // Implement your AST subclasses' member functions here.
 FloatNode::FloatNode(const double n) : number(n) {}
 FloatNode::~FloatNode() {}
@@ -22,7 +31,7 @@ std::string FloatNode::postfix() const { return format(number); }
 double FloatNode::value() const { return number; }
 
 ArithNode::ArithNode(const ArithOp t, AST *l, AST *r) : type(t), left(l), right(r) {}
-ArithNode::~ArithNode() {}
+ArithNode::~ArithNode() { delete left; delete right; }
 std::string ArithNode::prefix() const
 {
   return "ArithNode::prefix " + format(value());
@@ -54,7 +63,7 @@ double ArithNode::value() const
 }
 
 NotNode::NotNode(AST *d) : down(d) {}
-NotNode::~NotNode() {}
+NotNode::~NotNode() { delete down; }
 std::string NotNode::prefix() const
 {
   return "NotNode::prefix()" + format(value());
