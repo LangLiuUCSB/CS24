@@ -44,12 +44,13 @@ double ArithNode::value() const
   case ArithOp::Division:
     if (right->value() == 0.0)
     {
-      std::cerr << "Error: Division by zero\n";
-      return std::numeric_limits<double>::min();
+      throw std::runtime_error("Division by zero.");
     }
     return left->value() / right->value();
+  case ArithOp::Modulus:
+    return std::fmod(left->value(), right->value());
   }
-  return std::fmod(left->value(), right->value());
+  return std::numeric_limits<double>::min();
 }
 
 NotNode::NotNode(AST *d) : down(d) {}
