@@ -61,11 +61,11 @@ NotNode::NotNode(AST *d) : down(d) {}
 NotNode::~NotNode() { delete down; }
 std::string NotNode::prefix() const
 {
-  return "NotNode::prefix()" + format(value());
+  return "NotNode::prefix " + format(value());
 }
 std::string NotNode::postfix() const
 {
-  return "NotNode::postfix()" + format(value());
+  return "NotNode::postfix " + format(value());
 }
 double NotNode::value() const
 {
