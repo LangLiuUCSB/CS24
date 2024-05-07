@@ -26,7 +26,7 @@ AST *AST::parse(const std::string &expression)
 {
     std::string token;
     std::istringstream stream(expression);
-    Stack stack;
+    Stack *stack = new stack();
 
     while (stream >> token)
     {
@@ -34,13 +34,13 @@ AST *AST::parse(const std::string &expression)
         if (isArithOp(token))
         {
             // std::cout << "ArithNode\n";
-            if (stack.size() < 2)
+            if (stack->size() < 2)
             {
-                delete &stack;
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
-            AST *operand2 = stack.pop();
-            AST *operand1 = stack.pop();
+            AST *operand2 = stack->pop();
+            AST *operand1 = stack->pop();
             switch (token[0])
             {
             case '+':
@@ -69,12 +69,12 @@ AST *AST::parse(const std::string &expression)
         else if (token == "~")
         {
             // std::cout << "NotNode\n";
-            if (stack.size() < 1)
+            if (stack->size() < 1)
             {
-                delete &stack;
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
-            currNode = new NotNode(stack.pop());
+            currNode = new NotNode(stack->pop());
             // std::cout << "push: " << currNode->value() << "\n";
         }
         else if (isDecimal(token))
@@ -87,16 +87,16 @@ AST *AST::parse(const std::string &expression)
         {
             throw std::runtime_error("Invalid token: " + token);
         }
-        stack.push(currNode);
+        stack->push(currNode);
     }
-    if (stack.size() < 1)
+    if (stack->size() < 1)
     {
         throw std::runtime_error("No input.");
     }
-    if (stack.size() > 1)
+    if (stack->size() > 1)
     {
         throw std::runtime_error("Too many operands.");
     }
 
-    return stack.pop();
+    return stack->pop();
 }
