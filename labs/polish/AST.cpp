@@ -36,6 +36,7 @@ AST *AST::parse(const std::string &expression)
             // std::cout << "ArithNode\n";
             if (stack.size() < 2)
             {
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             AST *operand2 = stack.pop();
@@ -70,6 +71,7 @@ AST *AST::parse(const std::string &expression)
             // std::cout << "NotNode\n";
             if (stack.size() < 1)
             {
+                delete stack;
                 throw std::runtime_error("Not enough operands.");
             }
             currNode = new NotNode(stack.pop());
