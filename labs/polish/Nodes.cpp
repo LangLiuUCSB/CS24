@@ -48,9 +48,8 @@ double ArithNode::value() const
       return std::numeric_limits<double>::min();
     }
     return left->value() / right->value();
-  case ArithOp::Modulus:
-    return std::fmod(left->value(), right->value());
   }
+  return std::fmod(left->value(), right->value());
 }
 
 NotNode::NotNode(AST *d) : down(d) {}
