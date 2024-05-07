@@ -59,8 +59,8 @@ double ArithNode::value() const
 
 NotNode::NotNode(AST *d) : down(d) {}
 NotNode::~NotNode() { delete down; }
-std::string NotNode::prefix() const { return "~ " + format(down->value()); }
-std::string NotNode::postfix() const { return format(down->value()) + " ~"; }
+std::string NotNode::prefix() const { return "~ " + down->prefix(); }
+std::string NotNode::postfix() const { return down->postfix() + " ~"; }
 double NotNode::value() const { return down->value() * -1; }
 
 FloatNode::FloatNode(const double n) : number(n) {}
