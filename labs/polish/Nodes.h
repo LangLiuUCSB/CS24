@@ -16,26 +16,17 @@ private:
     double number;
 };
 
-enum class ArithOp
-{
-    Addition,
-    Subtraction,
-    Multiplication,
-    Division,
-    Modulus,
-};
-
 class ArithNode : public AST
 {
 public:
-    ArithNode(const ArithOp t, AST *l = nullptr, AST *r = nullptr);
+    ArithNode(const char t, AST *l = nullptr, AST *r = nullptr);
     ~ArithNode();
     std::string prefix() const;
     std::string postfix() const;
     double value() const;
 
 private:
-    ArithOp type;
+    char type;
     AST *left;
     AST *right;
 };

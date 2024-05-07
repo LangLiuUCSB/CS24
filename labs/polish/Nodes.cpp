@@ -15,39 +15,39 @@ std::string format(double number)
 }
 
 // Implement your AST subclasses' member functions here.
-FloatNode::FloatNode(const double n) : number(n) {}
-FloatNode::~FloatNode() {}
-std::string FloatNode::prefix() const { return format(number); }
-std::string FloatNode::postfix() const { return format(number); }
-double FloatNode::value() const { return number; }
-
-ArithNode::ArithNode(const ArithOp t, AST *l, AST *r) : type(t), left(l), right(r) {}
-ArithNode::~ArithNode() { delete left; delete right; }
+ArithNode::ArithNode(const char t, AST *l, AST *r) : type(t), left(l), right(r) {}
+ArithNode::~ArithNode()
+{
+  delete left;
+  delete right;
+}
 std::string ArithNode::prefix() const
 {
-  return "ArithNode::prefix " + format(value());
+  std::string s(1, type);
+  return s + " " + left->prefix() + " " + right->prefix();
 }
 std::string ArithNode::postfix() const
 {
-  return "ArithNode::postfix" + format(value());
+  std::string s(1, type);
+  return left->postfix() + " " + right->postfix() + " " + s;
 }
 double ArithNode::value() const
 {
   switch (type)
   {
-  case ArithOp::Addition:
+  case '+':
     return left->value() + right->value();
-  case ArithOp::Subtraction:
+  case '-':
     return left->value() - right->value();
-  case ArithOp::Multiplication:
+  case '*':
     return left->value() * right->value();
-  case ArithOp::Division:
+  case '/':
     if (right->value() == 0.0)
     {
       throw std::runtime_error("Division by zero.");
     }
     return left->value() / right->value();
-  case ArithOp::Modulus:
+  case '%':
     if (right->value() == 0.0)
     {
       throw std::runtime_error("Division by zero.");
@@ -59,15 +59,12 @@ double ArithNode::value() const
 
 NotNode::NotNode(AST *d) : down(d) {}
 NotNode::~NotNode() { delete down; }
-std::string NotNode::prefix() const
-{
-  return "NotNode::prefix " + format(value());
-}
-std::string NotNode::postfix() const
-{
-  return "NotNode::postfix " + format(value());
-}
-double NotNode::value() const
-{
-  return down->value() * -1;
-}
+std::string NotNode::prefix() const { return format(down->value() * -1); }
+std::string NotNode::postfix() const { return format(down->value() * -1); }
+double NotNode::value() const { return down->value() * -1; }
+
+FloatNode::FloatNode(const double n) : number(n) {}
+FloatNode::~FloatNode() {}
+std::string FloatNode::prefix() const { return format(number); }
+std::string FloatNode::postfix() const { return format(number); }
+double FloatNode::value() const { return number; }

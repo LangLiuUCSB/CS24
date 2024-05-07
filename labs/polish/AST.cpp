@@ -40,24 +40,7 @@ AST *AST::parse(const std::string &expression)
             }
             AST *operand2 = stack->pop();
             AST *operand1 = stack->pop();
-            switch (token[0])
-            {
-            case '+':
-                currNode = new ArithNode(ArithOp::Addition, operand1, operand2);
-                break;
-            case '-':
-                currNode = new ArithNode(ArithOp::Subtraction, operand1, operand2);
-                break;
-            case '*':
-                currNode = new ArithNode(ArithOp::Multiplication, operand1, operand2);
-                break;
-            case '/':
-                currNode = new ArithNode(ArithOp::Division, operand1, operand2);
-                break;
-            case '%':
-                currNode = new ArithNode(ArithOp::Modulus, operand1, operand2);
-                break;
-            }
+            currNode = new ArithNode(token[0], operand1, operand2);
         }
         else if (token == "~")
         {
