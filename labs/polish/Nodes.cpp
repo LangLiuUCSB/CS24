@@ -14,15 +14,6 @@ std::string format(double number)
   return stream.str();
 }
 
-void clearH(Node *currNodePtr)
-{
-    if (currNodePtr != nullptr)
-    {
-        clearH(currNodePtr->left);
-        clearH(currNodePtr->right);
-        delete currNodePtr;
-    }
-}
 // Implement your AST subclasses' member functions here.
 FloatNode::FloatNode(const double n) : number(n) {}
 FloatNode::~FloatNode() {}
