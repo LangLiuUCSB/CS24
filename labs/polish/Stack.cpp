@@ -1,29 +1,42 @@
 #include "Stack.h"
 
 #include <iostream>
+void Stack::resize()
+{
+    size_t newCapacity = (capacity == 0) ? 1 : capacity * 2;
+    AST **newElements = new AST *[newCapacity];
+    for (size_t i = 0; i < capacity; ++i)
+    {
+        newElements[i] = elements[i];
+    }
+    delete[] elements;
+    elements = newElements;
+    capacity = newCapacity;
+}
 
-Stack::Stack() : topFramePtr(nullptr), count(0) {}
-Stack::~Stack() { while (count != 0) { pop(); } }
+Stack::Stack() : elements(nullptr), capacity(0), topIndex((size_t)-1) {}
+Stack::~Stack()
+{
+    for (size_t i = 0; i <= topIndex && topIndex != (size_t)-1; ++i)
+    {
+        delete elements[i];
+    }
+    delete[] elements;
+}
 void Stack::push(AST *inputNodePtr)
 {
-    count++;
-    topFramePtr = new Frame{inputNodePtr, topFramePtr};
+    if (topIndex == capacity - 1)
+    {
+        resize();
+    }
+    elements[++topIndex] = inputNodePtr;
 }
 AST *Stack::pop()
 {
-    count--;
-    if (topFramePtr == nullptr)
+    if (topIndex == (size_t)-1)
     {
-        std::cerr << "Error: Cannot pop empty stack.\n";
-        return nullptr;
+        throw std::out_of_range("Cannot pop empty stack.");
     }
-    else
-    {
-        AST *output = topFramePtr->nodePtr;
-        Frame *temp = topFramePtr;
-        topFramePtr = topFramePtr->next;
-        delete temp;
-        return output;
-    }
+    return elements[topIndex--];
 }
-size_t Stack::size() const { return count; }
+size_t Stack::size() const { return topIndex + 1; }

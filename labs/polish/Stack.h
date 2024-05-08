@@ -6,13 +6,10 @@
 class Stack
 {
 private:
-    struct Frame
-    {
-        AST *nodePtr;
-        Frame *next;
-    };
-    Frame *topFramePtr;
-    size_t count;
+    AST **elements;
+    size_t capacity;
+    size_t topIndex;
+    void resize();
 
 public:
     Stack();
