@@ -15,7 +15,7 @@ std::string format(double number)
 }
 
 // Implement your AST subclasses' member functions here.
-ArithNode::ArithNode(const char t, AST *l, AST *r) : type(t), left(l), right(r) {}
+ArithNode::ArithNode(const char &t, AST *l, AST *r) : type(t), left(l), right(r) {}
 ArithNode::~ArithNode()
 {
   delete left;
@@ -63,7 +63,7 @@ std::string NotNode::prefix() const { return "~ " + down->prefix(); }
 std::string NotNode::postfix() const { return down->postfix() + " ~"; }
 double NotNode::value() const { return down->value() * -1; }
 
-FloatNode::FloatNode(const double n) : number(n) {}
+FloatNode::FloatNode(const double &n) : number(n) {}
 FloatNode::~FloatNode() {}
 std::string FloatNode::prefix() const { return format(number); }
 std::string FloatNode::postfix() const { return format(number); }

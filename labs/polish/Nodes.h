@@ -3,23 +3,10 @@
 
 #include "AST.h"
 
-class FloatNode : public AST
-{
-public:
-    FloatNode(const double n);
-    ~FloatNode();
-    std::string prefix() const;
-    std::string postfix() const;
-    double value() const;
-
-private:
-    double number;
-};
-
 class ArithNode : public AST
 {
 public:
-    ArithNode(const char t, AST *l = nullptr, AST *r = nullptr);
+    ArithNode(const char &t, AST *l = nullptr, AST *r = nullptr);
     ~ArithNode();
     std::string prefix() const;
     std::string postfix() const;
@@ -42,6 +29,19 @@ public:
 
 private:
     AST *down;
+};
+
+class FloatNode : public AST
+{
+public:
+    FloatNode(const double &n);
+    ~FloatNode();
+    std::string prefix() const;
+    std::string postfix() const;
+    double value() const;
+
+private:
+    double number;
 };
 
 #endif
