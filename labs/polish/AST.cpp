@@ -65,6 +65,10 @@ AST *AST::parse(const std::string &expression)
     }
     if (stack.size() > 1)
     {
+        while (stack.size() != 0)
+        {
+            stack.pop();
+        }
         throw std::runtime_error("Too many operands.");
     }
     return stack.pop();
