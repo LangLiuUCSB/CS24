@@ -49,6 +49,9 @@
     "optional": "cpp",
     "unordered_map": "cpp",
     "vector": "cpp",
-    "__memory": "cpp"
+    "__memory": "cpp",
+    "fstream": "cpp",
+    "iomanip": "cpp",
+    "set": "cpp"
   }
 }
