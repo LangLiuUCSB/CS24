@@ -35,7 +35,7 @@ GenePool::~GenePool()
     {
         delete p;
     }
-    // everyoneSet.clear();
+    everyoneSet.clear();
 }
 std::set<Person *> GenePool::everyone() const { return everyoneSet; }
 Person *GenePool::find(const std::string &name) const

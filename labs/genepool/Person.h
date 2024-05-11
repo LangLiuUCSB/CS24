@@ -24,8 +24,6 @@ class Person
 public:
   // Constructor
   Person(const std::string &n, const Gender &g, Person *f, Person *m);
-  // Destructor?
-  ~Person();
 
   // Required Getter Functions
   const std::string &name() const;

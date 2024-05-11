@@ -1,10 +1,9 @@
 #include "Person.h"
 
 // Person Member Functions
+// Constructor
 Person::Person(const std::string &n, const Gender &g, Person *f, Person *m)
     : personName(n), personGender(g), fatherPtr(f), motherPtr(m) {}
-// Destructor?
-Person::~Person() {}
 
 // Required Getter Functions
 const std::string &Person::name() const { return personName; }
