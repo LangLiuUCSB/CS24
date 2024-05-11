@@ -7,7 +7,6 @@
 GenePool::GenePool(std::istream &stream)
 {
     std::string line;
-    size_t i = 0;
     while (std::getline(stream, line))
     {
         std::istringstream stringstream(line);
