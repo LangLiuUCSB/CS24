@@ -10,19 +10,21 @@ GenePool::GenePool(std::istream &stream)
     {
         std::istringstream stringstream(line);
         std::string currName;
-        stringstream >> currName;
-        std::string currString;
-        stringstream >> currString;
-        while (currString != "male" && currString != "female")
+        if (stringstream >> currName && currName != "#")
         {
-            currName += " " + currString;
+            std::string currString;
+            stringstream >> currString;
+            while (currString != "male" && currString != "female")
+            {
+                currName += " " + currString;
+            }
+            Gender currGender = (currString == "male") ? Gender::MALE : Gender::FEMALE;
+            stringstream >> currString;
+            Person *currFather = (currString == "???") ? nullptr : find(currString);
+            stringstream >> currString;
+            Person *currMother = (currString == "???") ? nullptr : find(currString);
+            everyoneSet.insert(new Person(currName, currGender, currFather, currMother));
         }
-        Gender currGender = (currString == "male") ? Gender::MALE : Gender::FEMALE;
-        stringstream >> currString;
-        Person *currFather = (currString == "???") ? nullptr : find(currString);
-        stringstream >> currString;
-        Person *currMother = (currString == "???") ? nullptr : find(currString);
-        everyoneSet.insert(new Person(currName, currGender, currFather, currMother));
     }
 }
 GenePool::~GenePool()
