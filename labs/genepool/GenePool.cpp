@@ -43,4 +43,5 @@ Person *GenePool::find(const std::string &name) const
             return p;
         }
     }
+    return nullptr;
 }
