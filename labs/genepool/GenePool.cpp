@@ -1,7 +1,6 @@
 #include "GenePool.h"
 
 #include <sstream>
-#include <iostream>
 
 // GenePool Member Functions
 GenePool::GenePool(std::istream &stream)
@@ -22,7 +21,6 @@ GenePool::GenePool(std::istream &stream)
             stringstream >> currString;
             while (currString != "male" && currString != "female")
             {
-                // std::cout << currString << "\n";
                 currName += " " + currString;
                 stringstream >> currString;
             }

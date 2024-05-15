@@ -1,7 +1,5 @@
 #include "Person.h"
 
-#include <iostream>
-
 // Person Member Functions
 // Constructor
 Person::Person(const std::string &n, const Gender &g, Person *f, Person *m)
@@ -313,7 +311,4 @@ std::set<Person *> Person::granddaughters()
 }
 
 // Other Member Functions
-void Person::addChild(Person *c)
-{
-    childrenSet.insert(c);
-}
+void Person::addChild(Person *c) { childrenSet.insert(c); }
