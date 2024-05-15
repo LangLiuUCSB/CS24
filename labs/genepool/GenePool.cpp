@@ -9,14 +9,20 @@ GenePool::GenePool(std::istream &stream)
     std::string line;
     while (std::getline(stream, line))
     {
+        if (line == "" || line[0] == '#')
+        {
+            continue;
+        }
+
         std::istringstream stringstream(line);
         std::string currName;
-        if (stringstream >> currName && currName != "#")
+        if (stringstream >> currName)
         {
             std::string currString;
             stringstream >> currString;
             while (currString != "male" && currString != "female")
             {
+                // std::cout << currString << "\n";
                 currName += " " + currString;
                 stringstream >> currString;
             }
