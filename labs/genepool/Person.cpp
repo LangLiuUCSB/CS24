@@ -1,5 +1,7 @@
 #include "Person.h"
 
+#include <iostream>
+
 // Person Member Functions
 // Constructor
 Person::Person(const std::string &n, const Gender &g, Person *f, Person *m)
@@ -15,13 +17,13 @@ Person *Person::mother() { return motherPtr; }
 std::set<Person *> Person::ancestors(PMod pmod)
 {
     std::set<Person *> ancestorsSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         ancestorsSet.insert(fatherPtr);
         std::set<Person *> fatherAncestorsSet = fatherPtr->ancestors();
         ancestorsSet.insert(fatherAncestorsSet.begin(), fatherAncestorsSet.end());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         ancestorsSet.insert(motherPtr);
         std::set<Person *> motherAncestorsSet = motherPtr->ancestors();
@@ -32,12 +34,12 @@ std::set<Person *> Person::ancestors(PMod pmod)
 std::set<Person *> Person::grandparents(PMod pmod)
 {
     std::set<Person *> grandparentsSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         std::set<Person *> fatherParentsSet = fatherPtr->parents();
         grandparentsSet.insert(fatherParentsSet.begin(), fatherParentsSet.end());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         std::set<Person *> motherParentsSet = motherPtr->parents();
         grandparentsSet.insert(motherParentsSet.begin(), motherParentsSet.end());
@@ -47,11 +49,11 @@ std::set<Person *> Person::grandparents(PMod pmod)
 std::set<Person *> Person::grandfathers(PMod pmod)
 {
     std::set<Person *> grandfathersSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr && fatherPtr->father() != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr && fatherPtr->father() != nullptr)
     {
         grandfathersSet.insert(fatherPtr->father());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr && motherPtr->father() != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr && motherPtr->father() != nullptr)
     {
         grandfathersSet.insert(motherPtr->father());
     }
@@ -60,11 +62,11 @@ std::set<Person *> Person::grandfathers(PMod pmod)
 std::set<Person *> Person::grandmothers(PMod pmod)
 {
     std::set<Person *> grandmothersSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr && fatherPtr->mother() != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr && fatherPtr->mother() != nullptr)
     {
         grandmothersSet.insert(fatherPtr->mother());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr && motherPtr->mother() != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr && motherPtr->mother() != nullptr)
     {
         grandmothersSet.insert(motherPtr->mother());
     }
@@ -73,11 +75,11 @@ std::set<Person *> Person::grandmothers(PMod pmod)
 std::set<Person *> Person::parents(PMod pmod)
 {
     std::set<Person *> parentsSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         parentsSet.insert(fatherPtr);
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         parentsSet.insert(motherPtr);
     }
@@ -86,12 +88,12 @@ std::set<Person *> Person::parents(PMod pmod)
 std::set<Person *> Person::uncles(PMod pmod, SMod smod)
 {
     std::set<Person *> unclesSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         std::set<Person *> fatherBrothersSet = fatherPtr->brothers(PMod::ANY, smod);
         unclesSet.insert(fatherBrothersSet.begin(), fatherBrothersSet.end());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         std::set<Person *> motherBrothersSet = motherPtr->brothers(PMod::ANY, smod);
         unclesSet.insert(motherBrothersSet.begin(), motherBrothersSet.end());
@@ -101,12 +103,12 @@ std::set<Person *> Person::uncles(PMod pmod, SMod smod)
 std::set<Person *> Person::aunts(PMod pmod, SMod smod)
 {
     std::set<Person *> auntsSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         std::set<Person *> fatherSistersSet = fatherPtr->sisters(PMod::ANY, smod);
         auntsSet.insert(fatherSistersSet.begin(), fatherSistersSet.end());
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         std::set<Person *> motherSistersSet = motherPtr->sisters(PMod::ANY, smod);
         auntsSet.insert(motherSistersSet.begin(), motherSistersSet.end());
@@ -130,7 +132,7 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
     }
     else
     {
-        if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+        if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
         {
             std::set<Person *> fatherChildrenSet = fatherPtr->children();
             if (smod == SMod::HALF)
@@ -149,7 +151,7 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
                 siblingsSet.erase(this);
             }
         }
-        if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+        if (pmod != PMod::MATERNAL && motherPtr != nullptr)
         {
             std::set<Person *> motherChildrenSet = motherPtr->children();
             if (smod == SMod::HALF)
@@ -198,7 +200,7 @@ std::set<Person *> Person::sisters(PMod pmod, SMod smod)
 std::set<Person *> Person::cousins(PMod pmod, SMod smod)
 {
     std::set<Person *> cousinsSet;
-    if (pmod != PMod::MATERNAL && fatherPtr != nullptr)
+    if (pmod != PMod::PATERNAL && fatherPtr != nullptr)
     {
         std::set<Person *> fatherSiblingSet = fatherPtr->siblings(PMod::ANY, smod);
         for (Person *sibling : fatherSiblingSet)
@@ -207,7 +209,7 @@ std::set<Person *> Person::cousins(PMod pmod, SMod smod)
             cousinsSet.insert(fatherSiblingChildrenSet.begin(), fatherSiblingChildrenSet.end());
         }
     }
-    if (pmod != PMod::PATERNAL && motherPtr != nullptr)
+    if (pmod != PMod::MATERNAL && motherPtr != nullptr)
     {
         std::set<Person *> motherSiblingSet = motherPtr->siblings(PMod::ANY, smod);
         for (Person *sibling : motherSiblingSet)
