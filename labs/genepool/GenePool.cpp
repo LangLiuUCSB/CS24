@@ -28,18 +28,18 @@ GenePool::GenePool(std::istream &stream)
             }
             Gender currGender = (currString == "male") ? Gender::MALE : Gender::FEMALE;
             stringstream >> currString;
-            Person *currFather = (currString == "???") ? nullptr : find(currString);
-            stringstream >> currString;
             Person *currMother = (currString == "???") ? nullptr : find(currString);
+            stringstream >> currString;
+            Person *currFather = (currString == "???") ? nullptr : find(currString);
             Person *currPerson = new Person(currName, currGender, currFather, currMother);
             everyoneSet.insert(currPerson);
-            if (currFather != nullptr)
-            {
-                currFather->addChild(currPerson);
-            }
             if (currMother != nullptr)
             {
                 currMother->addChild(currPerson);
+            }
+            if (currFather != nullptr)
+            {
+                currFather->addChild(currPerson);
             }
         }
     }
