@@ -12,7 +12,6 @@ GenePool::GenePool(std::istream &stream)
         {
             continue;
         }
-
         std::istringstream stringstream(line);
         std::string currName;
         if (stringstream >> currName)
