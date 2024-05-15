@@ -1,5 +1,7 @@
 #include "Person.h"
 
+#include <iostream>
+
 // Person Member Functions
 // Constructor
 Person::Person(const std::string &n, const Gender &g, Person *f, Person *m)
@@ -118,15 +120,18 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
     std::set<Person *> siblingsSet;
     if (smod == SMod::FULL)
     {
-        std::set<Person *> motherChildrenSet = motherPtr->children();
-        for (Person *childPtr : motherChildrenSet)
+        if (motherPtr != nullptr)
         {
-            if (fatherPtr != nullptr && childPtr->father() == fatherPtr)
+            std::set<Person *> motherChildrenSet = motherPtr->children();
+            for (Person *childPtr : motherChildrenSet)
             {
-                siblingsSet.insert(childPtr);
+                if (childPtr->father() != nullptr && childPtr->father() == fatherPtr)
+                {
+                    siblingsSet.insert(childPtr);
+                }
             }
+            siblingsSet.erase(this);
         }
-        siblingsSet.erase(this);
     }
     else
     {
@@ -173,24 +178,24 @@ std::set<Person *> Person::siblings(PMod pmod, SMod smod)
 }
 std::set<Person *> Person::brothers(PMod pmod, SMod smod)
 {
-    std::set<Person *> brothersSet = siblings(pmod, smod);
-    for (Person *childPtr : brothersSet)
+    std::set<Person *> brothersSet;
+    for (Person *childPtr : siblings(pmod, smod))
     {
-        if (childPtr->gender() != Gender::MALE)
+        if (childPtr->gender() == Gender::MALE)
         {
-            brothersSet.erase(childPtr);
+            brothersSet.insert(childPtr);
         }
     }
     return brothersSet;
 }
 std::set<Person *> Person::sisters(PMod pmod, SMod smod)
 {
-    std::set<Person *> sistersSet = siblings(pmod, smod);
-    for (Person *childPtr : sistersSet)
+    std::set<Person *> sistersSet;
+    for (Person *childPtr : siblings(pmod, smod))
     {
-        if (childPtr->gender() != Gender::FEMALE)
+        if (childPtr->gender() == Gender::FEMALE)
         {
-            sistersSet.erase(childPtr);
+            sistersSet.insert(childPtr);
         }
     }
     return sistersSet;
