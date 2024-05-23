@@ -11,24 +11,15 @@
 
 class Counter
 {
-  struct Node
-  {
-    std::string key;
-    int value;
-    Node *next;
-    List::Node *listNode;
-
-    Node(const std::string &k, int v) : key(k), value(v), next(nullptr), listNode(nullptr) {}
-  };
 
 public:
   class Iterator
   {
     // Member Variables
-    List::Node *start;
+    Node *start;
 
   public:
-    Iterator(List::Node *nodePtr) : start(nodePtr) {}
+    Iterator(Node *nodePtr) : start(nodePtr) {}
     const std::string &key() const { return start->key; }
     int value() const { return start->value; }
 
@@ -39,11 +30,24 @@ public:
 
 private:
   // Member Variables
-  Node **buckets;
-  size_t numBuckets;
-  size_t numKeys;
   List keysList;
-  int totalCount;
+  size_t numKeys;
+  int totalValue;
+
+public:
+  Counter();
+
+  size_t count() const;
+  int total() const;
+
+  void inc(const std::string &key, int by = 1);
+  void dec(const std::string &key, int by = 1);
+  void del(const std::string &key);
+  int get(const std::string &key) const;
+  void set(const std::string &key, int count);
+
+  Iterator begin() const;
+  Iterator end() const;
 
 private:
   // Helper Functions
@@ -57,27 +61,6 @@ private:
     }
     return hash;
   }
-
-  size_t getBucketIndex(const std::string &key) const
-  {
-    return hash(key) % numBuckets;
-  }
-
-public:
-  Counter();
-  ~Counter();
-
-  size_t count() const;
-  int total() const;
-
-  void inc(const std::string &key, int by = 1);
-  void dec(const std::string &key, int by = 1);
-  void del(const std::string &key);
-  int get(const std::string &key) const;
-  void set(const std::string &key, int count);
-
-  Iterator begin() const;
-  Iterator end() const;
 };
 
 #endif
