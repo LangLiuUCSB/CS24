@@ -17,7 +17,7 @@ List::~List()
 Node *List::insert(const std::string &key, int value)
 {
     Node *newNode = new Node(key, value);
-    if (!head)
+    if (!tail)
     {
         head = newNode;
         head = tail;
