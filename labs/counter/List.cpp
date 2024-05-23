@@ -67,8 +67,7 @@ Node *List::remove(const std::string &key)
                 tail = currNode->prev;
             }
             Node *removedNode = currNode;
-            currNode = currNode->next;
-            removedNode->next = removedNode->prev = nullptr;
+            delete currNode;
             return removedNode;
         }
         currNode = currNode->next;
