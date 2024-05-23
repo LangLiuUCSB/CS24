@@ -26,15 +26,7 @@ Counter::~Counter()
 }
 
 size_t Counter::count() const { return numKeys; }
-int Counter::total() const
-{
-    int sum = 0;
-    for (Iterator it = begin(); it != end(); ++it)
-    {
-        sum += it.value();
-    }
-    return sum;
-}
+int Counter::total() const { return totalCount; }
 
 void Counter::inc(const std::string &key, int by)
 {
@@ -47,6 +39,7 @@ void Counter::inc(const std::string &key, int by)
     {
         currNode->value += by;
     }
+    totalCount += by;
 }
 void Counter::dec(const std::string &key, int by)
 {
@@ -59,6 +52,7 @@ void Counter::dec(const std::string &key, int by)
     {
         currNode->value -= by;
     }
+    totalCount -= by;
 }
 void Counter::del(const std::string &key)
 {
@@ -114,6 +108,7 @@ void Counter::set(const std::string &key, int count)
             {
                 listNode->value = count;
             }
+            totalCount += count - currNode->value;
             return;
         }
         currNode = currNode->next;
@@ -134,6 +129,7 @@ void Counter::set(const std::string &key, int count)
         currNode->next = newNode;
     }
     ++numKeys;
+    totalCount += count;
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.getHead()); }

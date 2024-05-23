@@ -43,6 +43,7 @@ private:
   size_t numBuckets;
   size_t numKeys;
   List keysList;
+  int totalCount;
 
 private:
   // Helper Functions
