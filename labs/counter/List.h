@@ -11,7 +11,7 @@ public:
         int value;
         Node *next;
         Node *prev;
-        Node(const std::string &k, int d) : key(k), value(d), next(nullptr), prev(nullptr) {}
+        Node(const std::string &k, int v) : key(k), value(v), next(nullptr), prev(nullptr) {}
     };
     // Constructor
     List();

@@ -16,14 +16,15 @@ List::~List()
 
 List::Node *List::insert(const std::string &key, int value)
 {
+    Node *newNode = new Node(key, value);
     if (!head)
     {
-        head = new Node(key, value);
+        head = newNode;
         head = tail;
     }
     else
     {
-        tail->next = new Node(key, value);
+        tail->next = newNode;
         tail->next->prev = tail;
         tail = tail->next;
     }

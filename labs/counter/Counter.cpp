@@ -21,7 +21,6 @@ Counter::~Counter()
             delete removedNode;
             currNode = tempNode;
         }
-        buckets[i] = nullptr;
     }
     delete[] buckets;
 }
