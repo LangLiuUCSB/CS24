@@ -27,7 +27,15 @@ Counter::~Counter()
 }
 
 size_t Counter::count() const { return numKeys; }
-int Counter::total() const { return -1; }
+int Counter::total() const
+{
+    int sum = 0;
+    for (Iterator it = Iterator(keysList.getHead()); it != Iterator(keysList.getTail()); ++it)
+    {
+        sum += it.value();
+    }
+    return sum;
+}
 
 void Counter::inc(const std::string &key, int by)
 {
@@ -96,30 +104,44 @@ int Counter::get(const std::string &key) const
 void Counter::set(const std::string &key, int count)
 {
     size_t index = getBucketIndex(key);
+    Node *currNode = buckets[index];
+    while (currNode)
+    {
+        if (currNode->key == key)
+        {
+            currNode->value = count;
+            List::Node *listNode = keysList.find(key);
+            if (listNode)
+            {
+                listNode->value = count;
+            }
+            return;
+        }
+        currNode = currNode->next;
+    }
     Node *newNode = new Node(key, count);
     newNode->listNode = keysList.insert(key, count);
-
     if (!buckets[index])
     {
         buckets[index] = newNode;
     }
     else
     {
-        Node *current = buckets[index];
-        while (current->next)
+        Node *currNode = buckets[index];
+        while (currNode->next)
         {
-            if (current->key == key)
+            if (currNode->key == key)
             {
-                current->value = count;
+                currNode->value = count;
                 List::Node *removedNode = keysList.remove(key);
                 delete removedNode;
-                current->listNode = keysList.insert(key, count);
+                currNode->listNode = keysList.insert(key, count);
                 delete newNode;
                 return;
             }
-            current = current->next;
+            currNode = currNode->next;
         }
-        current->next = newNode;
+        currNode->next = newNode;
     }
     ++numKeys;
 }
