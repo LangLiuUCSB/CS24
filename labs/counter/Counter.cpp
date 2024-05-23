@@ -39,6 +39,7 @@ void Counter::del(const std::string &key)
     Node *currNode = keysList.find(key);
     --numKeys;
     totalValue -= currNode->value;
+    keysList.remove(key);
 }
 int Counter::get(const std::string &key) const
 {
