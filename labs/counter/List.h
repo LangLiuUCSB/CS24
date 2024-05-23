@@ -2,18 +2,19 @@
 #define LIST_H
 
 #include <string>
-class DLNode
-{
-public:
-    std::string key;
-    int value;
-    DLNode *next;
-    DLNode *prev;
-    DLNode(const std::string &k, int v) : key(k), value(v), next(nullptr), prev(nullptr) {}
-};
+
 class List
 {
 public:
+    class DLNode
+    {
+    public:
+        std::string key;
+        int value;
+        DLNode *next;
+        DLNode *prev;
+        DLNode(const std::string &k, int v) : key(k), value(v), next(nullptr), prev(nullptr) {}
+    };
     // Constructor
     List();
     ~List();

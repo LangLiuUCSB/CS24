@@ -14,7 +14,7 @@ List::~List()
     }
 }
 
-DLNode *List::insert(const std::string &key, int value)
+List::DLNode *List::insert(const std::string &key, int value)
 {
     DLNode *newNode = new DLNode(key, value);
     if (!head)
@@ -30,7 +30,7 @@ DLNode *List::insert(const std::string &key, int value)
     }
     return tail;
 }
-DLNode *List::find(const std::string &key) const
+List::DLNode *List::find(const std::string &key) const
 {
     DLNode *currNode = head;
     while (currNode)
@@ -43,7 +43,7 @@ DLNode *List::find(const std::string &key) const
     }
     return nullptr;
 }
-DLNode *List::remove(const std::string &key)
+List::DLNode *List::remove(const std::string &key)
 {
     DLNode *currNode = head;
     while (currNode)
