@@ -11,6 +11,7 @@
 
 class Counter
 {
+public:
   struct Node
   {
     std::string key;
@@ -20,8 +21,6 @@ class Counter
 
     Node(const std::string &k, int v) : key(k), value(v), next(nullptr), listNode(nullptr) {}
   };
-
-public:
   class Iterator
   {
     // Member Variables
