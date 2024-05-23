@@ -11,7 +11,6 @@
 
 class Counter
 {
-public:
   struct Node
   {
     std::string key;
@@ -21,6 +20,8 @@ public:
 
     Node(const std::string &k, int v) : key(k), value(v), next(nullptr), listNode(nullptr) {}
   };
+
+public:
   class Iterator
   {
     // Member Variables
@@ -28,12 +29,12 @@ public:
 
   public:
     Iterator(Node *nodePtr) : start(nodePtr) {}
-    const std::string &key() const { start->key; }
-    int value() const { start->value; }
+    const std::string &key() const { return start->key; }
+    int value() const { return start->value; }
 
     void operator++() { start = start->next; }
-    bool operator==(const Iterator &other) const { start == other.start; }
-    bool operator!=(const Iterator &other) const { start != other.start; }
+    bool operator==(const Iterator &other) const { return start == other.start; }
+    bool operator!=(const Iterator &other) const { return start != other.start; }
   };
 
 private:
