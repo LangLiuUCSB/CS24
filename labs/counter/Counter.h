@@ -11,23 +11,6 @@
 
 class Counter
 {
-public:
-  class Iterator
-  {
-    // Member Variables
-    List::Node *start;
-
-  public:
-    Iterator(List::Node *nodePtr) : start(nodePtr) {}
-    const std::string &key() const;
-    int value() const;
-
-    void operator++();
-    bool operator==(const Iterator &other) const;
-    bool operator!=(const Iterator &other) const;
-  };
-
-private:
   struct Node
   {
     std::string key;
@@ -37,6 +20,24 @@ private:
 
     Node(const std::string &k, int v) : key(k), value(v), next(nullptr), listNode(nullptr) {}
   };
+
+public:
+  class Iterator
+  {
+    // Member Variables
+    Node *start;
+
+  public:
+    Iterator(Node *nodePtr) : start(nodePtr) {}
+    const std::string &key() const { start->key; }
+    int value() const { start->value; }
+
+    void operator++() { start = start->next; }
+    bool operator==(const Iterator &other) const { start == other.start; }
+    bool operator!=(const Iterator &other) const { start != other.start; }
+  };
+
+private:
   // Member Variables
   Node **buckets;
   size_t numBuckets;
