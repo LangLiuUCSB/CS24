@@ -34,7 +34,6 @@ void Counter::dec(const std::string &key, int by)
 }
 void Counter::del(const std::string &key)
 {
-    Node *currNode = keysList.find(key);
     --numKeys;
     keysList.remove(key);
 }
