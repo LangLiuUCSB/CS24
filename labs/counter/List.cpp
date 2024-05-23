@@ -5,18 +5,18 @@ List::List() : head(nullptr), tail(nullptr), size(0) {}
 
 List::~List()
 {
-    Node *currNode = head;
+    DLNode *currNode = head;
     while (currNode)
     {
-        Node *tempNode = currNode->next;
+        DLNode *tempNode = currNode->next;
         delete currNode;
         currNode = tempNode;
     }
 }
 
-Node *List::insert(const std::string &key, int value)
+DLNode *List::insert(const std::string &key, int value)
 {
-    Node *newNode = new Node(key, value);
+    DLNode *newNode = new DLNode(key, value);
     if (!head)
     {
         head = newNode;
@@ -30,9 +30,9 @@ Node *List::insert(const std::string &key, int value)
     }
     return tail;
 }
-Node *List::find(const std::string &key) const
+DLNode *List::find(const std::string &key) const
 {
-    Node *currNode = head;
+    DLNode *currNode = head;
     while (currNode)
     {
         if (currNode->key == key)
@@ -43,9 +43,9 @@ Node *List::find(const std::string &key) const
     }
     return nullptr;
 }
-Node *List::remove(const std::string &key)
+DLNode *List::remove(const std::string &key)
 {
-    Node *currNode = head;
+    DLNode *currNode = head;
     while (currNode)
     {
         if (currNode->key == key)
@@ -66,7 +66,7 @@ Node *List::remove(const std::string &key)
             {
                 tail = currNode->prev;
             }
-            Node *removedNode = currNode;
+            DLNode *removedNode = currNode;
             delete currNode;
             return removedNode;
         }
