@@ -8,6 +8,7 @@ int Counter::total() const { return totalValue; }
 
 void Counter::inc(const std::string &key, int by)
 {
+    totalValue += by;
     Node *currNode = keysList.find(key);
     if (currNode)
     {
@@ -21,6 +22,7 @@ void Counter::inc(const std::string &key, int by)
 }
 void Counter::dec(const std::string &key, int by)
 {
+    totalValue -= by;
     Node *currNode = keysList.find(key);
     if (currNode)
     {
@@ -35,7 +37,7 @@ void Counter::dec(const std::string &key, int by)
 void Counter::del(const std::string &key)
 {
     --numKeys;
-    keysList.remove(key);
+    totalValue -= keysList.remove(key)->value;
 }
 int Counter::get(const std::string &key) const
 {
@@ -51,6 +53,7 @@ void Counter::set(const std::string &key, int count)
     Node *currNode = keysList.find(key);
     if (currNode)
     {
+        totalValue -= currNode->value;
         currNode->value = count;
     }
     else
@@ -58,6 +61,7 @@ void Counter::set(const std::string &key, int count)
         keysList.insert(key, count);
         ++numKeys;
     }
+    totalValue += count;
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }
