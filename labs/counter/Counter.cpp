@@ -1,9 +1,9 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : buckets(new Node *[8]), numBuckets(8), numKeys(0)
+Counter::Counter() : buckets(new Node *[16]), numBuckets(16), numKeys(0)
 {
-    for (size_t i = 0; i < numBuckets; ++i)
+    for (size_t i = 0; i < 16; ++i)
     {
         buckets[i] = nullptr;
     }
@@ -30,7 +30,7 @@ size_t Counter::count() const { return numKeys; }
 int Counter::total() const
 {
     int sum = 0;
-    for (Iterator it = Iterator(buckets[0]); it != Iterator(buckets[0]); ++it)
+    for (Iterator it = begin(); it != end(); ++it)
     {
         sum += it.value();
     }
@@ -46,7 +46,7 @@ void Counter::inc(const std::string &key, int by)
     }
     else
     {
-        currNode->value = currNode->value + by;
+        currNode->value += by;
     }
 }
 void Counter::dec(const std::string &key, int by)
@@ -58,7 +58,7 @@ void Counter::dec(const std::string &key, int by)
     }
     else
     {
-        currNode->value = currNode->value - by;
+        currNode->value -= by;
     }
 }
 void Counter::del(const std::string &key)
@@ -137,5 +137,5 @@ void Counter::set(const std::string &key, int count)
     ++numKeys;
 }
 
-Counter::Iterator Counter::begin() const { return Iterator(buckets[0]); }
-Counter::Iterator Counter::end() const { return Iterator(buckets[7]); }
+Counter::Iterator Counter::begin() const { return Iterator(keysList.getHead()); }
+Counter::Iterator Counter::end() const { return Iterator(keysList.getTail()); }
