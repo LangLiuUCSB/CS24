@@ -1,7 +1,7 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : buckets(new Node *[16]), numBuckets(16), numKeys(0)
+Counter::Counter() : buckets(new Node *[8]), numBuckets(8), numKeys(0)
 {
     for (size_t i = 0; i < numBuckets; ++i)
     {
@@ -30,7 +30,7 @@ size_t Counter::count() const { return numKeys; }
 int Counter::total() const
 {
     int sum = 0;
-    for (Iterator it = Iterator(keysList.getHead()); it != Iterator(keysList.getTail()); ++it)
+    for (Iterator it = Iterator(buckets[0]); it != Iterator(buckets[0]); ++it)
     {
         sum += it.value();
     }
@@ -137,5 +137,5 @@ void Counter::set(const std::string &key, int count)
     ++numKeys;
 }
 
-Counter::Iterator Counter::begin() const { return Iterator(keysList.getHead()); }
-Counter::Iterator Counter::end() const { return Iterator(keysList.getTail()); }
+Counter::Iterator Counter::begin() const { return Iterator(buckets[0]); }
+Counter::Iterator Counter::end() const { return Iterator(buckets[7]); }
