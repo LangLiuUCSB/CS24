@@ -34,6 +34,7 @@ void Counter::inc(const std::string &key, int by)
     if (!currNode)
     {
         keysList.insert(key, 1);
+        ++numKeys;
     }
     else
     {
@@ -47,6 +48,7 @@ void Counter::dec(const std::string &key, int by)
     if (!currNode)
     {
         keysList.insert(key, 1);
+        ++numKeys;
     }
     else
     {
