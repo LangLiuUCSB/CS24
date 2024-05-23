@@ -5,47 +5,72 @@ List::List() : head(nullptr), tail(nullptr), size(0) {}
 
 List::~List()
 {
-    List::Node *currNode = head;
-    while (currNode != nullptr)
+    Node *currNode = head;
+    while (currNode)
     {
+        Node *tempNode = currNode->next;
         delete currNode;
-        currNode = currNode->next;
+        currNode = tempNode;
     }
 }
 
-void List::append(const std::string &key, int data)
+List::Node *List::insert(const std::string &key, int value)
 {
-    if (tail == nullptr)
+    if (!head)
     {
-        tail = new List::Node(key, data);
+        head = new Node(key, value);
         head = tail;
     }
     else
     {
-        tail->next = new List::Node(key, data);
+        tail->next = new Node(key, value);
+        tail->next->prev = tail;
         tail = tail->next;
     }
+    return tail;
 }
 List::Node *List::find(const std::string &key)
 {
-    List::Node *currNode = head;
-    while (currNode->key != key && currNode != nullptr)
+    Node *currNode = head;
+    while (currNode)
     {
+        if (currNode->key == key)
+        {
+            return currNode;
+        }
         currNode = currNode->next;
     }
-    return currNode;
+    return nullptr;
 }
 List::Node *List::remove(const std::string &key)
 {
-    List::Node *currNode = head;
-    while (currNode->key != key && currNode != nullptr)
+    Node *currNode = head;
+    while (currNode)
     {
+        if (currNode->key == key)
+        {
+            if (currNode->prev)
+            {
+                currNode->prev->next = currNode->next;
+            }
+            else
+            {
+                head = currNode->next;
+            }
+            if (currNode->next)
+            {
+                currNode->next->prev = currNode->prev;
+            }
+            else
+            {
+                tail = currNode->prev;
+            }
+            Node *removedNode = currNode;
+            currNode = currNode->next;
+            removedNode->next = removedNode->prev = nullptr;
+            return removedNode;
+        }
         currNode = currNode->next;
     }
-    List::Node *prevNode = currNode->prev;
-    List::Node *nextNode = currNode->next;
-    prevNode->next = nextNode;
-    nextNode->prev = nextNode;
-    delete currNode;
-    return currNode;
+    return nullptr;
 }
