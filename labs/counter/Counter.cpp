@@ -127,18 +127,9 @@ void Counter::set(const std::string &key, int count)
     }
     else
     {
-        Node *currNode = buckets[index];
+        currNode = buckets[index];
         while (currNode->next)
         {
-            if (currNode->key == key)
-            {
-                currNode->value = count;
-                List::Node *removedNode = keysList.remove(key);
-                delete removedNode;
-                currNode->listNode = keysList.insert(key, count);
-                delete newNode;
-                return;
-            }
             currNode = currNode->next;
         }
         currNode->next = newNode;
