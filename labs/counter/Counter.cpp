@@ -66,4 +66,4 @@ void Counter::set(const std::string &key, int count)
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }
-Counter::Iterator Counter::end() const { return Iterator(keysList.end()); }
+Counter::Iterator Counter::end() const { return Iterator(nullptr); }
