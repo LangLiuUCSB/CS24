@@ -17,10 +17,10 @@ List::~List()
 Node *List::insert(const std::string &key, int value)
 {
     Node *newNode = new Node(key, value);
-    if (!tail)
+    if (!head)
     {
         head = newNode;
-        head = tail;
+        tail = head;
     }
     else
     {
