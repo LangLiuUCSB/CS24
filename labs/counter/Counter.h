@@ -25,10 +25,10 @@ public:
   class Iterator
   {
     // Member Variables
-    Node *start;
+    List::Node *start;
 
   public:
-    Iterator(Node *nodePtr) : start(nodePtr) {}
+    Iterator(List::Node *nodePtr) : start(nodePtr) {}
     const std::string &key() const { return start->key; }
     int value() const { return start->value; }
 
