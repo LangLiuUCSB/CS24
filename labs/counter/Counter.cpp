@@ -29,7 +29,7 @@ Counter::~Counter()
 size_t Counter::count() const { return numKeys; }
 int Counter::total() const { return -1; }
 
-void Counter::inc(const std::string &key, int by = 1)
+void Counter::inc(const std::string &key, int by)
 {
     List::Node *currNode = keysList.find(key);
     if (!currNode)
@@ -41,7 +41,7 @@ void Counter::inc(const std::string &key, int by = 1)
         currNode->value = currNode->value + by;
     }
 }
-void Counter::dec(const std::string &key, int by = 1)
+void Counter::dec(const std::string &key, int by)
 {
     List::Node *currNode = keysList.find(key);
     if (!currNode)
