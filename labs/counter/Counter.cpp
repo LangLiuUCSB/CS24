@@ -43,7 +43,11 @@ void Counter::del(const std::string &key)
 int Counter::get(const std::string &key) const
 {
     Node *currNode = keysList.find(key);
-    return currNode->value;
+    if (currNode)
+    {
+        return currNode->value;
+    }
+    return 0;
 }
 void Counter::set(const std::string &key, int count)
 {
