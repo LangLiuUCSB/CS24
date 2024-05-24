@@ -1,8 +1,5 @@
 #include "List.h"
 
-// List Member Functions
-List::List() : head(nullptr), tail(nullptr), size(0) {}
-
 List::~List()
 {
     Node *currNode = head;
@@ -13,8 +10,7 @@ List::~List()
         currNode = tempNode;
     }
 }
-
-Node *List::insert(const std::string &key, int value)
+List::Node *List::insert(const std::string &key, int value)
 {
     if (!head)
     {
@@ -29,7 +25,7 @@ Node *List::insert(const std::string &key, int value)
     }
     return tail;
 }
-Node *List::find(const std::string &key) const
+List::Node *List::find(const std::string &key) const
 {
     Node *currNode = head;
     while (currNode)
@@ -42,7 +38,7 @@ Node *List::find(const std::string &key) const
     }
     return nullptr;
 }
-Node *List::remove(const std::string &key)
+List::Node *List::remove(const std::string &key)
 {
     Node *currNode = head;
     while (currNode)
@@ -73,30 +69,73 @@ Node *List::remove(const std::string &key)
     }
     return nullptr;
 }
-void List::append(Node *nodePtr)
-{
-    if (!head)
-    {
-        head = nodePtr;
-        tail = head;
-    }
-    else
-    {
-        tail->next = nodePtr;
-        tail->next->prev = tail;
-        tail = tail->next;
-    }
-}
-Node *List::dig(const std::string &key) const
+
+Bucket::~Bucket()
 {
     Node *currNode = head;
     while (currNode)
     {
-        if (currNode->key == key)
+        Node *tempNode = currNode->next;
+        delete currNode;
+        currNode = tempNode;
+    }
+}
+Bucket::Node *Bucket::insert(List::Node *n)
+{
+    if (!head)
+    {
+        head = new Node(n);
+        tail = head;
+    }
+    else
+    {
+        tail->next = new Node(n);
+        tail->next->prev = tail;
+        tail = tail->next;
+    }
+    return tail;
+}
+Bucket::Node *Bucket::find(const std::string &key) const
+{
+    Node *currNode = head;
+    while (currNode)
+    {
+        if (currNode->nodePtr->key == key)
         {
             return currNode;
         }
-        currNode = currNode->down;
+        currNode = currNode->next;
+    }
+    return nullptr;
+}
+Bucket::Node *Bucket::remove(const std::string &key)
+{
+    Node *currNode = head;
+    while (currNode)
+    {
+        if (currNode->nodePtr->key == key)
+        {
+            if (currNode->prev)
+            {
+                currNode->prev->next = currNode->next;
+            }
+            else
+            {
+                head = currNode->next;
+            }
+            if (currNode->next)
+            {
+                currNode->next->prev = currNode->prev;
+            }
+            else
+            {
+                tail = currNode->prev;
+            }
+            Node *removedNode = currNode;
+            delete currNode;
+            return removedNode;
+        }
+        currNode = currNode->next;
     }
     return nullptr;
 }

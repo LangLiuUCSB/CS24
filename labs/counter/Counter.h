@@ -15,7 +15,7 @@ class Counter
   List keysList;
   size_t numKeys;
   int totalValue;
-  List *buckets[8];
+  Bucket *buckets[8];
   size_t numBuckets = 8;
 
   // Helper Functions
@@ -39,10 +39,10 @@ public:
   class Iterator
   {
     // Member Variables
-    Node *start;
+    List::Node *start;
 
   public:
-    Iterator(Node *nodePtr) : start(nodePtr) {}
+    Iterator(List::Node *nodePtr) : start(nodePtr) {}
     const std::string &key() const { return start->key; }
     int value() const { return start->value; }
 

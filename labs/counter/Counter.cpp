@@ -5,7 +5,7 @@ Counter::Counter() : numKeys(0), totalValue(0)
 {
     for (size_t i = 0; i < 8; i++)
     {
-        buckets[i] = new List();
+        buckets[i] = new Bucket();
     }
 }
 
@@ -22,7 +22,7 @@ int Counter::total() const { return totalValue; }
 
 void Counter::inc(const std::string &key, int by)
 {
-    Node *currNode = keysList.find(key);
+    List::Node *currNode = keysList.find(key);
     if (currNode)
     {
         currNode->value += by;
@@ -36,7 +36,7 @@ void Counter::inc(const std::string &key, int by)
 }
 void Counter::dec(const std::string &key, int by)
 {
-    Node *currNode = keysList.find(key);
+    List::Node *currNode = keysList.find(key);
     if (currNode)
     {
         currNode->value -= by;
@@ -50,14 +50,14 @@ void Counter::dec(const std::string &key, int by)
 }
 void Counter::del(const std::string &key)
 {
-    Node *currNode = keysList.find(key);
+    List::Node *currNode = keysList.find(key);
     --numKeys;
     totalValue -= currNode->value;
     keysList.remove(key);
 }
 int Counter::get(const std::string &key) const
 {
-    Node *currNode = keysList.find(key);
+    List::Node *currNode = keysList.find(key);
     if (currNode)
     {
         return currNode->value;
@@ -67,21 +67,20 @@ int Counter::get(const std::string &key) const
 void Counter::set(const std::string &key, int count)
 {
     totalValue += count;
-    List *bucket = buckets[getBucketIndex(key)];
-    Node *currNode = bucket->dig(key);
-    if (currNode)
+    Bucket *currBucket = buckets[getBucketIndex(key)];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+    List::Node *currListNode = currBucketNode->nodePtr;
+    if (currBucketNode)
     {
-        totalValue -= currNode->value;
-        currNode->value = count;
+        totalValue -= currListNode->value;
+        currListNode->value = count;
     }
     else
     {
-        currNode = keysList.insert(key, count);
-        bucket->append(currNode);
-        bucket->end()->down = currNode;
+        currBucket->insert(keysList.insert(key, count));
         numKeys++;
     }
 }
 
-Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }
+Counter::Iterator Counter::begin() const { return Iterator(keysList.first()); }
 Counter::Iterator Counter::end() const { return Iterator(nullptr); }
