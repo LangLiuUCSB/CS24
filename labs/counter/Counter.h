@@ -15,8 +15,8 @@ class Counter
   List keysList;
   size_t numKeys;
   int totalValue;
-  Bucket *buckets[8] = {new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket()};
-  size_t numBuckets = 8;
+  Bucket **buckets;
+  size_t numBuckets;
 
   // Helper Functions
   size_t hash(const std::string &key) const

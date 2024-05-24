@@ -82,22 +82,18 @@ Bucket::~Bucket()
 }
 Bucket::Node *Bucket::insert(List::Node *n)
 {
+    Node *newNode = new Node(n);
     if (!head)
     {
-        Node *newNode = new Node();
-        newNode->setNode(n);
-        head = newNode;
-        tail = head;
+        head = tail = newNode;
     }
     else
     {
-        Node *newNode = new Node();
-        newNode->setNode(n);
         tail->next = newNode;
         tail->next->prev = tail;
         tail = tail->next;
     }
-    return tail;
+    return newNode;
 }
 Bucket::Node *Bucket::find(const std::string &key) const
 {

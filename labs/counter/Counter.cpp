@@ -1,16 +1,22 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : numKeys(0), totalValue(0)
+Counter::Counter() : numKeys(0), totalValue(0), numBuckets(8)
 {
+    buckets = new Bucket *[8];
+    for (size_t i = 0; i < 8; ++i)
+    {
+        buckets[i] = new Bucket();
+    }
 }
 
 Counter::~Counter()
 {
-    for (size_t i = 0; i < 8; i++)
+    for (size_t i = 0; i < 8; ++i)
     {
         delete buckets[i];
     }
+    delete[] buckets;
 }
 
 size_t Counter::count() const { return numKeys; }
@@ -86,10 +92,8 @@ int Counter::get(const std::string &key) const
 void Counter::set(const std::string &key, int count)
 {
     totalValue += count;
-    Bucket *currBucket = nullptr;
-    currBucket = buckets[getBucketIndex(key)];
-    Bucket::Node *currBucketNode = nullptr;
-    currBucketNode = currBucket->find(key);
+    Bucket *currBucket = buckets[getBucketIndex(key)];
+    Bucket::Node *currBucketNode = currBucket->find(key);
     if (currBucketNode)
     {
         List::Node *currListNode = currBucketNode->nodePtr;
