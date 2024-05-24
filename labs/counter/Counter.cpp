@@ -77,8 +77,8 @@ void Counter::set(const std::string &key, int count)
     else
     {
         currNode = keysList.insert(key, count);
-        bucket->end()->down = currNode;
         bucket->append(currNode);
+        bucket->end()->down = currNode;
         numKeys++;
     }
 }
