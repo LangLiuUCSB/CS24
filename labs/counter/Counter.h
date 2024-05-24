@@ -11,12 +11,6 @@
 
 class Counter
 {
-  struct SLNode
-  {
-    List::DLNode *data;
-    SLNode *next;
-    SLNode(List::DLNode *d) : data(d), next(nullptr) {}
-  };
   // Member Variables
   List keysList;
   size_t numKeys;
