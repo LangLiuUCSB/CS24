@@ -66,7 +66,8 @@ int Counter::get(const std::string &key) const
 void Counter::set(const std::string &key, int count)
 {
     totalValue += count;
-    Bucket *currBucket = buckets[getBucketIndex(key)];
+    Bucket *currBucket = nullptr;
+    currBucket = buckets[getBucketIndex(key)];
     Bucket::Node *currBucketNode = currBucket->find(key);
     if (currBucketNode)
     {
