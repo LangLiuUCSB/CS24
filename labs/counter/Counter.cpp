@@ -3,8 +3,8 @@
 // Counter Member Functions
 Counter::Counter() : numKeys(0), totalValue(0), numBuckets(8)
 {
-    buckets = new Bucket *[8];
-    for (size_t i = 0; i < 8; ++i)
+    buckets = new Bucket *[numBuckets];
+    for (size_t i = 0; i < numBuckets; ++i)
     {
         buckets[i] = new Bucket();
     }
@@ -24,65 +24,84 @@ int Counter::total() const { return totalValue; }
 
 void Counter::inc(const std::string &key, int by)
 {
-    totalValue += by;
-    List::Node *currNode = keysList.find(key);
-    if (currNode)
+    size_t bucketIndex = getBucketIndex(key);
+    Bucket *currBucket = buckets[bucketIndex];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+
+    if (currBucketNode)
     {
-        currNode->value += by;
+        currBucketNode->nodePtr->value += by;
     }
     else
     {
+        List::Node *newNode = keysList.insert(key, by);
+        currBucket->insert(newNode);
         ++numKeys;
-        keysList.insert(key, by);
     }
+
+    totalValue += by;
 }
 void Counter::dec(const std::string &key, int by)
 {
-    totalValue -= by;
-    List::Node *currNode = keysList.find(key);
-    if (currNode)
+    size_t bucketIndex = getBucketIndex(key);
+    Bucket *currBucket = buckets[bucketIndex];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+
+    if (currBucketNode)
     {
-        currNode->value -= by;
+        currBucketNode->nodePtr->value -= by;
     }
     else
     {
+        List::Node *newNode = keysList.insert(key, -by);
+        currBucket->insert(newNode);
         ++numKeys;
-        keysList.insert(key, by * -1);
     }
+
+    totalValue -= by;
 }
 void Counter::del(const std::string &key)
 {
-    --numKeys;
-    Bucket *currBucket = nullptr;
-    currBucket = buckets[getBucketIndex(key)];
+    size_t bucketIndex = getBucketIndex(key);
+    Bucket *currBucket = buckets[bucketIndex];
     Bucket::Node *currBucketNode = currBucket->find(key);
-    List::Node *currListNode = currBucketNode->nodePtr;
-    totalValue -= currListNode->value;
-    if (currListNode->prev)
+
+    if (currBucketNode)
     {
-        currListNode->prev->next = currListNode->next;
+        List::Node *currListNode = currBucketNode->nodePtr;
+
+        // Adjust total value
+        totalValue -= currListNode->value;
+
+        // Remove from keys list
+        if (currListNode->prev)
+        {
+            currListNode->prev->next = currListNode->next;
+        }
+        else
+        {
+            keysList.setHead(currListNode->next);
+        }
+        if (currListNode->next)
+        {
+            currListNode->next->prev = currListNode->prev;
+        }
+        else
+        {
+            keysList.setTail(currListNode->prev);
+        }
+
+        delete currListNode;
+        currBucket->remove(key);
+        --numKeys;
     }
-    else
-    {
-        keysList.setHead(currListNode->next);
-    }
-    if (currListNode->next)
-    {
-        currListNode->next->prev = currListNode->prev;
-    }
-    else
-    {
-        keysList.setTail(currListNode->prev);
-    }
-    delete currListNode;
-    currBucket->remove(key);
 }
 int Counter::get(const std::string &key) const
 {
-    Bucket *currBucket = nullptr;
-    currBucket = buckets[getBucketIndex(key)];
-    Bucket::Node *currBucketNode = nullptr;
-    currBucketNode = currBucket->find(key);
+    size_t bucketIndex = getBucketIndex(key);
+    Bucket *currBucket = buckets[bucketIndex];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+
     if (currBucketNode)
     {
         return currBucketNode->nodePtr->value;
@@ -91,19 +110,22 @@ int Counter::get(const std::string &key) const
 }
 void Counter::set(const std::string &key, int count)
 {
-    totalValue += count;
-    Bucket *currBucket = buckets[getBucketIndex(key)];
+    size_t bucketIndex = getBucketIndex(key);
+    Bucket *currBucket = buckets[bucketIndex];
     Bucket::Node *currBucketNode = currBucket->find(key);
+
     if (currBucketNode)
     {
         List::Node *currListNode = currBucketNode->nodePtr;
-        totalValue -= currListNode->value;
+        totalValue = totalValue - currListNode->value + count;
         currListNode->value = count;
     }
     else
     {
-        currBucket->insert(keysList.insert(key, count));
-        numKeys++;
+        List::Node *newNode = keysList.insert(key, count);
+        currBucket->insert(newNode);
+        ++numKeys;
+        totalValue += count;
     }
 }
 

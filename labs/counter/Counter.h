@@ -22,10 +22,9 @@ class Counter
   size_t hash(const std::string &key) const
   {
     size_t hash = 0;
-    const char *data = reinterpret_cast<const char *>(&key);
-    for (size_t i = 0; i < sizeof(std::string); ++i)
+    for (char ch : key)
     {
-      hash = hash * 31 + data[i];
+      hash = hash * 31 + ch;
     }
     return hash;
   }
