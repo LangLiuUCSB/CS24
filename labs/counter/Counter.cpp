@@ -22,7 +22,7 @@ int Counter::total() const { return totalValue; }
 
 void Counter::inc(const std::string &key, int by)
 {
-    List::DLNode *currNode = keysList.find(key);
+    Node *currNode = keysList.find(key);
     if (currNode)
     {
         currNode->value += by;
@@ -36,7 +36,7 @@ void Counter::inc(const std::string &key, int by)
 }
 void Counter::dec(const std::string &key, int by)
 {
-    List::DLNode *currNode = keysList.find(key);
+    Node *currNode = keysList.find(key);
     if (currNode)
     {
         currNode->value -= by;
@@ -50,14 +50,14 @@ void Counter::dec(const std::string &key, int by)
 }
 void Counter::del(const std::string &key)
 {
-    List::DLNode *currNode = keysList.find(key);
+    Node *currNode = keysList.find(key);
     --numKeys;
     totalValue -= currNode->value;
     keysList.remove(key);
 }
 int Counter::get(const std::string &key) const
 {
-    List::DLNode *currNode = keysList.find(key);
+    Node *currNode = keysList.find(key);
     if (currNode)
     {
         return currNode->value;
@@ -67,7 +67,7 @@ int Counter::get(const std::string &key) const
 void Counter::set(const std::string &key, int count)
 {
     totalValue += count;
-    List::DLNode *currNode = buckets[getBucketIndex(key)]->find(key);
+    Node *currNode = buckets[getBucketIndex(key)]->find(key);
     if (currNode)
     {
         totalValue -= currNode->value;
@@ -75,8 +75,7 @@ void Counter::set(const std::string &key, int count)
     }
     else
     {
-        buckets[getBucketIndex(key)]->insert(key, count);
-        keysList.insert(key, count);
+        buckets[getBucketIndex(key)]->append(keysList.insert(key, count));
         numKeys++;
     }
 }
