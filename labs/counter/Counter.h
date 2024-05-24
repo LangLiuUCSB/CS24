@@ -21,8 +21,8 @@ class Counter
   List keysList;
   size_t numKeys;
   int totalValue;
-  SLNode **buckets;
-  size_t numBuckets;
+  List *buckets[8];
+  size_t numBuckets = 8;
 
   // Helper Functions
   size_t hash(const std::string &key) const
@@ -58,6 +58,7 @@ public:
   };
 
   Counter();
+  ~Counter();
 
   size_t count() const;
   int total() const;

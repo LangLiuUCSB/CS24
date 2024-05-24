@@ -1,7 +1,21 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : numKeys(0), totalValue(0), buckets(new SLNode *[8]), numBuckets(8) {}
+Counter::Counter() : numKeys(0), totalValue(0)
+{
+    for (size_t i = 0; i < 8; i++)
+    {
+        buckets[i] = new List();
+    }
+}
+
+Counter::~Counter()
+{
+    for (size_t i = 0; i < 8; i++)
+    {
+        delete buckets[i];
+    }
+}
 
 size_t Counter::count() const { return numKeys; }
 int Counter::total() const { return totalValue; }
@@ -43,41 +57,28 @@ void Counter::del(const std::string &key)
 }
 int Counter::get(const std::string &key) const
 {
-    size_t bucketIndex = getBucketIndex(key);
-    SLNode *currNode = buckets[bucketIndex];
-    while (currNode)
+    List::DLNode *currNode = buckets[getBucketIndex(key)]->find(key);
+    if (currNode)
     {
-        if (currNode->data->key == key)
-        {
-            return currNode->data->value;
-        }
-        currNode = currNode->next;
+        return currNode->value;
     }
     return 0;
 }
 void Counter::set(const std::string &key, int count)
 {
     totalValue += count;
-    size_t bucketIndex = getBucketIndex(key);
-    if (!buckets[bucketIndex])
+    List::DLNode *currNode = buckets[getBucketIndex(key)]->find(key);
+    if (currNode)
     {
-        buckets[bucketIndex] = new SLNode(keysList.insert(key, count));
-        ++numKeys;
-        return;
+        totalValue -= currNode->value;
+        currNode->value = count;
     }
-    SLNode *currNode = buckets[bucketIndex];
-    while (currNode->next)
+    else
     {
-        if (currNode->next->data->key == key)
-        {
-            totalValue -= currNode->next->data->value;
-            currNode->next->data->value = count;
-            return;
-        }
-        currNode = currNode->next;
+        buckets[getBucketIndex(key)]->insert(key, count);
+        keysList.insert(key, count);
+        numKeys++;
     }
-    currNode->next = new SLNode(keysList.insert(key, count));
-    ++numKeys;
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }
