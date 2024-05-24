@@ -87,3 +87,16 @@ void List::append(Node *nodePtr)
         tail = tail->next;
     }
 }
+Node *List::dig(const std::string &key) const
+{
+    Node *currNode = head;
+    while (currNode)
+    {
+        if (currNode->key == key)
+        {
+            return currNode;
+        }
+        currNode = currNode->down;
+    }
+    return nullptr;
+}

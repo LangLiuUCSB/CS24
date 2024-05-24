@@ -23,6 +23,7 @@ public:
     Node *find(const std::string &key) const;
     Node *remove(const std::string &key);
     void append(Node *nodePtr);
+    Node *dig(const std::string &key) const;
 
 private:
     Node *head;
