@@ -54,8 +54,26 @@ void Counter::del(const std::string &key)
     Bucket *currBucket = nullptr;
     currBucket = buckets[getBucketIndex(key)];
     Bucket::Node *currBucketNode = currBucket->find(key);
-    totalValue -= currBucketNode->nodePtr->value;
-    keysList.remove(key);
+    List::Node *currListNode = currBucketNode->nodePtr;
+    totalValue -= currListNode->value;
+    if (currListNode->prev)
+    {
+        currListNode->prev->next = currListNode->next;
+    }
+    else
+    {
+        keysList.setHead(currListNode->next);
+    }
+    if (currListNode->next)
+    {
+        currListNode->next->prev = currListNode->prev;
+    }
+    else
+    {
+        keysList.setTail(currListNode->prev);
+    }
+    delete currListNode;
+    currBucket->remove(key);
 }
 int Counter::get(const std::string &key) const
 {
@@ -87,5 +105,5 @@ void Counter::set(const std::string &key, int count)
     }
 }
 
-Counter::Iterator Counter::begin() const { return Iterator(keysList.first()); }
+Counter::Iterator Counter::begin() const { return Iterator(keysList.getHead()); }
 Counter::Iterator Counter::end() const { return Iterator(nullptr); }

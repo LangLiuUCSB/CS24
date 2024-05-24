@@ -17,10 +17,12 @@ public:
     };
     List() : head(nullptr), tail(nullptr){};
     ~List();
-    Node *first() const { return head; }
     Node *insert(const std::string &key, int value);
     Node *find(const std::string &key) const;
     Node *remove(const std::string &key);
+    Node *getHead() const { return head; }
+    void setHead(Node *h) { head = h; }
+    void setTail(Node *t) { tail = t; }
 
 private:
     Node *head;
