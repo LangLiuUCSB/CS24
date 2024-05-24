@@ -11,6 +11,35 @@
 
 class Counter
 {
+  struct SLNode
+  {
+    List::DLNode *data;
+    SLNode *next;
+    SLNode(List::DLNode *d) : data(d), next(nullptr) {}
+  };
+  // Member Variables
+  List keysList;
+  size_t numKeys;
+  int totalValue;
+  SLNode **buckets;
+  size_t numBuckets;
+
+  // Helper Functions
+  size_t hash(const std::string &key) const
+  {
+    size_t hash = 0;
+    const char *data = reinterpret_cast<const char *>(&key);
+    for (size_t i = 0; i < sizeof(std::string); ++i)
+    {
+      hash = hash * 31 + data[i];
+    }
+    return hash;
+  }
+
+  size_t getBucketIndex(const std::string &key) const
+  {
+    return hash(key) % numBuckets;
+  }
 
 public:
   class Iterator
@@ -28,13 +57,6 @@ public:
     bool operator!=(const Iterator &other) const { return start != other.start; }
   };
 
-private:
-  // Member Variables
-  List keysList;
-  size_t numKeys;
-  int totalValue;
-
-public:
   Counter();
 
   size_t count() const;
@@ -48,19 +70,6 @@ public:
 
   Iterator begin() const;
   Iterator end() const;
-
-private:
-  // Helper Functions
-  size_t hash(const std::string &key) const
-  {
-    size_t hash = 0;
-    const char *data = reinterpret_cast<const char *>(&key);
-    for (size_t i = 0; i < sizeof(std::string); ++i)
-    {
-      hash = hash * 31 + data[i];
-    }
-    return hash;
-  }
 };
 
 #endif

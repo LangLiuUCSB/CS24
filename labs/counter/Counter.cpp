@@ -1,7 +1,7 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : numKeys(0), totalValue(0) {}
+Counter::Counter() : numKeys(0), totalValue(0), buckets(new SLNode *[8]), numBuckets(8) {}
 
 size_t Counter::count() const { return numKeys; }
 int Counter::total() const { return totalValue; }
@@ -43,27 +43,41 @@ void Counter::del(const std::string &key)
 }
 int Counter::get(const std::string &key) const
 {
-    List::DLNode *currNode = keysList.find(key);
-    if (currNode != nullptr)
+    size_t bucketIndex = getBucketIndex(key);
+    SLNode *currNode = buckets[bucketIndex];
+    while (currNode)
     {
-        return currNode->value;
+        if (currNode->data->key == key)
+        {
+            return currNode->data->value;
+        }
+        currNode = currNode->next;
     }
     return 0;
 }
 void Counter::set(const std::string &key, int count)
 {
-    List::DLNode *currNode = keysList.find(key);
-    if (currNode)
-    {
-        totalValue -= currNode->value;
-        currNode->value = count;
-    }
-    else
-    {
-        keysList.insert(key, count);
-        ++numKeys;
-    }
     totalValue += count;
+    size_t bucketIndex = getBucketIndex(key);
+    if (!buckets[bucketIndex])
+    {
+        buckets[bucketIndex] = new SLNode(keysList.insert(key, count));
+        ++numKeys;
+        return;
+    }
+    SLNode *currNode = buckets[bucketIndex];
+    while (currNode->next)
+    {
+        if (currNode->next->data->key == key)
+        {
+            totalValue -= currNode->next->data->value;
+            currNode->next->data->value = count;
+            return;
+        }
+        currNode = currNode->next;
+    }
+    currNode->next = new SLNode(keysList.insert(key, count));
+    ++numKeys;
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }

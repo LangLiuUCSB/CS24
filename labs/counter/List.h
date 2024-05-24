@@ -6,9 +6,8 @@
 class List
 {
 public:
-    class DLNode
+    struct DLNode
     {
-    public:
         std::string key;
         int value;
         DLNode *next;
