@@ -1,7 +1,7 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : numKeys(0), totalValue(0), numBuckets(6765)
+Counter::Counter() : numKeys(0), totalValue(0), numBuckets(10000)
 {
     buckets = new Bucket *[numBuckets];
     for (size_t i = 0; i < numBuckets; ++i)
