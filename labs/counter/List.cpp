@@ -84,12 +84,16 @@ Bucket::Node *Bucket::insert(List::Node *n)
 {
     if (!head)
     {
-        head = new Node(n);
+        Node *newNode = new Node();
+        newNode->setNode(n);
+        head = newNode;
         tail = head;
     }
     else
     {
-        tail->next = new Node(n);
+        Node *newNode = new Node();
+        newNode->setNode(n);
+        tail->next = newNode;
         tail->next->prev = tail;
         tail = tail->next;
     }

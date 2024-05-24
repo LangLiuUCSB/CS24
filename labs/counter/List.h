@@ -38,7 +38,8 @@ public:
         List::Node *nodePtr;
         Node *next;
         Node *prev;
-        Node(List::Node *n) : nodePtr(n), next(nullptr), prev(nullptr) {}
+        Node() : nodePtr(nullptr), next(nullptr), prev(nullptr) {}
+        void setNode(List::Node *n) { nodePtr = n; }
     };
     Bucket() : head(nullptr), tail(nullptr){};
     ~Bucket();
