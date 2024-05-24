@@ -22,6 +22,7 @@ int Counter::total() const { return totalValue; }
 
 void Counter::inc(const std::string &key, int by)
 {
+    totalValue += by;
     List::Node *currNode = keysList.find(key);
     if (currNode)
     {
@@ -29,13 +30,13 @@ void Counter::inc(const std::string &key, int by)
     }
     else
     {
-        keysList.insert(key, by);
         ++numKeys;
+        keysList.insert(key, by);
     }
-    totalValue += by;
 }
 void Counter::dec(const std::string &key, int by)
 {
+    totalValue -= by;
     List::Node *currNode = keysList.find(key);
     if (currNode)
     {
@@ -43,16 +44,14 @@ void Counter::dec(const std::string &key, int by)
     }
     else
     {
-        keysList.insert(key, by * -1);
         ++numKeys;
+        keysList.insert(key, by * -1);
     }
-    totalValue -= by;
 }
 void Counter::del(const std::string &key)
 {
-    List::Node *currNode = keysList.find(key);
     --numKeys;
-    totalValue -= currNode->value;
+    totalValue -= keysList.find(key)->value;
     keysList.remove(key);
 }
 int Counter::get(const std::string &key) const
@@ -69,9 +68,9 @@ void Counter::set(const std::string &key, int count)
     totalValue += count;
     Bucket *currBucket = buckets[getBucketIndex(key)];
     Bucket::Node *currBucketNode = currBucket->find(key);
-    List::Node *currListNode = currBucketNode->nodePtr;
     if (currBucketNode)
     {
+        List::Node *currListNode = currBucketNode->nodePtr;
         totalValue -= currListNode->value;
         currListNode->value = count;
     }
