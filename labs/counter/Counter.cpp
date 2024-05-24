@@ -1,12 +1,8 @@
 #include "Counter.h"
 
 // Counter Member Functions
-Counter::Counter() : numKeys(0), totalValue(0), buckets(new Bucket *[8])
+Counter::Counter() : numKeys(0), totalValue(0)
 {
-    for (size_t i = 0; i < 8; i++)
-    {
-        buckets[i] = new Bucket();
-    }
 }
 
 Counter::~Counter()

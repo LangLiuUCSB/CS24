@@ -15,7 +15,7 @@ class Counter
   List keysList;
   size_t numKeys;
   int totalValue;
-  Bucket **buckets;
+  Bucket *buckets[8] = {new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket(), new Bucket()};
   size_t numBuckets = 8;
 
   // Helper Functions
