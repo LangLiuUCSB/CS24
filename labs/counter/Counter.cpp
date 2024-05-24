@@ -51,15 +51,20 @@ void Counter::dec(const std::string &key, int by)
 void Counter::del(const std::string &key)
 {
     --numKeys;
-    totalValue -= keysList.find(key)->value;
+    Bucket *currBucket = nullptr;
+    currBucket = buckets[getBucketIndex(key)];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+    totalValue -= currBucketNode->nodePtr->value;
     keysList.remove(key);
 }
 int Counter::get(const std::string &key) const
 {
-    List::Node *currNode = keysList.find(key);
-    if (currNode)
+    Bucket *currBucket = nullptr;
+    currBucket = buckets[getBucketIndex(key)];
+    Bucket::Node *currBucketNode = currBucket->find(key);
+    if (currBucketNode)
     {
-        return currNode->value;
+        return currBucketNode->nodePtr->value;
     }
     return 0;
 }

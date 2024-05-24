@@ -6,8 +6,9 @@
 class List
 {
 public:
-    struct Node
+    class Node
     {
+    public:
         std::string key;
         int value;
         Node *next;
@@ -29,8 +30,9 @@ private:
 class Bucket
 {
 public:
-    struct Node
+    class Node
     {
+    public:
         List::Node *nodePtr;
         Node *next;
         Node *prev;
