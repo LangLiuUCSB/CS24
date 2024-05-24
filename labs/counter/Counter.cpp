@@ -70,10 +70,8 @@ void Counter::del(const std::string &key)
     {
         List::Node *currListNode = currBucketNode->nodePtr;
 
-        // Adjust total value
         totalValue -= currListNode->value;
 
-        // Remove from keys list
         if (currListNode->prev)
         {
             currListNode->prev->next = currListNode->next;

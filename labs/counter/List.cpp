@@ -110,32 +110,28 @@ Bucket::Node *Bucket::find(const std::string &key) const
 }
 Bucket::Node *Bucket::remove(const std::string &key)
 {
-    Node *currNode = head;
-    while (currNode)
+    Node *currNode = find(key);
+    if (currNode)
     {
-        if (currNode->nodePtr->key == key)
+        if (currNode->prev)
         {
-            if (currNode->prev)
-            {
-                currNode->prev->next = currNode->next;
-            }
-            else
-            {
-                head = currNode->next;
-            }
-            if (currNode->next)
-            {
-                currNode->next->prev = currNode->prev;
-            }
-            else
-            {
-                tail = currNode->prev;
-            }
-            Node *removedNode = currNode;
-            delete currNode;
-            return removedNode;
+            currNode->prev->next = currNode->next;
         }
-        currNode = currNode->next;
+        else
+        {
+            head = currNode->next;
+        }
+        if (currNode->next)
+        {
+            currNode->next->prev = currNode->prev;
+        }
+        else
+        {
+            tail = currNode->prev;
+        }
+        Node *removedNode = currNode;
+        delete currNode;
+        return removedNode;
     }
     return nullptr;
 }
