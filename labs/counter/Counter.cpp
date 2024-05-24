@@ -57,28 +57,35 @@ void Counter::del(const std::string &key)
 }
 int Counter::get(const std::string &key) const
 {
-    List::DLNode *currNode = buckets[getBucketIndex(key)]->find(key);
-    if (currNode)
+    List::DLNode *currNode = buckets[getBucketIndex(key)]->begin();
+    while (currNode)
     {
-        return currNode->value;
+        if (currNode->key == key)
+        {
+            return currNode->value;
+        }
+        currNode = currNode->next;
     }
     return 0;
 }
 void Counter::set(const std::string &key, int count)
 {
+    size_t bucketIndex = getBucketIndex(key);
     totalValue += count;
-    List::DLNode *currNode = buckets[getBucketIndex(key)]->find(key);
-    if (currNode)
+    List::DLNode *currNode = buckets[bucketIndex]->begin();
+    while (currNode)
     {
-        totalValue -= currNode->value;
-        currNode->value = count;
+        if (currNode->key == key)
+        {
+            totalValue -= currNode->value;
+            currNode->value = count;
+            return;
+        }
+        currNode = currNode->next;
     }
-    else
-    {
-        buckets[getBucketIndex(key)]->insert(key, count);
-        keysList.insert(key, count);
-        numKeys++;
-    }
+    buckets[bucketIndex]->insert(key, count);
+    keysList.insert(key, count);
+    numKeys++;
 }
 
 Counter::Iterator Counter::begin() const { return Iterator(keysList.begin()); }
