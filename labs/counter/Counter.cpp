@@ -90,7 +90,7 @@ void Counter::del(const std::string &key)
         }
 
         delete currListNode;
-        currBucket->remove(key);
+        currBucket->remove(currListNode);
         --numKeys;
     }
 }

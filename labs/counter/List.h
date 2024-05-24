@@ -46,7 +46,7 @@ public:
     Node *first() const { return head; }
     Node *insert(List::Node *n);
     Node *find(const std::string &key) const;
-    Node *remove(const std::string &key);
+    Node *remove(List::Node *n);
 
 private:
     Node *head;
