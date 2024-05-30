@@ -47,7 +47,7 @@ Heap::Heap(const Heap &other) : mData(new Entry[other.capacity() + 1]), mCapacit
         mData[i] = other.mData[i];
     }
 }
-Heap::~Heap() { delete mData; }
+Heap::~Heap() {}
 
 size_t Heap::capacity() const { return mCapacity; }
 size_t Heap::count() const { return mCount; }
