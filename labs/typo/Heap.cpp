@@ -89,9 +89,9 @@ void Heap::push(const std::string &value, float score)
     {
         throw std::overflow_error("Heap Full");
     }
+    mData[mCount].value = value;
+    mData[mCount].score = score;
     ++mCount;
-    mData[mCount - 1].value = value;
-    mData[mCount - 1].score = score;
     percolate_up(mData, mCount, mCount - 1);
 }
 const Heap::Entry &Heap::top() const
