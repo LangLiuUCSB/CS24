@@ -4,8 +4,8 @@
 
 void percolate_down(Heap::Entry *data, size_t count, size_t index)
 {
-    size_t indexLeftChild = 2 * index;
-    size_t indexRightChild = 2 * index + 1;
+    size_t indexLeftChild = 2 * index + 1;
+    size_t indexRightChild = 2 * index + 2;
     size_t indexSmallest = index;
     if (indexLeftChild < count && data[indexLeftChild].score < data[indexSmallest].score)
     {
@@ -26,9 +26,9 @@ void percolate_down(Heap::Entry *data, size_t count, size_t index)
 
 void percolate_up(Heap::Entry *data, size_t count, size_t index)
 {
-    if (index != 1)
+    if (index != 0)
     {
-        size_t indexParent = index / 2;
+        size_t indexParent = (index - 1) / 2;
         if (data[indexParent].score < data[index].score)
         {
             Heap::Entry tempEntry = data[index];
@@ -39,10 +39,10 @@ void percolate_up(Heap::Entry *data, size_t count, size_t index)
     }
 }
 
-Heap::Heap(size_t capacity) : mData(new Entry[capacity + 1]), mCapacity(capacity), mCount(0) {}
-Heap::Heap(const Heap &other) : mData(new Entry[other.capacity() + 1]), mCapacity(other.capacity()), mCount(other.count())
+Heap::Heap(size_t capacity) : mData(new Entry[capacity]), mCapacity(capacity), mCount(0) {}
+Heap::Heap(const Heap &other) : mData(new Entry[other.capacity()]), mCapacity(other.capacity()), mCount(other.count())
 {
-    for (size_t i = 1; i <= mCapacity; i++)
+    for (size_t i = 0; i < mCapacity; i++)
     {
         mData[i] = other.mData[i];
     }
@@ -65,10 +65,10 @@ Heap::Entry Heap::pop()
     {
         throw std::underflow_error("Heap Empty");
     }
-    Entry tempEntry = mData[1];
-    mData[1] = mData[mCount];
+    Entry tempEntry = mData[0];
+    mData[0] = mData[mCount - 1];
     --mCount;
-    percolate_down(mData, mCount, 1);
+    percolate_down(mData, mCount, 0);
     return tempEntry;
 }
 Heap::Entry Heap::pushpop(const std::string &value, float score)
@@ -77,10 +77,10 @@ Heap::Entry Heap::pushpop(const std::string &value, float score)
     {
         throw std::underflow_error("Heap Empty");
     }
-    Entry tempEntry = mData[1];
-    mData[1].value = value;
-    mData[1].score = score;
-    percolate_down(mData, mCount, 1);
+    Entry tempEntry = mData[0];
+    mData[0].value = value;
+    mData[0].score = score;
+    percolate_down(mData, mCount, 0);
     return tempEntry;
 }
 void Heap::push(const std::string &value, float score)
@@ -90,9 +90,9 @@ void Heap::push(const std::string &value, float score)
         throw std::overflow_error("Heap Full");
     }
     ++mCount;
-    mData[mCount].value = value;
-    mData[mCount].score = score;
-    percolate_up(mData, mCount, mCount);
+    mData[mCount - 1].value = value;
+    mData[mCount - 1].score = score;
+    percolate_up(mData, mCount, mCount - 1);
 }
 const Heap::Entry &Heap::top() const
 {
@@ -100,5 +100,5 @@ const Heap::Entry &Heap::top() const
     {
         throw std::underflow_error("Heap Empty");
     }
-    return mData[1];
+    return mData[0];
 }
