@@ -44,7 +44,7 @@ Heap::Heap(const Heap &other) : mData(new Entry[other.capacity()]), mCapacity(ot
 {
     for (size_t i = 0; i < mCapacity; i++)
     {
-        mData[i] = other.mData[i];
+        push(other.mData[i].value, other.mData[i].score);
     }
 }
 Heap::~Heap() { delete[] mData; }
@@ -53,7 +53,7 @@ size_t Heap::capacity() const { return mCapacity; }
 size_t Heap::count() const { return mCount; }
 const Heap::Entry &Heap::lookup(size_t index) const
 {
-    if (index > mCount)
+    if (index >= mCount)
     {
         throw std::out_of_range("Index out of Heap Range");
     }
