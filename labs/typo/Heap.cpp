@@ -44,7 +44,7 @@ Heap::Heap(const Heap &other) : mData(new Entry[other.capacity()]), mCapacity(ot
 {
     for (size_t i = 0; i < mCapacity; i++)
     {
-        mData[i] = other.mData[i];
+        mData[i] = other.mData[mCapacity - 1 - i];
     }
 }
 Heap::~Heap() { delete[] mData; }
