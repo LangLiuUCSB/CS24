@@ -55,7 +55,6 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
         {
             continue;
         }
-        std::cout << word << "\n";
         if (probableWords.count() != maxcount)
         {
             probableWords.push(word, score);
