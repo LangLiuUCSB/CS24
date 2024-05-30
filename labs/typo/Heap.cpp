@@ -66,8 +66,8 @@ Heap::Entry Heap::pop()
         throw std::underflow_error("Heap Empty");
     }
     Entry tempEntry = mData[0];
-    mData[0] = mData[mCount - 1];
     --mCount;
+    mData[0] = mData[mCount];
     percolate_down(mData, mCount, 0);
     return tempEntry;
 }
