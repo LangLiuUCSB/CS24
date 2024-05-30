@@ -63,7 +63,10 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
         else
         {
             probableWords.pushpop(word, score);
-            heapmin = score;
+            if (probableWords.top().score == score)
+            {
+                heapmin = score;
+            }
         }
     }
     return probableWords;
