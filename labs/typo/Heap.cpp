@@ -29,7 +29,7 @@ void percolate_up(Heap::Entry *data, size_t count, size_t index)
     if (index != 0)
     {
         size_t indexParent = (index - 1) / 2;
-        if (data[indexParent].score < data[index].score)
+        if (data[indexParent].score > data[index].score)
         {
             Heap::Entry tempEntry = data[index];
             data[index] = data[indexParent];
@@ -44,7 +44,7 @@ Heap::Heap(const Heap &other) : mData(new Entry[other.capacity()]), mCapacity(ot
 {
     for (size_t i = 0; i < mCapacity; i++)
     {
-        push(other.mData[i].value, other.mData[i].score);
+        mData[i] = other.mData[i];
     }
 }
 Heap::~Heap() { delete[] mData; }
