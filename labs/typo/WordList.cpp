@@ -35,7 +35,6 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
     double dx;
     double dy;
     double score;
-    double heapmin = 0;
     for (std::string word : mWords)
     {
         if (word.size() != points.size())
@@ -52,7 +51,7 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
             ++i;
         }
         score /= i;
-        if (score < cutoff || score < heapmin)
+        if (score < cutoff)
         {
             continue;
         }
@@ -62,10 +61,9 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
         }
         else
         {
-            probableWords.pushpop(word, score);
-            if (probableWords.top().score == score)
+            if (score > probableWords.top().score)
             {
-                heapmin = score;
+                probableWords.pushpop(word, score);
             }
         }
     }
