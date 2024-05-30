@@ -40,7 +40,13 @@ void percolate_up(Heap::Entry *data, size_t count, size_t index)
 }
 
 Heap::Heap(size_t capacity) : mData(new Entry[capacity + 1]), mCapacity(capacity), mCount(0) {}
-Heap::Heap(const Heap &other) {}
+Heap::Heap(const Heap &other) : mData(new Entry[mCapacity + 1]), mCapacity(other.capacity()), mCount(other.count())
+{
+    for (size_t i = 1; i <= mCapacity; i++)
+    {
+        mData[i] = other.mData[i];
+    }
+}
 Heap::~Heap() { delete mData; }
 
 size_t Heap::capacity() const { return mCapacity; }
