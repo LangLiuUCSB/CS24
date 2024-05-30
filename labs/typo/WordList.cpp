@@ -1,5 +1,7 @@
 #include "WordList.h"
 
+#include <iostream>
+
 WordList::WordList(std::istream &stream)
 {
     std::string word;
@@ -33,6 +35,7 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
     double dx;
     double dy;
     double score;
+    double heapmin = 0;
     for (std::string word : mWords)
     {
         if (word.size() != points.size())
@@ -49,7 +52,7 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
             ++i;
         }
         score /= i;
-        if (score < cutoff)
+        if (score < cutoff || score < heapmin)
         {
             continue;
         }
@@ -60,6 +63,7 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
         else
         {
             probableWords.pushpop(word, score);
+            heapmin = score;
         }
     }
     return probableWords;
