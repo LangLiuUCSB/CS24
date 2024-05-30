@@ -6,7 +6,7 @@ WordList::WordList(std::istream &stream)
 {
     std::string word;
     bool allLower;
-    while (stream >> word)
+    while (std::getline(stream, word))
     {
         if (!word.size() || word[0] == '#')
         {
@@ -55,6 +55,7 @@ Heap WordList::correct(const std::vector<Point> &points, size_t maxcount, float 
         {
             continue;
         }
+        std::cout << word << "\n";
         if (probableWords.count() != maxcount)
         {
             probableWords.push(word, score);
