@@ -1,5 +1,7 @@
 #include "Heap.h"
 
+#include <stdexcept>
+
 void percolate_down(Heap::Entry *data, size_t count, size_t index)
 {
     size_t indexLeftChild = 2 * index;
