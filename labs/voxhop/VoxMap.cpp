@@ -162,6 +162,10 @@ Route VoxMap::route(Point src, Point dst)
         moves.insert(moves.begin(), currNode->move);
         currNode = currNode->back;
       }
+      for (auto it = visited.begin(); it != visited.end(); ++it)
+      {
+        delete *it;
+      }
       return moves;
     }
     //++i;
