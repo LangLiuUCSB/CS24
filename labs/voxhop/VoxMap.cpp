@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <stdexcept>
 
+/*
 static const unsigned char hexToDec[103] = {
     ['0'] = 0,
     ['1'] = 1,
@@ -21,6 +22,7 @@ static const unsigned char hexToDec[103] = {
     ['d'] = 13,
     ['e'] = 14,
     ['f'] = 15};
+*/
 
 VoxMap::VoxMap(std::istream &stream)
 {
@@ -28,6 +30,23 @@ VoxMap::VoxMap(std::istream &stream)
   map = new bool **[zHeight];
   std::string xLine;
   unsigned char hex, dec;
+  unsigned char hexToDec[103];
+  hexToDec[48] = 0;
+  hexToDec[49] = 1;
+  hexToDec[50] = 2;
+  hexToDec[51] = 3;
+  hexToDec[52] = 4;
+  hexToDec[53] = 5;
+  hexToDec[54] = 6;
+  hexToDec[55] = 7;
+  hexToDec[56] = 8;
+  hexToDec[57] = 9;
+  hexToDec[97] = 10;
+  hexToDec[98] = 11;
+  hexToDec[99] = 12;
+  hexToDec[100] = 13;
+  hexToDec[101] = 14;
+  hexToDec[102] = 15;
   for (unsigned short z = 0; z < zHeight; z++)
   {
     map[z] = new bool *[yDepth];
@@ -72,76 +91,54 @@ Route VoxMap::route(Point src, Point dst)
   if (!inBounds(dst) || !isEmpty(dst) || !onFull(dst))
     throw InvalidPoint(dst);
 
+  // Find Route
+  Route moves;
+  if (src == dst)
+  {
+    return moves;
+  }
+
   // Bird's Eye 2D Manhattan Distance from Destination
   auto getCost = [dst](Point p) -> unsigned short
   { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y); };
 
-  // Find Route
-  Route moves;
+  // Path Start
   PathNode *start = new PathNode(src, getCost(src), nullptr, Move::EAST);
 
+  // Discovered Points
   std::unordered_set<Point, PointHash> discovered = {src};
 
+  // Frontiers Priority Queue
   auto compare = [](const PathNode *n1, const PathNode *n2)
   { return n1->cost > n2->cost; };
   std::priority_queue<PathNode *, std::vector<PathNode *>, decltype(compare)> frontiers(compare);
 
-  /*
-  auto discover = [this, &discovered, &frontiers, getCost](Move direction, PathNode *currNode)
+  // Adds Valid Frontiers to Priority Queue
+  auto discover = [this, &discovered, &frontiers, getCost](PathNode *currNode)
   {
     Point p = currNode->point;
-    switch (direction)
-    {
-    case Move::EAST:
-      ++p.x;
-      break;
-    case Move::SOUTH:
-      ++p.y;
-      break;
-    case Move::WEST:
-      --p.x;
-      break;
-    case Move::NORTH:
-      --p.y;
-      break;
-    }
-    if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
-    {
-      discovered.insert(p);
-      frontiers.push(new PathNode(p, getCost(p), currNode, direction));
-    }
-  };
-  */
-
-  auto discoverV2 = [this, &discovered, &frontiers, getCost](PathNode *currNode)
-  {
-    Point p = currNode->point;
-    // East
-    ++p.x;
+    ++p.x; // East
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
       discovered.insert(p);
       frontiers.push(new PathNode(p, getCost(p), currNode, Move::EAST));
     }
-    // South
     --p.x;
-    ++p.y;
+    ++p.y; // South
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
       discovered.insert(p);
       frontiers.push(new PathNode(p, getCost(p), currNode, Move::SOUTH));
     }
-    // West
     --p.x;
-    --p.y;
+    --p.y; // West
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
       discovered.insert(p);
       frontiers.push(new PathNode(p, getCost(p), currNode, Move::WEST));
     }
-    // North
     ++p.x;
-    --p.y;
+    --p.y; // North
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
       discovered.insert(p);
@@ -150,23 +147,19 @@ Route VoxMap::route(Point src, Point dst)
   };
 
   PathNode *currNode = start;
-  std::cout << "(" << std::setfill('0') << std::setw(2) << currNode->point.x;
-  std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.y;
-  std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.z;
-  unsigned short i = 0;
-
-  discoverV2(currNode);
+  discover(currNode);
   currNode = frontiers.top();
   frontiers.pop();
-  if (currNode->point == dst)
-  {
-    std::cout << ")\nFound on turn " << i << "\npritority queue has " << frontiers.size();
-  }
-  ++i;
+  // std::cout << "(" << std::setfill('0') << std::setw(2) << currNode->point.x;
+  // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.y;
+  // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.z;
+  // if (currNode->point == dst)
+  //  std::cout << ")\nFound on turn " << i << "\npritority queue has " << frontiers.size();
+  // unsigned short i = 1;
 
   while (!frontiers.empty())
   {
-    discoverV2(currNode);
+    discover(currNode);
     currNode = frontiers.top();
     frontiers.pop();
     // std::cout << ")~(" << std::setfill('0') << std::setw(2) << currNode->point.x;
@@ -182,7 +175,7 @@ Route VoxMap::route(Point src, Point dst)
       }
       return moves;
     }
-    ++i;
+    //++i;
   }
   std::cout << "\n";
 
