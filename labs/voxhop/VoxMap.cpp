@@ -4,26 +4,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-/*
-static const unsigned char hexToDec[103] = {
-    ['0'] = 0,
-    ['1'] = 1,
-    ['2'] = 2,
-    ['3'] = 3,
-    ['4'] = 4,
-    ['5'] = 5,
-    ['6'] = 6,
-    ['7'] = 7,
-    ['8'] = 8,
-    ['9'] = 9,
-    ['a'] = 10,
-    ['b'] = 11,
-    ['c'] = 12,
-    ['d'] = 13,
-    ['e'] = 14,
-    ['f'] = 15};
-*/
-
 VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xWidth >> yDepth >> zHeight;
@@ -106,6 +86,7 @@ Route VoxMap::route(Point src, Point dst)
   PathNode *start = new PathNode(src, getCost(src), nullptr, Move::EAST);
 
   // Discovered Points
+  std::unordered_set<PathNode *> visited = {start};
   std::unordered_set<Point, PointHash> discovered = {src};
 
   // Frontiers Priority Queue
@@ -114,35 +95,43 @@ Route VoxMap::route(Point src, Point dst)
   std::priority_queue<PathNode *, std::vector<PathNode *>, decltype(compare)> frontiers(compare);
 
   // Adds Valid Frontiers to Priority Queue
-  auto discover = [this, &discovered, &frontiers, getCost](PathNode *currNode)
+  auto discover = [this, &visited, &discovered, &frontiers, getCost](PathNode *currNode)
   {
     Point p = currNode->point;
     ++p.x; // East
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
+      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::EAST);
+      visited.insert(newNode);
       discovered.insert(p);
-      frontiers.push(new PathNode(p, getCost(p), currNode, Move::EAST));
+      frontiers.push(newNode);
     }
     --p.x;
     ++p.y; // South
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
+      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::SOUTH);
+      visited.insert(newNode);
       discovered.insert(p);
-      frontiers.push(new PathNode(p, getCost(p), currNode, Move::SOUTH));
+      frontiers.push(newNode);
     }
     --p.x;
     --p.y; // West
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
+      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::WEST);
+      visited.insert(newNode);
       discovered.insert(p);
-      frontiers.push(new PathNode(p, getCost(p), currNode, Move::WEST));
+      frontiers.push(newNode);
     }
     ++p.x;
     --p.y; // North
     if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
     {
+      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::NORTH);
+      visited.insert(newNode);
       discovered.insert(p);
-      frontiers.push(new PathNode(p, getCost(p), currNode, Move::NORTH));
+      frontiers.push(newNode);
     }
   };
 
@@ -177,7 +166,13 @@ Route VoxMap::route(Point src, Point dst)
     }
     //++i;
   }
-  std::cout << "\n";
+  // std::cout << "\n";
+
+  // Free up Memory
+  for (auto it = visited.begin(); it != visited.end(); ++it)
+  {
+    delete *it;
+  }
 
   // No Route
   throw NoRoute(src, dst);
