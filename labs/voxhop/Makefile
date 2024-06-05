@@ -3,6 +3,9 @@ CXX      = g++
 
 .PHONY: all clean
 
+e: e.o Point.o Route.o VoxMap.o
+	$(CXX) $(CXXFLAGS) -o $@ $+
+
 test: test.o Point.o Route.o VoxMap.o
 	$(CXX) $(CXXFLAGS) -o $@ $+
 
@@ -12,6 +15,8 @@ main: main.o Point.o Route.o VoxMap.o
 
 all: main test
 
+e.o: e.cpp Errors.h Route.h VoxMap.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 main.o: main.cpp Errors.h Route.h VoxMap.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
@@ -30,4 +35,4 @@ VoxMap.o: VoxMap.cpp VoxMap.h Errors.h Route.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -f main test *.o
+	rm -f main test e *.o
