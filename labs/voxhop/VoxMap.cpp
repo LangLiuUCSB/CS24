@@ -72,43 +72,46 @@ Route VoxMap::route(Point src, Point dst)
     throw InvalidPoint(dst);
 
   // Find Route
-  Route moves;
+  Route path;
   if (src == dst)
   {
-    return moves;
+    return path;
   }
 
   // Bird's Eye 2D Manhattan Distance from Destination
-  auto getCost = [src](Point p) -> unsigned short
-  { return (p.x < src.x ? src.x - p.x : p.x - src.x) + (p.y < src.y ? src.y - p.y : p.y - src.y); };
+  auto getCost = [dst](Point p) -> unsigned short
+  { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y); };
 
   // Frontiers Priority Queue
   auto compare = [](const Point &a, const Point &b)
   { return a.cost > b.cost; };
   std::priority_queue<Point, std::vector<Point>, decltype(compare)> frontiers(compare);
-  dst.cost = getCost(dst);
-  frontiers.push(dst);
+  src.cost = getCost(src);
+  frontiers.push(src);
 
-  // Discovered Points
+  // Visited Points Map
   std::vector<std::vector<std::vector<bool>>> visited(zHeight, std::vector<std::vector<bool>>(yDepth, std::vector<bool>(xWidth, false)));
-  visited[dst.z][dst.y][dst.x] = true;
+  visited[src.z][src.y][src.x] = true;
+  // Previous Point Map
   std::vector<std::vector<std::vector<Point>>> nextPoint(zHeight, std::vector<std::vector<Point>>(yDepth, std::vector<Point>(xWidth)));
+  // Previous Move Map
   std::vector<std::vector<std::vector<Move>>> nextMove(zHeight, std::vector<std::vector<Move>>(yDepth, std::vector<Move>(xWidth)));
 
   Point currPoint;
-  for (size_t j = 0; j < 366; j++)
+  while (!frontiers.empty())
   {
     currPoint = frontiers.top();
     frontiers.pop();
 
-    if (currPoint == src)
+    if (currPoint == dst)
     {
-      while (currPoint != dst)
+      while (currPoint != src)
       {
-        moves.push_back(nextMove[currPoint.z][currPoint.y][currPoint.x]);
+        path.push_back(nextMove[currPoint.z][currPoint.y][currPoint.x]);
         currPoint = nextPoint[currPoint.z][currPoint.y][currPoint.x];
       }
-      return moves;
+      std::reverse(path.begin(), path.end());
+      return path;
     }
     Point newPoint = currPoint;
     ++newPoint.x; // East
@@ -116,7 +119,7 @@ Route VoxMap::route(Point src, Point dst)
     {
       visited[newPoint.z][newPoint.y][newPoint.x] = true;
       nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::WEST;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::EAST;
       newPoint.cost = getCost(newPoint);
       frontiers.push(newPoint);
     }
@@ -125,7 +128,7 @@ Route VoxMap::route(Point src, Point dst)
     {
       visited[newPoint.z][newPoint.y][newPoint.x] = true;
       nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::EAST;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::WEST;
       newPoint.cost = getCost(newPoint);
       frontiers.push(newPoint);
     }
@@ -135,7 +138,7 @@ Route VoxMap::route(Point src, Point dst)
     {
       visited[newPoint.z][newPoint.y][newPoint.x] = true;
       nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::NORTH;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::SOUTH;
       newPoint.cost = getCost(newPoint);
       frontiers.push(newPoint);
     }
@@ -144,7 +147,7 @@ Route VoxMap::route(Point src, Point dst)
     {
       visited[newPoint.z][newPoint.y][newPoint.x] = true;
       nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::SOUTH;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::NORTH;
       newPoint.cost = getCost(newPoint);
       frontiers.push(newPoint);
     }
