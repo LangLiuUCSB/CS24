@@ -19,14 +19,8 @@ int main()
 
     map.printMap();
 
-    Point src;
-    src.x = 37;
-    src.y = 10;
-    src.z = 1;
-    Point dst;
-    dst.x = 6;
-    dst.y = 38;
-    dst.z = 1;
+    Point src(37, 10, 1);
+    Point dst(6, 38, 1);
 
     std::cout << "src: (" << src.x << "," << src.y << "," << src.z << ")\n";
     std::cout << "dst: (" << dst.x << "," << dst.y << "," << dst.z << ")\n";

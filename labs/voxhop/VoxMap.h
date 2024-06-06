@@ -9,18 +9,6 @@
 #include "Point.h"
 #include "Route.h"
 
-struct PathNode
-{
-  // Member Variables
-  Point point;
-  unsigned short cost; // Manhattan Distance
-  PathNode *back;      // Previous Node in Current Path
-  Move move;           // Direction moved from Previous Node
-
-  // Constructor
-  PathNode(Point p, unsigned short c, PathNode *b, Move m) : point(p), cost(c), back(b), move(m){};
-};
-
 class VoxMap
 {
   // Member Variables

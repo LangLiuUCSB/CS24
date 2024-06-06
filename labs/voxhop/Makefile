@@ -5,6 +5,7 @@ CXX      = g++
 
 e: e.o Point.o Route.o VoxMap.o
 	$(CXX) $(CXXFLAGS) -o $@ $+
+	./e
 
 test: test.o Point.o Route.o VoxMap.o
 	$(CXX) $(CXXFLAGS) -o $@ $+

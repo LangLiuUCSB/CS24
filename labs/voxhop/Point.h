@@ -5,19 +5,15 @@
 
 struct Point
 {
-  int x;
-  int y;
-  int z;
+  short x, y, z;
+  unsigned short cost;
 
   Point() {}
-  Point(int x, int y, int z) : x(x), y(y), z(z) {}
+  Point(short x, short y, short z) : x(x), y(y), z(z) {}
+  Point(short x, short y, short z, unsigned short cost) : x(x), y(y), z(z), cost(cost) {}
 
   bool operator==(const Point &other) const { return other.x == x && other.y == y && other.z == z; }
-};
-
-struct PointHash
-{
-  std::size_t operator()(const Point &p) const { return ((17 * 31 + std::hash<int>{}(p.x)) * 31 + std::hash<int>{}(p.y)) * 31 + std::hash<int>{}(p.z); }
+  bool operator!=(const Point &other) const { return other.x != x || other.y != y || other.z != z; }
 };
 
 std::istream &operator>>(std::istream &stream, Point &point);

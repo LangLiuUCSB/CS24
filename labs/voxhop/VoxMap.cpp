@@ -79,125 +79,92 @@ Route VoxMap::route(Point src, Point dst)
   }
 
   // Bird's Eye 2D Manhattan Distance from Destination
-  auto getCost = [dst](Point p) -> unsigned short
-  { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y); };
-
-  // Path Start
-  PathNode *start = new PathNode(src, getCost(src), nullptr, Move::EAST);
-
-  // Discovered Points
-  std::unordered_set<PathNode *> visited = {start};
-  std::unordered_set<Point, PointHash> discovered = {src};
+  auto getCost = [src](Point p) -> unsigned short
+  { return (p.x < src.x ? src.x - p.x : p.x - src.x) + (p.y < src.y ? src.y - p.y : p.y - src.y); };
 
   // Frontiers Priority Queue
-  auto compare = [](const PathNode *n1, const PathNode *n2)
-  { return n1->cost > n2->cost; };
-  std::priority_queue<PathNode *, std::vector<PathNode *>, decltype(compare)> frontiers(compare);
+  auto compare = [](const Point &a, const Point &b)
+  { return a.cost > b.cost; };
+  std::priority_queue<Point, std::vector<Point>, decltype(compare)> frontiers(compare);
+  dst.cost = getCost(dst);
+  frontiers.push(dst);
 
-  // Adds Valid Frontiers to Priority Queue
-  auto discover = [this, &visited, &discovered, &frontiers, getCost](PathNode *currNode)
+  // Discovered Points
+  std::vector<std::vector<std::vector<bool>>> visited(zHeight, std::vector<std::vector<bool>>(yDepth, std::vector<bool>(xWidth, false)));
+  visited[dst.z][dst.y][dst.x] = true;
+  std::vector<std::vector<std::vector<Point>>> nextPoint(zHeight, std::vector<std::vector<Point>>(yDepth, std::vector<Point>(xWidth)));
+  std::vector<std::vector<std::vector<Move>>> nextMove(zHeight, std::vector<std::vector<Move>>(yDepth, std::vector<Move>(xWidth)));
+
+  Point currPoint;
+  for (size_t j = 0; j < 366; j++)
   {
-    Point p = currNode->point;
-    ++p.x; // East
-    if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
-    {
-      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::EAST);
-      visited.insert(newNode);
-      discovered.insert(p);
-      frontiers.push(newNode);
-    }
-    --p.x;
-    ++p.y; // South
-    if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
-    {
-      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::SOUTH);
-      visited.insert(newNode);
-      discovered.insert(p);
-      frontiers.push(newNode);
-    }
-    --p.x;
-    --p.y; // West
-    if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
-    {
-      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::WEST);
-      visited.insert(newNode);
-      discovered.insert(p);
-      frontiers.push(newNode);
-    }
-    ++p.x;
-    --p.y; // North
-    if (inBounds(p) && isEmpty(p) && discovered.find(p) == discovered.end())
-    {
-      PathNode *newNode = new PathNode(p, getCost(p), currNode, Move::NORTH);
-      visited.insert(newNode);
-      discovered.insert(p);
-      frontiers.push(newNode);
-    }
-  };
-
-  PathNode *currNode = start;
-  discover(currNode);
-  currNode = frontiers.top();
-  frontiers.pop();
-  // std::cout << "(" << std::setfill('0') << std::setw(2) << currNode->point.x;
-  // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.y;
-  // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.z;
-  // if (currNode->point == dst)
-  //  std::cout << ")\nFound on turn " << i << "\npritority queue has " << frontiers.size();
-  // unsigned short i = 1;
-
-  while (!frontiers.empty())
-  {
-    discover(currNode);
-    currNode = frontiers.top();
+    currPoint = frontiers.top();
     frontiers.pop();
-    // std::cout << ")~(" << std::setfill('0') << std::setw(2) << currNode->point.x;
-    // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.y;
-    // std::cout << "," << std::setfill('0') << std::setw(2) << currNode->point.z;
-    if (currNode->point == dst)
+
+    if (currPoint == src)
     {
-      // std::cout << ")\nFound on turn " << i << "\nPritority Queue has " << frontiers.size() << " Frontiers left\n";
-      while (currNode->back)
+      while (currPoint != dst)
       {
-        moves.insert(moves.begin(), currNode->move);
-        currNode = currNode->back;
-      }
-      for (auto it = visited.begin(); it != visited.end(); ++it)
-      {
-        delete *it;
+        moves.push_back(nextMove[currPoint.z][currPoint.y][currPoint.x]);
+        currPoint = nextPoint[currPoint.z][currPoint.y][currPoint.x];
       }
       return moves;
     }
-    //++i;
-  }
-  // std::cout << "\n";
-
-  // Free up Memory
-  for (auto it = visited.begin(); it != visited.end(); ++it)
-  {
-    delete *it;
+    Point newPoint = currPoint;
+    ++newPoint.x; // East
+    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
+    {
+      visited[newPoint.z][newPoint.y][newPoint.x] = true;
+      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::WEST;
+      newPoint.cost = getCost(newPoint);
+      frontiers.push(newPoint);
+    }
+    newPoint.x -= 2; // West
+    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
+    {
+      visited[newPoint.z][newPoint.y][newPoint.x] = true;
+      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::EAST;
+      newPoint.cost = getCost(newPoint);
+      frontiers.push(newPoint);
+    }
+    ++newPoint.x;
+    ++newPoint.y; // South
+    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
+    {
+      visited[newPoint.z][newPoint.y][newPoint.x] = true;
+      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::NORTH;
+      newPoint.cost = getCost(newPoint);
+      frontiers.push(newPoint);
+    }
+    newPoint.y -= 2; // NORTH
+    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
+    {
+      visited[newPoint.z][newPoint.y][newPoint.x] = true;
+      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::SOUTH;
+      newPoint.cost = getCost(newPoint);
+      frontiers.push(newPoint);
+    }
   }
 
   // No Route
   throw NoRoute(src, dst);
 }
 
-static const std::string tickLabel = "0123456789abcdefghijklmnopqrstuvwxyz";
-
 void VoxMap::printMap() const
 {
-  std::cout << " " << tickLabel << "\n";
   for (unsigned short z = 1; z < zHeight; z++)
   {
     for (unsigned short y = 0; y < yDepth; y++)
     {
-      std::cout << ((y < 36) ? tickLabel[y] : ' ');
       for (unsigned short x = 0; x < xWidth; x++)
       {
         std::cout << (map[z][y][x] ? "#" : " ");
       }
       std::cout << "\n";
     }
-    std::cout << " " << tickLabel << "\n";
   }
 }
