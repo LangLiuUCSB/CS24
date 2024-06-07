@@ -1,7 +1,6 @@
 #include "VoxMap.h"
 #include "Errors.h"
 
-#include <iomanip>
 #include <stdexcept>
 
 VoxMap::VoxMap(std::istream &stream)
@@ -65,37 +64,30 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  // Invalid Point
-  if (!inBounds(src) || !isEmpty(src) || !onFull(src))
+  if (!inBounds3D(src) || !isEmpty(src) || isEmpty(src + Point(0, 0, -1)))
     throw InvalidPoint(src);
-  if (!inBounds(dst) || !isEmpty(dst) || !onFull(dst))
+  if (!inBounds3D(dst) || !isEmpty(dst) || isEmpty(dst + Point(0, 0, -1)))
     throw InvalidPoint(dst);
 
-  // Find Route
   Route path;
   if (src == dst)
-  {
     return path;
-  }
 
-  // Bird's Eye 2D Manhattan Distance from Destination
-  auto getCost = [dst](Point p) -> unsigned short
-  { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y); };
+  auto getCost = [dst](Point p) -> unsigned short // Manhattan Distance from Destination
+  { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y) + (p.z < dst.z ? dst.z - p.z : p.z - dst.z); };
 
-  // Frontiers Priority Queue
   auto compare = [](const Point &a, const Point &b)
   { return a.cost > b.cost; };
   std::priority_queue<Point, std::vector<Point>, decltype(compare)> frontiers(compare);
   src.cost = getCost(src);
   frontiers.push(src);
 
-  // Visited Points Map
-  std::vector<std::vector<std::vector<bool>>> visited(zHeight, std::vector<std::vector<bool>>(yDepth, std::vector<bool>(xWidth, false)));
-  visited[src.z][src.y][src.x] = true;
-  // Previous Point Map
-  std::vector<std::vector<std::vector<Point>>> nextPoint(zHeight, std::vector<std::vector<Point>>(yDepth, std::vector<Point>(xWidth)));
-  // Previous Move Map
-  std::vector<std::vector<std::vector<Move>>> nextMove(zHeight, std::vector<std::vector<Move>>(yDepth, std::vector<Move>(xWidth)));
+  std::vector<std::vector<std::vector<bool>>> scanned(zHeight, std::vector<std::vector<bool>>(yDepth, std::vector<bool>(xWidth, false)));
+  scanned[src.z][src.y][src.x] = true;
+
+  std::vector<std::vector<std::vector<Point>>> prevPoint(zHeight, std::vector<std::vector<Point>>(yDepth, std::vector<Point>(xWidth)));
+
+  std::vector<std::vector<std::vector<Move>>> prevMove(zHeight, std::vector<std::vector<Move>>(yDepth, std::vector<Move>(xWidth)));
 
   Point currPoint;
   while (!frontiers.empty())
@@ -106,68 +98,83 @@ Route VoxMap::route(Point src, Point dst)
     if (currPoint == dst)
     {
       while (currPoint != src)
+      // for (unsigned short turn = 0; turn < 9; turn++)
       {
-        path.push_back(nextMove[currPoint.z][currPoint.y][currPoint.x]);
-        currPoint = nextPoint[currPoint.z][currPoint.y][currPoint.x];
+        path.push_back(prevMove[currPoint.z][currPoint.y][currPoint.x]);
+        currPoint = prevPoint[currPoint.z][currPoint.y][currPoint.x];
       }
       std::reverse(path.begin(), path.end());
       return path;
     }
-    Point newPoint = currPoint;
-    ++newPoint.x; // East
-    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
+    Point newPoint;
+    Point displacement[] = {Point(1, 0, 0), Point(0, 1, 0), Point(-1, 0, 0), Point(0, -1, 0)};
+    for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
-      visited[newPoint.z][newPoint.y][newPoint.x] = true;
-      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::EAST;
-      newPoint.cost = getCost(newPoint);
-      frontiers.push(newPoint);
-    }
-    newPoint.x -= 2; // West
-    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
-    {
-      visited[newPoint.z][newPoint.y][newPoint.x] = true;
-      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::WEST;
-      newPoint.cost = getCost(newPoint);
-      frontiers.push(newPoint);
-    }
-    ++newPoint.x;
-    ++newPoint.y; // South
-    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
-    {
-      visited[newPoint.z][newPoint.y][newPoint.x] = true;
-      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::SOUTH;
-      newPoint.cost = getCost(newPoint);
-      frontiers.push(newPoint);
-    }
-    newPoint.y -= 2; // NORTH
-    if (inBounds(newPoint) && isEmpty(newPoint) && !visited[newPoint.z][newPoint.y][newPoint.x])
-    {
-      visited[newPoint.z][newPoint.y][newPoint.x] = true;
-      nextPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-      nextMove[newPoint.z][newPoint.y][newPoint.x] = Move::NORTH;
-      newPoint.cost = getCost(newPoint);
-      frontiers.push(newPoint);
+      newPoint = currPoint + displacement[direction];
+      if (inBounds3D(newPoint))
+      {
+        if (isEmpty(newPoint))
+        {
+          // fall until below is full
+          --newPoint.z;
+          while (0 <= newPoint.z)
+          {
+            if (!isEmpty(newPoint))
+              break;
+            --newPoint.z;
+          }
+          ++newPoint.z;
+          if (!scanned[newPoint.z][newPoint.y][newPoint.x])
+          {
+            newPoint.cost = getCost(newPoint);
+            frontiers.push(newPoint);
+            prevPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+            prevMove[newPoint.z][newPoint.y][newPoint.x] = direction;
+
+            scanned[newPoint.z][newPoint.y][newPoint.x] = true;
+            ++newPoint.z;
+            while (newPoint.z < zHeight)
+            {
+              if (!isEmpty(newPoint))
+                break;
+              scanned[newPoint.z][newPoint.y][newPoint.x] = true;
+              ++newPoint.z;
+            }
+          }
+        }
+        else // full
+        {
+          ++currPoint.z;
+          if (inBounds3D(currPoint) && isEmpty(currPoint)) // Empty above current
+          {
+            --currPoint.z;
+            ++newPoint.z;
+            if (!scanned[newPoint.z][newPoint.y][newPoint.x] && isEmpty(newPoint)) // empty above full
+            {
+              newPoint.cost = getCost(newPoint);
+              frontiers.push(newPoint);
+              scanned[newPoint.z][newPoint.y][newPoint.x] = true;
+              prevPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+              prevMove[newPoint.z][newPoint.y][newPoint.x] = direction;
+            }
+          }
+        }
+      }
     }
   }
-
-  // No Route
   throw NoRoute(src, dst);
 }
-
-void VoxMap::printMap() const
+/*
+for (unsigned short z = 5; z < zHeight; z++)
 {
-  for (unsigned short z = 1; z < zHeight; z++)
+  std::cout << z << "\n";
+  for (unsigned short y = 0; y < yDepth; y++)
   {
-    for (unsigned short y = 0; y < yDepth; y++)
+    for (unsigned short x = 0; x < xWidth; x++)
     {
-      for (unsigned short x = 0; x < xWidth; x++)
-      {
-        std::cout << (map[z][y][x] ? "#" : " ");
-      }
-      std::cout << "\n";
+      std::cout << prevPoint[z][y][x];
     }
+    std::cout << "\n";
   }
 }
+*/
