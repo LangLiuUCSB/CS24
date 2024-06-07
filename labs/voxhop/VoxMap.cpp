@@ -37,6 +37,7 @@ VoxMap::VoxMap(std::istream &stream)
 
 VoxMap::~VoxMap()
 {
+  delete map;
 }
 
 Route VoxMap::route(Point src, Point dst)
