@@ -1,6 +1,7 @@
 #include "VoxMap.h"
 #include "Errors.h"
 
+#include <algorithm>
 #include <stdexcept>
 
 VoxMap::VoxMap(std::istream &stream)
