@@ -118,14 +118,14 @@ Route VoxMap::route(Point src, Point dst)
         {
           // fall until below is full
           --newPoint.z;
-          while (inBounds3D(newPoint))
+          while (0 < newPoint.z)
           {
             if (!isEmpty(newPoint))
               break;
             --newPoint.z;
           }
           ++newPoint.z;
-          if (!scanned[newPoint.z][newPoint.y][newPoint.x])
+          if (!scanned[newPoint.z][newPoint.y][newPoint.x] && !isEmpty(newPoint + Point(0, 0, -1)))
           {
             newPoint.cost = getCost(newPoint);
             frontiers.push(newPoint);
