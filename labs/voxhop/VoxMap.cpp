@@ -9,7 +9,7 @@ VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xWidth >> yDepth >> zHeight;
 
-  map = new bool[zHeight * yDepth * xWidth];
+  map = new bool[xWidth * yDepth * zHeight];
 
   for (unsigned short z = 0; z < zHeight; z++)
   {
@@ -24,7 +24,7 @@ VoxMap::VoxMap(std::istream &stream)
         unsigned char dec = hexToDec(hex);
 
         // Calculate the base index in the flat vector
-        size_t baseIndex = (z * yDepth + y) * xWidth + xQuad;
+        size_t baseIndex = (z * yDepth * xWidth) + (y * xWidth) + xQuad;
 
         map[baseIndex] = (dec & 0b1000) >> 3;
         map[baseIndex + 1] = (dec & 0b0100) >> 2;
@@ -119,7 +119,7 @@ Route VoxMap::route(Point src, Point dst)
         }
         else // full
         {
-          if (currPoint.z < zHeight && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
+          if (currPoint.z + 1 < zHeight && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
           {
             ++newPoint.z;
             if (!scanned[newPoint.z][newPoint.y][newPoint.x] && isEmpty(newPoint)) // empty above full
