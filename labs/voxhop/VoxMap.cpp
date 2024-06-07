@@ -118,7 +118,7 @@ Route VoxMap::route(Point src, Point dst)
         {
           // fall until below is full
           --newPoint.z;
-          while (0 <= newPoint.z)
+          while (inBounds3D(newPoint))
           {
             if (!isEmpty(newPoint))
               break;
@@ -145,10 +145,8 @@ Route VoxMap::route(Point src, Point dst)
         }
         else // full
         {
-          ++currPoint.z;
-          if (inBounds3D(currPoint) && isEmpty(currPoint)) // Empty above current
+          if (inBounds3D(currPoint + Point(0, 0, 1)) && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
           {
-            --currPoint.z;
             ++newPoint.z;
             if (!scanned[newPoint.z][newPoint.y][newPoint.x] && isEmpty(newPoint)) // empty above full
             {

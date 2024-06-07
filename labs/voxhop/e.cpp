@@ -6,7 +6,7 @@
 
 int main()
 {
-    std::string filepath = "data/stairs2.vox";
+    std::string filepath = "data/labrat.vox";
     std::ifstream stream(filepath);
     if (stream.fail())
     {
@@ -17,8 +17,8 @@ int main()
     VoxMap map(stream);
     stream.close();
 
-    Point src(5, 11, 1);
-    Point dst(11, 0, 6);
+    Point src(15, 38, 1);
+    Point dst(38, 10, 1);
 
     std::cout << "src: (" << src.x << "," << src.y << "," << src.z << ")\n";
     std::cout << "dst: (" << dst.x << "," << dst.y << "," << dst.z << ")\n\n";
