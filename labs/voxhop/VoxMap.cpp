@@ -9,7 +9,7 @@ VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xWidth >> yDepth >> zHeight;
 
-  map = new bool[xWidth * yDepth * zHeight];
+  map = new std::bitset<1>[xWidth * yDepth * zHeight];
 
   for (unsigned short z = 0; z < zHeight; z++)
   {

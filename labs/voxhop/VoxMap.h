@@ -15,7 +15,7 @@ class VoxMap
   unsigned short xWidth;
   unsigned short yDepth;
   unsigned short zHeight;
-  bool *map; // map[z][y][x]
+  std::bitset<1> *map; // map[z][y][x]
   inline unsigned char hexToDec(char hex)
   {
     if (hex >= '0' && hex <= '9')
