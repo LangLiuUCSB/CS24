@@ -1,50 +1,35 @@
 #include "VoxMap.h"
 #include "Errors.h"
 
+#include <cstdlib>
 #include <algorithm>
 #include <stdexcept>
 
 VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xWidth >> yDepth >> zHeight;
-  map = new bool **[zHeight];
-  std::string xLine;
-  unsigned char hex, dec;
-  unsigned char hexToDec[103];
-  hexToDec[48] = 0;
-  hexToDec[49] = 1;
-  hexToDec[50] = 2;
-  hexToDec[51] = 3;
-  hexToDec[52] = 4;
-  hexToDec[53] = 5;
-  hexToDec[54] = 6;
-  hexToDec[55] = 7;
-  hexToDec[56] = 8;
-  hexToDec[57] = 9;
-  hexToDec[97] = 10;
-  hexToDec[98] = 11;
-  hexToDec[99] = 12;
-  hexToDec[100] = 13;
-  hexToDec[101] = 14;
-  hexToDec[102] = 15;
+
+  map = new bool[zHeight * yDepth * xWidth];
+
   for (unsigned short z = 0; z < zHeight; z++)
   {
-    map[z] = new bool *[yDepth];
     for (unsigned short y = 0; y < yDepth; y++)
     {
-      map[z][y] = new bool[xWidth];
+      std::string xLine;
       stream >> xLine;
+
       for (unsigned short xQuad = 0; xQuad < xWidth; xQuad += 4)
       {
-        hex = xLine[xQuad / 4];
-        if ((map[z][y][xQuad] = (dec = hexToDec[hex]) / 8))
-          dec %= 8;
-        if ((map[z][y][xQuad + 1] = dec / 4))
-          dec %= 4;
-        if ((map[z][y][xQuad + 2] = dec / 2))
-          map[z][y][xQuad + 3] = dec % 2;
-        else
-          map[z][y][xQuad + 3] = dec;
+        unsigned char hex = xLine[xQuad / 4];
+        unsigned char dec = hexToDec(hex);
+
+        // Calculate the base index in the flat vector
+        size_t baseIndex = (z * yDepth + y) * xWidth + xQuad;
+
+        map[baseIndex] = (dec & 0b1000) >> 3;
+        map[baseIndex + 1] = (dec & 0b0100) >> 2;
+        map[baseIndex + 2] = (dec & 0b0010) >> 1;
+        map[baseIndex + 3] = dec & 0b0001;
       }
     }
   }
@@ -52,15 +37,6 @@ VoxMap::VoxMap(std::istream &stream)
 
 VoxMap::~VoxMap()
 {
-  for (unsigned short z = 0; z < zHeight; z++)
-  {
-    for (unsigned short y = 0; y < yDepth; y++)
-    {
-      delete[] map[z][y];
-    }
-    delete[] map[z];
-  }
-  delete[] map;
 }
 
 Route VoxMap::route(Point src, Point dst)
@@ -71,11 +47,9 @@ Route VoxMap::route(Point src, Point dst)
     throw InvalidPoint(dst);
 
   Route path;
-  if (src == dst)
-    return path;
 
   auto getCost = [dst](Point p) -> unsigned short // Manhattan Distance from Destination
-  { return (p.x < dst.x ? dst.x - p.x : p.x - dst.x) + (p.y < dst.y ? dst.y - p.y : p.y - dst.y) + (p.z < dst.z ? dst.z - p.z : p.z - dst.z); };
+  { return abs(p.x - dst.x) + abs(p.y - dst.y) + abs(p.z - dst.z); };
 
   auto compare = [](const Point &a, const Point &b)
   { return a.cost > b.cost; };
@@ -99,7 +73,6 @@ Route VoxMap::route(Point src, Point dst)
     if (currPoint == dst)
     {
       while (currPoint != src)
-      // for (unsigned short turn = 0; turn < 9; turn++)
       {
         path.push_back(prevMove[currPoint.z][currPoint.y][currPoint.x]);
         currPoint = prevPoint[currPoint.z][currPoint.y][currPoint.x];
@@ -112,7 +85,7 @@ Route VoxMap::route(Point src, Point dst)
     for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
       newPoint = currPoint + displacement[direction];
-      if (inBounds3D(newPoint))
+      if (inBounds2D(newPoint))
       {
         if (isEmpty(newPoint))
         {
@@ -145,7 +118,7 @@ Route VoxMap::route(Point src, Point dst)
         }
         else // full
         {
-          if (inBounds3D(currPoint + Point(0, 0, 1)) && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
+          if (currPoint.z < zHeight && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
           {
             ++newPoint.z;
             if (!scanned[newPoint.z][newPoint.y][newPoint.x] && isEmpty(newPoint)) // empty above full
