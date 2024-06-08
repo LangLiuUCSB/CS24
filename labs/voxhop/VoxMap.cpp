@@ -42,9 +42,9 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  if (!inBounds3D(src) || map[(src.z * yDepth + src.y) * xWidth + src.x] == 1 || map[((dst.z - 1) * yDepth + dst.y) * xWidth + dst.x] != 1)
+  if (!inBounds3D(src) || map[(src.z * yDepth + src.y) * xWidth + src.x] == 1 || map[((src.z - 1) * yDepth + src.y) * xWidth + src.x] != 1)
     throw InvalidPoint(src);
-  if (!inBounds3D(dst) || map[(src.z * yDepth + src.y) * xWidth + src.x] == 1 || map[((dst.z - 1) * yDepth + dst.y) * xWidth + dst.x] != 1)
+  if (!inBounds3D(dst) || map[(dst.z * yDepth + dst.y) * xWidth + dst.x] == 1 || map[((dst.z - 1) * yDepth + dst.y) * xWidth + dst.x] != 1)
     throw InvalidPoint(dst);
 
   Route path;
