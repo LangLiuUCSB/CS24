@@ -27,7 +27,6 @@ class VoxMap
 
   // Helper Functions
   bool inBounds3D(Point p) { return 0 <= p.x && p.x < xWidth && 0 <= p.y && p.y < yDepth && 0 < p.z && p.z < zHeight; }
-  bool isEmpty(Point p) { return map[(p.z * yDepth + p.y) * xWidth + p.x] != 1; }
   bool inBounds2D(Point p) { return 0 <= p.x && p.x < xWidth && 0 <= p.y && p.y < yDepth; }
 
 public:

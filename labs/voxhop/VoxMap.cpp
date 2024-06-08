@@ -93,7 +93,7 @@ Route VoxMap::route(Point src, Point dst)
     for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
       newPoint = currPoint + displacement[direction];
-      if (inBounds2D(newPoint)) // is newPoint in bounds
+      if (inBounds2D(newPoint)) // if newPoint in bounds
       {
         if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] != 1) // if (newPoint) empty XXX0
         {
@@ -136,8 +136,8 @@ Route VoxMap::route(Point src, Point dst)
         }
         else // if (newPoint) full XXX1
         {
-          if (currPoint.z + 1 < zHeight &&                                              // if (currPoint above) full XXX1
-              map[((newPoint.z + 1) * yDepth + newPoint.y) * xWidth + newPoint.x] != 1) // if (newPoint above) full XXX1
+          if (currPoint.z + 1 < zHeight &&                                                 // if (currPoint) in bounds
+              map[((currPoint.z + 1) * yDepth + currPoint.y) * xWidth + currPoint.x] != 1) // if (newPoint above) empty XXX0
           {
             ++newPoint.z;                                                           // climb
             if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 0) // if (newPoint) empty XXX0
