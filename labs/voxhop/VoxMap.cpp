@@ -79,6 +79,11 @@ Route VoxMap::route(Point src, Point dst)
         currPoint = prevPoint[currPoint.z][currPoint.y][currPoint.x];
       }
       std::reverse(path.begin(), path.end());
+      for (size_t i = 0; i < xWidth * yDepth * zHeight; i++)
+      {
+        if (map[i] != 1)
+          map[i] = 0;
+      }
       return path;
     }
 
