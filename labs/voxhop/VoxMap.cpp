@@ -70,7 +70,7 @@ Route VoxMap::route(Point src, Point dst)
     currPoint = frontiers.top();
     frontiers.pop();
 
-    //? path found
+    //! path found
     if (currPoint.cost == 0) // if Manhattan Distance from Destination is zero
     {
       while (currPoint != src)
@@ -164,6 +164,11 @@ Route VoxMap::route(Point src, Point dst)
         }
       }
     }
+  }
+  for (size_t i = 0; i < xWidth * yDepth * zHeight; i++)
+  {
+    if (map[i] != 1)
+      map[i] = 0;
   }
   throw NoRoute(src, dst);
 }

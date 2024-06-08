@@ -19,7 +19,7 @@ static const std::string world[] = {
 
 static const Point source[] = {
     Point(11, 0, 1),
-    Point(37, 10, 1),
+    Point(37, 27, 1),
     Point(7, 7, 4),
     Point(7, 5, 6),
     Point(11, 6, 1),
@@ -30,7 +30,7 @@ static const Point source[] = {
 
 static const Point destination[] = {
     Point(0, 11, 1),
-    Point(15, 38, 1),
+    Point(21, 35, 1),
     Point(1, 1, 1),
     Point(0, 0, 1),
     Point(0, 0, 6),
@@ -43,7 +43,7 @@ int main()
 {
     std::chrono::steady_clock::time_point start, end;
     std::chrono::duration<double> elapsed_seconds;
-    for (unsigned char i = 1; i < 9; i++)
+    for (unsigned char i = 0; i < 9; i++)
     {
         std::ifstream stream("data/" + world[i] + ".vox");
         std::cout << "\n"
