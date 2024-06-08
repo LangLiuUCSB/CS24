@@ -3,33 +3,76 @@
 
 #include <fstream>
 #include <iostream>
+#include <iomanip>
+#include <chrono>
+
+static const std::string world[] = {
+    "flatland",
+    "labrat",
+    "pyramid",
+    "stairs",
+    "stairs2",
+    "bouncy-castle",
+    "goo-ball",
+    "tower-block",
+    "no-route"};
+
+static const Point source[] = {
+    Point(11, 0, 1),
+    Point(37, 10, 1),
+    Point(7, 7, 4),
+    Point(7, 5, 6),
+    Point(11, 6, 1),
+    Point(7, 5, 2),
+    Point(37, 44, 67),
+    Point(71, 4, 22),
+    Point(9, 3, 1)};
+
+static const Point destination[] = {
+    Point(0, 11, 1),
+    Point(15, 38, 1),
+    Point(1, 1, 1),
+    Point(0, 0, 1),
+    Point(0, 0, 6),
+    Point(0, 5, 1),
+    Point(36, 54, 19),
+    Point(32, 23, 51),
+    Point(7, 10, 3)};
 
 int main()
 {
-    std::string filepath = "data/labrat.vox";
-    std::ifstream stream(filepath);
-    if (stream.fail())
+    std::chrono::steady_clock::time_point start, end;
+    std::chrono::duration<double> elapsed_seconds;
+    for (unsigned char i = 1; i < 9; i++)
     {
-        std::cerr << "ERROR: Could not open file: " << filepath << '\n';
-        return 1;
-    }
+        std::ifstream stream("data/" + world[i] + ".vox");
+        std::cout << "\n"
+                  << std::setw(15) << std::left << world[i] << source[i] << "->" << destination[i] << "\n";
+        if (stream.fail())
+            return 1;
 
-    VoxMap map(stream);
-    stream.close();
+        VoxMap map(stream);
+        stream.close();
 
-    Point src(37, 10, 1), dst(6, 38, 1);
-    try
-    {
-        Route route = map.route(src, dst);
-        std::cout << route << '\n';
-    }
-    catch (const InvalidPoint &err)
-    {
-        std::cout << "Invalid point: " << err.point() << '\n';
-    }
-    catch (const NoRoute &err)
-    {
-        std::cout << "No route from " << err.src() << " to " << err.dst() << ".\n";
+        Route route;
+        try
+        {
+            start = std::chrono::steady_clock::now();
+            route = map.route(source[i], destination[i]);
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end - start;
+            std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n"
+                      << route << "\n";
+        }
+        catch (const InvalidPoint &err)
+        {
+            std::cout << "Invalid point: " << err.point() << '\n';
+        }
+        catch (const NoRoute &err)
+        {
+            std::cout << "No route from " << err.src() << " to " << err.dst() << ".\n";
+        }
+        // map.printMap(source[i], destination[i]);
     }
 
     return 0;

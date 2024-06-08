@@ -15,7 +15,7 @@ class VoxMap
   unsigned short xWidth;
   unsigned short yDepth;
   unsigned short zHeight;
-  std::bitset<1> *map; // map[z][y][x]
+  std::bitset<4> *map; // map[z][y][x]
   inline unsigned char hexToDec(char hex)
   {
     if (hex >= '0' && hex <= '9')
@@ -27,7 +27,7 @@ class VoxMap
 
   // Helper Functions
   bool inBounds3D(Point p) { return 0 <= p.x && p.x < xWidth && 0 <= p.y && p.y < yDepth && 0 < p.z && p.z < zHeight; }
-  bool isEmpty(Point p) { return map[(p.z * yDepth * xWidth) + (p.y * xWidth) + p.x] == 0; }
+  bool isEmpty(Point p) { return map[(p.z * yDepth + p.y) * xWidth + p.x] != 1; }
   bool inBounds2D(Point p) { return 0 <= p.x && p.x < xWidth && 0 <= p.y && p.y < yDepth; }
 
 public:
@@ -35,6 +35,8 @@ public:
   ~VoxMap();
 
   Route route(Point src, Point dst);
+
+  void printMap(Point src, Point dst) const;
 };
 
 #endif
@@ -55,4 +57,9 @@ public:
 1XX11111 scanned   Empty X     >30fall
 
 possibly max 62 fall and min 0 fall
+
+0000
+
+
+
 */

@@ -9,7 +9,7 @@ VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xWidth >> yDepth >> zHeight;
 
-  map = new std::bitset<1>[xWidth * yDepth * zHeight];
+  map = new std::bitset<4>[xWidth * yDepth * zHeight];
 
   for (unsigned short z = 0; z < zHeight; z++)
   {
@@ -24,7 +24,7 @@ VoxMap::VoxMap(std::istream &stream)
         unsigned char dec = hexToDec(hex);
 
         // Calculate the base index in the flat vector
-        size_t baseIndex = (z * yDepth * xWidth) + (y * xWidth) + xQuad;
+        size_t baseIndex = (z * yDepth + y) * xWidth + xQuad;
 
         map[baseIndex] = (dec & 0b1000) >> 3;
         map[baseIndex + 1] = (dec & 0b0100) >> 2;
@@ -42,9 +42,9 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  if (!inBounds3D(src) || !isEmpty(src) || isEmpty(src + Point(0, 0, -1)))
+  if (!inBounds3D(src) || map[(src.z * yDepth + src.y) * xWidth + src.x] == 1 || map[((dst.z - 1) * yDepth + dst.y) * xWidth + dst.x] != 1)
     throw InvalidPoint(src);
-  if (!inBounds3D(dst) || !isEmpty(dst) || isEmpty(dst + Point(0, 0, -1)))
+  if (!inBounds3D(dst) || map[(src.z * yDepth + src.y) * xWidth + src.x] == 1 || map[((dst.z - 1) * yDepth + dst.y) * xWidth + dst.x] != 1)
     throw InvalidPoint(dst);
 
   Route path;
@@ -58,8 +58,7 @@ Route VoxMap::route(Point src, Point dst)
   src.cost = getCost(src);
   frontiers.push(src);
 
-  std::vector<std::vector<std::vector<bool>>> scanned(zHeight, std::vector<std::vector<bool>>(yDepth, std::vector<bool>(xWidth, false)));
-  scanned[src.z][src.y][src.x] = true;
+  map[(src.z * yDepth + src.y) * xWidth + src.x] = 2;
 
   std::vector<std::vector<std::vector<Point>>> prevPoint(zHeight, std::vector<std::vector<Point>>(yDepth, std::vector<Point>(xWidth)));
 
@@ -71,7 +70,8 @@ Route VoxMap::route(Point src, Point dst)
     currPoint = frontiers.top();
     frontiers.pop();
 
-    if (currPoint == dst)
+    //? path found
+    if (currPoint.cost == 0) // if Manhattan Distance from Destination is zero
     {
       while (currPoint != src)
       {
@@ -81,54 +81,84 @@ Route VoxMap::route(Point src, Point dst)
       std::reverse(path.begin(), path.end());
       return path;
     }
+
+    //! scan adjacents and push frontiers
     Point newPoint;
     Point displacement[] = {Point(1, 0, 0), Point(0, 1, 0), Point(-1, 0, 0), Point(0, -1, 0)};
     for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
       newPoint = currPoint + displacement[direction];
-      if (inBounds2D(newPoint))
+      if (inBounds2D(newPoint)) // is newPoint in bounds
       {
-        if (isEmpty(newPoint))
+        if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] != 1) // if (newPoint) empty XXX0
         {
-          // fall until below is full
-          --newPoint.z;
-          while (0 < newPoint.z)
+          //! newPoint fall
+          --newPoint.z;          // fall down
+          while (0 < newPoint.z) // while (newPoint) in z bound
           {
-            if (!isEmpty(newPoint))
+            if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 1) // if (newPoint) full XXX1
               break;
-            --newPoint.z;
+            --newPoint.z; // fall down
           }
-          ++newPoint.z;
-          if (!scanned[newPoint.z][newPoint.y][newPoint.x] && !isEmpty(newPoint + Point(0, 0, -1)))
+          ++newPoint.z; // fly up
+
+          if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 0 &&     // if (newPoint) unscanned XX0X
+              map[((newPoint.z - 1) * yDepth + newPoint.y) * xWidth + newPoint.x] == 1) // if (newPoint below) full XXX1
           {
+            map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x].set(1); // set (newPoint) scanned XX1X
+
+            //! push frontier
             newPoint.cost = getCost(newPoint);
             frontiers.push(newPoint);
-            prevPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
-            prevMove[newPoint.z][newPoint.y][newPoint.x] = direction;
 
-            scanned[newPoint.z][newPoint.y][newPoint.x] = true;
-            ++newPoint.z;
-            while (newPoint.z < zHeight)
+            //! track frontier prev
+            prevPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+
+            //! track move
+            prevMove[newPoint.z][newPoint.y][newPoint.x] = direction;
+            /*
+            // set all above as visited
+            ++newPoint.z;                // fly up
+            while (newPoint.z < zHeight) // while (newPoint) in z bound
             {
-              if (!isEmpty(newPoint))
+              if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 1) // if (newPoint) full XXX1
                 break;
-              scanned[newPoint.z][newPoint.y][newPoint.x] = true;
-              ++newPoint.z;
+              map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x].set(1); // set scanned XX1X
+              ++newPoint.z;                                                         // fly up
             }
+            */
           }
         }
-        else // full
+        else // if (newPoint) full XXX1
         {
-          if (currPoint.z + 1 < zHeight && isEmpty(currPoint + Point(0, 0, 1))) // Empty above current
+          if (currPoint.z + 1 < zHeight &&                                              // if (currPoint above) full XXX1
+              map[((newPoint.z + 1) * yDepth + newPoint.y) * xWidth + newPoint.x] != 1) // if (newPoint above) full XXX1
           {
-            ++newPoint.z;
-            if (!scanned[newPoint.z][newPoint.y][newPoint.x] && isEmpty(newPoint)) // empty above full
+            ++newPoint.z;                                                           // climb
+            if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 0) // if (newPoint) empty XXX0
             {
+              map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x].set(1); // set (newPoint)scanned XX1X
+
+              //! push frontier
               newPoint.cost = getCost(newPoint);
               frontiers.push(newPoint);
-              scanned[newPoint.z][newPoint.y][newPoint.x] = true;
+
+              //! track frontier prev
               prevPoint[newPoint.z][newPoint.y][newPoint.x] = currPoint;
+
+              //! track move
               prevMove[newPoint.z][newPoint.y][newPoint.x] = direction;
+              /*
+              // set all above as visited
+              ++newPoint.z;                // fly up
+              while (newPoint.z < zHeight) // while (newPoint) in z bound
+              {
+                if (map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x] == 1) // if (newPoint) full XXX1
+                  break;
+                map[(newPoint.z * yDepth + newPoint.y) * xWidth + newPoint.x].set(1); // set scanned XX1X
+                ++newPoint.z;                                                         // fly up
+              }
+              */
             }
           }
         }
@@ -137,17 +167,33 @@ Route VoxMap::route(Point src, Point dst)
   }
   throw NoRoute(src, dst);
 }
-/*
-for (unsigned short z = 5; z < zHeight; z++)
+
+void VoxMap::printMap(Point src, Point dst) const
 {
-  std::cout << z << "\n";
-  for (unsigned short y = 0; y < yDepth; y++)
+  for (unsigned short z = 0; z < zHeight; z++)
   {
-    for (unsigned short x = 0; x < xWidth; x++)
+    std::cout << "Lvl: " << z << "\n";
+    for (unsigned short y = 0; y < yDepth; y++)
     {
-      std::cout << prevPoint[z][y][x];
+      for (unsigned short x = 0; x < xWidth; x++)
+      {
+        int index = (z * yDepth + y) * xWidth + x;
+        if (index == (src.z * yDepth + src.y) * xWidth + src.x)
+          std::cout << 's';
+        else if (index == (dst.z * yDepth + dst.y) * xWidth + dst.x)
+          std::cout << 'd';
+        else
+        {
+          auto b = map[index];
+          if (b == 0)
+            std::cout << ' ';
+          if (b == 1)
+            std::cout << '#';
+          if (b == 2)
+            std::cout << '.';
+        }
+      }
+      std::cout << "\n";
     }
-    std::cout << "\n";
   }
 }
-*/
