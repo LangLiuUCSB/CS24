@@ -147,29 +147,30 @@ Route VoxMap::route(Point src, Point dst)
   const short yd = dst.y;
   const short zd = dst.z;
 
-  if (!inBounds3D(xs, ys, zs) || !getNode(xs, ys, zs))
+  if (!inBounds3D(xs, ys, zs) || !(srcNode = getNode(xs, ys, zs)))
     throw InvalidPoint(src);
-  if (!inBounds3D(xd, yd, zd) || !getNode(xd, yd, zd))
+  if (!inBounds3D(xd, yd, zd) || !(dstNode = getNode(xd, yd, zd)))
     throw InvalidPoint(dst);
 
   Route path;
+  if (srcNode == dstNode)
+    return path;
 
   auto setCost = [xd, yd, zd](Node *n)
   { n->cost = abs(xd - n->x) + abs(yd - n->y) + abs(zd - n->z); }; // Manhattan Distance from Destination
+  setCost(srcNode);
+  dstNode->cost = 0;
 
   auto compare = [](Node *const &n1, Node *const &n2)
   { return n1->cost > n2->cost; };
   std::priority_queue<Node *, std::vector<Node *>, decltype(compare)> frontiers(compare);
-
-  std::unordered_set<Node *> visited;
-
-  Node *srcNode = getNode(xs, ys, zs);
-  setCost(srcNode);
   frontiers.push(srcNode);
 
-  Node *dstNode = getNode(xd, yd, zd);
+  std::unordered_set<Node *> visited;
+  visited.insert(srcNode);
 
   Node *currNode;
+  Node *adjNode;
   while (!frontiers.empty())
   {
     currNode = frontiers.top();
@@ -186,18 +187,16 @@ Route VoxMap::route(Point src, Point dst)
       return path;
     }
 
-    visited.insert(currNode);
-
-    Node *neighbor;
     for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
-      neighbor = currNode->next[direction];
-      if (neighbor && visited.find(neighbor) == visited.end())
+      adjNode = currNode->next[direction];
+      if (adjNode && visited.find(adjNode) == visited.end())
       {
-        setCost(neighbor);
-        frontiers.push(neighbor);
-        neighbor->prev = currNode;
-        neighbor->move = direction;
+        setCost(adjNode);
+        frontiers.push(adjNode);
+        visited.insert(adjNode);
+        adjNode->prev = currNode;
+        adjNode->move = direction;
       }
     }
   }

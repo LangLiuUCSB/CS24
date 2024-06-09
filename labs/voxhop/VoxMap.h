@@ -6,7 +6,6 @@
 #include <vector>
 #include <queue>
 #include <unordered_set>
-#include <unordered_map>
 #include <algorithm>
 
 #include "Point.h"
@@ -28,6 +27,8 @@ class VoxMap
   unsigned short xLim, yLim, zLim;
   size_t map_area, map_volume;
   Node **graph;
+
+  Node *srcNode, *dstNode;
 
   // Helper Functions
   inline char hexToDec(char hex) const { return (hex <= '9') ? hex - '0' : hex - 'W'; }
