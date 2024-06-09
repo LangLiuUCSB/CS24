@@ -181,8 +181,8 @@ Route VoxMap::route(Point src, Point dst)
     {
       while (currNode != srcNode)
       {
-        currNode = came_from[currNode];
         path.push_back(move[currNode]);
+        currNode = came_from[currNode];
       }
       std::reverse(path.begin(), path.end());
       return path;
