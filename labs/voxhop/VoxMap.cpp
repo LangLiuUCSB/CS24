@@ -10,21 +10,42 @@ VoxMap::VoxMap(std::istream &stream)
   stream >> xLim >> yLim >> zLim;
   map_area = xLim * yLim;
   char schem[map_area]; // index = x + xLim * y
-  std::memset(schem, 0b111, map_area);
 
   map_volume = map_area * zLim;
   graph = new Node *[map_volume]; // index = x + xLim * (y + yLim * z)
   std::memset(graph, 0, map_volume * sizeof(Node *));
 
   std::string xLine;
-  u2byte x_quad;
-  size_t area_north;
-  size_t volume_below = 0;
+  unsigned short x_quad;
+  size_t area_north = 0;
+  //! z=0 parse
+  for (unsigned short y = 0; y < yLim; y++)
+  {
+    stream >> xLine;
+    x_quad = 0;
+    for (char ch : xLine)
+    {
+      char hex = hexToDec(ch);
+      char bit_place = 0b1000;
+      for (size_t i = area_north; i < area_north + 4; i++)
+      {
+        if ((hex & bit_place)) //? when curr is full
+          schem[i] = 0b100;    //* track full in schem[]
+        else                   //? when curr is non void
+          schem[i] = 0b111;
+        bit_place >>= 1;
+      }
+      x_quad += 4;
+      area_north += 4;
+    }
+  }
+  //! default parse
   size_t graphIndex;
-  for (u2byte z = 0; z < zLim; z++)
+  size_t volume_below = map_area;
+  for (unsigned short z = 1; z < zLim; z++)
   {
     area_north = 0;
-    for (u2byte y = 0; y < yLim; y++)
+    for (unsigned short y = 0; y < yLim; y++)
     {
       stream >> xLine;
       x_quad = 0;
@@ -119,6 +140,10 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
+  if (graph[src.x + xLim * (src.y + yLim * src.z)])
+    throw InvalidPoint(src);
+  if (graph[dst.x + xLim * (dst.y + yLim * dst.z)])
+    throw InvalidPoint(dst);
   throw NoRoute(src, dst);
 }
 
