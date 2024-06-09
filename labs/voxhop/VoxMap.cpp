@@ -140,9 +140,9 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  if (!inBounds3D(src.x, src.y, src.z) && graph[src.x + xLim * (src.y + yLim * src.z)])
+  if (!inBounds3D(src.x, src.y, src.z) && graph[src.x + xLim * (src.y + yLim * src.z)] == nullptr)
     throw InvalidPoint(src);
-  if (!inBounds3D(dst.x, dst.y, dst.z) && graph[dst.x + xLim * (dst.y + yLim * dst.z)])
+  if (!inBounds3D(dst.x, dst.y, dst.z) && graph[dst.x + xLim * (dst.y + yLim * dst.z)] == nullptr)
     throw InvalidPoint(dst);
 
   throw NoRoute(src, dst);
