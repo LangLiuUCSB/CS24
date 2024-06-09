@@ -50,7 +50,7 @@ int main()
     elapsed_seconds = end - start;
     std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n";
 
-    for (unsigned char i = 5; i < 6; i++)
+    for (unsigned char i = 1; i < 9; i++)
     {
         std::ifstream stream("data/" + world[i] + ".vox");
         std::cout << "\n"

@@ -2,6 +2,7 @@
 #define VOXMAP_H
 
 #include <istream>
+#include <cstring>
 #include <vector>
 #include <queue>
 #include <bitset>
@@ -21,7 +22,7 @@ class VoxMap
 {
   // Member Variables
   unsigned short xLim, yLim, zLim;
-  size_t map_area, map_size;
+  size_t map_area, map_volume;
   Node **graph;
 
   // Helper Functions
