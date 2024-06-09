@@ -13,7 +13,7 @@ VoxMap::VoxMap(std::istream &stream)
 
   map_volume = map_area * zLim;
   graph = new Node *[map_volume]; // index = x + xLim * (y + yLim * z)
-  std::memset(graph, 0, map_volume * sizeof(Node *));
+  std::fill_n(graph, map_volume, nullptr);
 
   std::string xLine;
   unsigned short x_quad;

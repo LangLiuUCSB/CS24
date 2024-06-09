@@ -2,7 +2,7 @@
 #define VOXMAP_H
 
 #include <istream>
-#include <cstring>
+#include <algorithm>
 #include <vector>
 #include <queue>
 #include <bitset>
