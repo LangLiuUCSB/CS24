@@ -13,7 +13,7 @@ VoxMap::VoxMap(std::istream &stream)
 
   map_volume = map_area * zLim;
   graph = new Node *[map_volume]; // index = x + xLim * (y + yLim * z)
-  std::fill_n(graph, map_volume, nullptr);
+  std::memset(graph, 0, map_volume * sizeof(Node *));
 
   std::string xLine;
   unsigned short x_quad;
@@ -140,9 +140,9 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  if (!inBounds3D(src.x, src.y, src.z) && graph[src.x + xLim * (src.y + yLim * src.z)] == nullptr)
+  if (!inBounds3D(src.x, src.y, src.z) || !graph[src.x + xLim * (src.y + yLim * src.z)])
     throw InvalidPoint(src);
-  if (!inBounds3D(dst.x, dst.y, dst.z) && graph[dst.x + xLim * (dst.y + yLim * dst.z)] == nullptr)
+  if (!inBounds3D(dst.x, dst.y, dst.z) || !graph[dst.x + xLim * (dst.y + yLim * dst.z)])
     throw InvalidPoint(dst);
 
   throw NoRoute(src, dst);
