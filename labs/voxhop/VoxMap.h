@@ -27,6 +27,10 @@ class VoxMap
 
   // Helper Functions
   inline char hexToDec(char hex) const { return (hex <= '9') ? hex - '0' : hex - 'W'; }
+  inline bool inBounds2D(short x, short y) const { return 0 <= x && x < xLim && 0 <= y && y < yLim; }
+  inline bool inBounds3D(short x, short y, short z) const { return 0 <= x && x < xLim &&
+                                                                   0 <= y && y < yLim &&
+                                                                   0 < z && z < zLim; }
 
 public:
   VoxMap(std::istream &stream);
