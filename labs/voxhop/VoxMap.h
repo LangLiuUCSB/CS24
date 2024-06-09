@@ -7,7 +7,7 @@
 #include <queue>
 #include <unordered_set>
 #include <unordered_map>
-#include <bitset>
+#include <algorithm>
 
 #include "Point.h"
 #include "Route.h"
