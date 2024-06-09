@@ -48,13 +48,13 @@ int main()
 
     end = std::chrono::steady_clock::now();
     elapsed_seconds = end - start;
-    std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n";
+    std::cout << "nothing time: " << std::setw(8) << std::right << elapsed_seconds.count() * 1000000 << " μs\n";
 
-    for (unsigned char i = 1; i < 9; i++)
+    for (unsigned char i = 0; i < 9; i++)
     {
         std::ifstream stream("data/" + world[i] + ".vox");
         std::cout << "\n"
-                  << std::setw(15) << std::left << world[i] << source[i] << "->" << destination[i] << "\n";
+                  << std::setw(15) << std::left << world[i];
         if (stream.fail())
             return 1;
 
@@ -62,7 +62,26 @@ int main()
         VoxMap map(stream);
         end = std::chrono::steady_clock::now(); //!
         elapsed_seconds = end - start;
-        std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n";
+        std::cout << "parse time: " << std::setw(8) << std::right << elapsed_seconds.count() * 1000000 << " μs  "
+                  << source[i] << "->" << destination[i] << "\n";
+
+        try
+        {
+            start = std::chrono::steady_clock::now();
+            Route route = map.route(source[i], destination[i]);
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end - start;
+            std::cout << "pathfind time: " << std::setw(8) << std::right << elapsed_seconds.count() * 1000000 << " μs\n";
+            std::cout << route << '\n';
+        }
+        catch (const InvalidPoint &err)
+        {
+            std::cout << "Invalid point: " << err.point() << '\n';
+        }
+        catch (const NoRoute &err)
+        {
+            std::cout << "No route\n";
+        }
 
         stream.close();
     }
