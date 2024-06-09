@@ -5,6 +5,8 @@
 #include <cstring>
 #include <vector>
 #include <queue>
+#include <unordered_set>
+#include <unordered_map>
 #include <bitset>
 
 #include "Point.h"
@@ -28,9 +30,16 @@ class VoxMap
   // Helper Functions
   inline char hexToDec(char hex) const { return (hex <= '9') ? hex - '0' : hex - 'W'; }
   inline bool inBounds2D(short x, short y) const { return 0 <= x && x < xLim && 0 <= y && y < yLim; }
-  inline bool inBounds3D(short x, short y, short z) const { return 0 <= x && x < xLim &&
-                                                                   0 <= y && y < yLim &&
-                                                                   0 < z && z < zLim; }
+  inline bool inBounds3D(short x, short y, short z) const
+  {
+    return 0 <= x && x < xLim && 0 <= y && y < yLim && 0 < z && z < zLim;
+  }
+  Node *getNode(short x, short y, short z) const { return graph[x + xLim * (y + yLim * z)]; };
+  Node *setCost(short x, short y, short z, unsigned short cost)
+  {
+    graph[x + xLim * (y + yLim * z)]->cost = cost;
+    return graph[x + xLim * (y + yLim * z)];
+  };
 
 public:
   VoxMap(std::istream &stream);

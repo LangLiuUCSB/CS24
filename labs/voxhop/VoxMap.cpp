@@ -140,10 +140,94 @@ VoxMap::~VoxMap()
 
 Route VoxMap::route(Point src, Point dst)
 {
-  if (!inBounds3D(src.x, src.y, src.z) || !graph[src.x + xLim * (src.y + yLim * src.z)])
+  const short xs = src.x;
+  const short ys = src.y;
+  const short zs = src.z;
+  const short xd = dst.x;
+  const short yd = dst.y;
+  const short zd = dst.z;
+
+  if (!inBounds3D(xs, ys, zs) || !getNode(xs, ys, zs))
     throw InvalidPoint(src);
-  if (!inBounds3D(dst.x, dst.y, dst.z) || !graph[dst.x + xLim * (dst.y + yLim * dst.z)])
+  if (!inBounds3D(xd, yd, zd) || !getNode(xd, yd, zd))
     throw InvalidPoint(dst);
+
+  Route path;
+
+  auto setCost = [xd, yd, zd](Node *n)
+  { n->cost = abs(xd - n->x) + abs(yd - n->y) + abs(zd - n->z); }; // Manhattan Distance from Destination
+
+  auto compare = [](Node *const &n1, Node *const &n2)
+  { return n1->cost > n2->cost; };
+  std::priority_queue<Node *, std::vector<Node *>, decltype(compare)> frontiers(compare);
+
+  std::unordered_set<Node *> visited;
+  std::unordered_map<Node *, Node *> came_from;
+
+  Node *srcNode = getNode(xs, ys, zs);
+  setCost(srcNode);
+  frontiers.push(srcNode);
+
+  Node *dstNode = getNode(xd, yd, zd);
+
+  Node *currNode;
+  while (!frontiers.empty())
+  {
+    currNode = frontiers.top();
+    frontiers.pop();
+
+    if (currNode == dstNode)
+    {
+      Node *prevNode;
+      while (currNode != srcNode)
+      {
+        prevNode = currNode;
+        currNode = came_from[currNode];
+        if (prevNode == currNode->east)
+          path.push_back(Move::EAST);
+
+        else if (prevNode == currNode->south)
+          path.push_back(Move::SOUTH);
+        else if (prevNode == currNode->west)
+          path.push_back(Move::WEST);
+        else
+          path.push_back(Move::NORTH);
+      }
+      std::reverse(path.begin(), path.end());
+      return path;
+    }
+
+    visited.insert(currNode);
+
+    Node *neighbor = currNode->east;
+    if (neighbor && visited.find(neighbor) == visited.end())
+    {
+      setCost(neighbor);
+      frontiers.push(neighbor);
+      came_from[neighbor] = currNode;
+    }
+    neighbor = currNode->south;
+    if (neighbor && visited.find(neighbor) == visited.end())
+    {
+      setCost(neighbor);
+      frontiers.push(neighbor);
+      came_from[neighbor] = currNode;
+    }
+    neighbor = currNode->west;
+    if (neighbor && visited.find(neighbor) == visited.end())
+    {
+      setCost(neighbor);
+      frontiers.push(neighbor);
+      came_from[neighbor] = currNode;
+    }
+    neighbor = currNode->north;
+    if (neighbor && visited.find(neighbor) == visited.end())
+    {
+      setCost(neighbor);
+      frontiers.push(neighbor);
+      came_from[neighbor] = currNode;
+    }
+  }
 
   throw NoRoute(src, dst);
 }
