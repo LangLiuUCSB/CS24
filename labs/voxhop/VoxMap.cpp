@@ -163,6 +163,7 @@ Route VoxMap::route(Point src, Point dst)
 
   std::unordered_set<Node *> visited;
   std::unordered_map<Node *, Node *> came_from;
+  std::unordered_map<Node *, Move> move;
 
   Node *srcNode = getNode(xs, ys, zs);
   setCost(srcNode);
@@ -178,20 +179,10 @@ Route VoxMap::route(Point src, Point dst)
 
     if (currNode == dstNode)
     {
-      Node *prevNode;
       while (currNode != srcNode)
       {
-        prevNode = currNode;
         currNode = came_from[currNode];
-        if (prevNode == currNode->east)
-          path.push_back(Move::EAST);
-
-        else if (prevNode == currNode->south)
-          path.push_back(Move::SOUTH);
-        else if (prevNode == currNode->west)
-          path.push_back(Move::WEST);
-        else
-          path.push_back(Move::NORTH);
+        path.push_back(move[currNode]);
       }
       std::reverse(path.begin(), path.end());
       return path;
@@ -205,6 +196,7 @@ Route VoxMap::route(Point src, Point dst)
       setCost(neighbor);
       frontiers.push(neighbor);
       came_from[neighbor] = currNode;
+      move[neighbor] = Move::EAST;
     }
     neighbor = currNode->south;
     if (neighbor && visited.find(neighbor) == visited.end())
@@ -212,6 +204,7 @@ Route VoxMap::route(Point src, Point dst)
       setCost(neighbor);
       frontiers.push(neighbor);
       came_from[neighbor] = currNode;
+      move[neighbor] = Move::SOUTH;
     }
     neighbor = currNode->west;
     if (neighbor && visited.find(neighbor) == visited.end())
@@ -219,6 +212,7 @@ Route VoxMap::route(Point src, Point dst)
       setCost(neighbor);
       frontiers.push(neighbor);
       came_from[neighbor] = currNode;
+      move[neighbor] = Move::WEST;
     }
     neighbor = currNode->north;
     if (neighbor && visited.find(neighbor) == visited.end())
@@ -226,6 +220,7 @@ Route VoxMap::route(Point src, Point dst)
       setCost(neighbor);
       frontiers.push(neighbor);
       came_from[neighbor] = currNode;
+      move[neighbor] = Move::NORTH;
     }
   }
 
