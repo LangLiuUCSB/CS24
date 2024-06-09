@@ -7,15 +7,15 @@
 #include <chrono>
 
 static const std::string world[] = {
-    "flatland",
-    "labrat",
-    "pyramid",
-    "stairs",
-    "stairs2",
-    "bouncy-castle",
-    "goo-ball",
-    "tower-block",
-    "no-route"};
+    "flatland",      // 0
+    "labrat",        // 1
+    "pyramid",       // 2
+    "stairs",        // 3
+    "stairs2",       // 4
+    "bouncy-castle", // 5
+    "goo-ball",      // 6
+    "tower-block",   // 7
+    "no-route"};     // 8
 
 static const Point source[] = {
     Point(11, 0, 1),
@@ -43,7 +43,14 @@ int main()
 {
     std::chrono::steady_clock::time_point start, end;
     std::chrono::duration<double> elapsed_seconds;
-    for (unsigned char i = 0; i < 9; i++)
+
+    start = std::chrono::steady_clock::now();
+
+    end = std::chrono::steady_clock::now();
+    elapsed_seconds = end - start;
+    std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n";
+
+    for (unsigned char i = 5; i < 6; i++)
     {
         std::ifstream stream("data/" + world[i] + ".vox");
         std::cout << "\n"
@@ -51,29 +58,13 @@ int main()
         if (stream.fail())
             return 1;
 
+        start = std::chrono::steady_clock::now(); //!
         VoxMap map(stream);
+        end = std::chrono::steady_clock::now(); //!
+        elapsed_seconds = end - start;
+        std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n";
+
         stream.close();
-
-        Route route;
-        try
-        {
-            start = std::chrono::steady_clock::now();
-            route = map.route(source[i], destination[i]);
-            end = std::chrono::steady_clock::now();
-            elapsed_seconds = end - start;
-            std::cout << elapsed_seconds.count() * 1000000 << " microseconds\n"
-                      << route << "\n";
-        }
-        catch (const InvalidPoint &err)
-        {
-            std::cout << "Invalid point: " << err.point() << '\n';
-        }
-        catch (const NoRoute &err)
-        {
-            std::cout << "No route from " << err.src() << " to " << err.dst() << ".\n";
-        }
-        // map.printMap(source[i], destination[i]);
     }
-
     return 0;
 }
