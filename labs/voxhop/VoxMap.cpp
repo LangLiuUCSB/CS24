@@ -67,21 +67,21 @@ VoxMap::VoxMap(std::istream &stream)
               if (x_quad + i - area_north && !(schem[i - 1] & 0b100)) //? when west exists and is Node
               {
                 graphIndex = i - 1 + volume_below;
-                while (!graph[graphIndex])           //? while west is nullptr
-                  graphIndex -= map_area;            //* fall
-                newNode->west = graph[graphIndex];   //* new Node reaches west Node
-                if (schem[i - 1])                    //? when west relation is symmetric
-                  graph[graphIndex]->east = newNode; //* west Node reaches new Node
+                while (!graph[graphIndex])                       //? while west is nullptr
+                  graphIndex -= map_area;                        //* fall
+                newNode->next[Move::WEST] = graph[graphIndex];   //* new Node reaches west Node
+                if (schem[i - 1])                                //? when west relation is symmetric
+                  graph[graphIndex]->next[Move::EAST] = newNode; //* west Node reaches new Node
               }
               //! NORTH
               if (y && !(schem[i - xLim] & 0b100)) //? when north exists and is Node
               {
                 graphIndex = i - xLim + volume_below;
-                while (!graph[graphIndex])            //? while north is nullptr
-                  graphIndex -= map_area;             //* fall
-                newNode->north = graph[graphIndex];   //* new Node reaches north Node
-                if (schem[i - xLim])                  //? when north relation is symmetric
-                  graph[graphIndex]->south = newNode; //* north Node reaches new Node
+                while (!graph[graphIndex])                        //? while north is nullptr
+                  graphIndex -= map_area;                         //* fall
+                newNode->next[Move::NORTH] = graph[graphIndex];   //* new Node reaches north Node
+                if (schem[i - xLim])                              //? when north relation is symmetric
+                  graph[graphIndex]->next[Move::SOUTH] = newNode; //* north Node reaches new Node
               }
               graph[i + volume_below] = newNode; //* add newNode in graph[]
             }
@@ -90,14 +90,14 @@ VoxMap::VoxMap(std::istream &stream)
               //! WEST
               if (x_quad + i - area_north && !(schem[i - 1] ^ 0b10)) //? when west exists and is new Node
               {
-                graph[i - map_area + volume_below]->west = graph[i - 1 + volume_below]; //* old Node reaches west Node
-                graph[i - 1 + volume_below]->east = graph[i - map_area + volume_below]; //* west Node reaches old Node
+                graph[i - map_area + volume_below]->next[Move::WEST] = graph[i - 1 + volume_below]; //* old Node reaches west Node
+                graph[i - 1 + volume_below]->next[Move::EAST] = graph[i - map_area + volume_below]; //* west Node reaches old Node
               }
               //! NORTH
               if (y && !(schem[i - xLim] ^ 0b10)) //? when north exists and is new Node
               {
-                graph[i - map_area + volume_below]->north = graph[i - xLim + volume_below]; //* old Node reaches north Node
-                graph[i - xLim + volume_below]->south = graph[i - map_area + volume_below]; //* north Node reaches old Node
+                graph[i - map_area + volume_below]->next[Move::NORTH] = graph[i - xLim + volume_below]; //* old Node reaches north Node
+                graph[i - xLim + volume_below]->next[Move::SOUTH] = graph[i - map_area + volume_below]; //* north Node reaches old Node
               }
             }
             else //? when prev is old Node
@@ -106,17 +106,17 @@ VoxMap::VoxMap(std::istream &stream)
               if (x_quad + i - area_north && !(schem[i - 1] ^ 0b10)) //? when west exists and is new Node
               {
                 graphIndex = i - map_area - map_area + volume_below;
-                while (!graph[graphIndex])                             //? while curr is nullptr
-                  graphIndex -= map_area;                              //* fall
-                graph[i - 1 + volume_below]->east = graph[graphIndex]; //* west Node reaches old Node
+                while (!graph[graphIndex])                                         //? while curr is nullptr
+                  graphIndex -= map_area;                                          //* fall
+                graph[i - 1 + volume_below]->next[Move::EAST] = graph[graphIndex]; //* west Node reaches old Node
               }
               //! NORTH
               if (y && !(schem[i - xLim] ^ 0b10)) //? when north exists and is new Node
               {
                 graphIndex = i - 2 * map_area + volume_below;
-                while (!graph[graphIndex])                                 //? while curr is nullptr
-                  graphIndex -= map_area;                                  //* fall
-                graph[i - xLim + volume_below]->south = graph[graphIndex]; //* north Node reaches old Node
+                while (!graph[graphIndex])                                             //? while curr is nullptr
+                  graphIndex -= map_area;                                              //* fall
+                graph[i - xLim + volume_below]->next[Move::SOUTH] = graph[graphIndex]; //* north Node reaches old Node
               }
             }
           }
@@ -162,8 +162,6 @@ Route VoxMap::route(Point src, Point dst)
   std::priority_queue<Node *, std::vector<Node *>, decltype(compare)> frontiers(compare);
 
   std::unordered_set<Node *> visited;
-  std::unordered_map<Node *, Node *> came_from;
-  std::unordered_map<Node *, Move> move;
 
   Node *srcNode = getNode(xs, ys, zs);
   setCost(srcNode);
@@ -181,8 +179,8 @@ Route VoxMap::route(Point src, Point dst)
     {
       while (currNode != srcNode)
       {
-        path.push_back(move[currNode]);
-        currNode = came_from[currNode];
+        path.push_back(currNode->move);
+        currNode = currNode->prev;
       }
       std::reverse(path.begin(), path.end());
       return path;
@@ -190,37 +188,17 @@ Route VoxMap::route(Point src, Point dst)
 
     visited.insert(currNode);
 
-    Node *neighbor = currNode->east;
-    if (neighbor && visited.find(neighbor) == visited.end())
+    Node *neighbor;
+    for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
     {
-      setCost(neighbor);
-      frontiers.push(neighbor);
-      came_from[neighbor] = currNode;
-      move[neighbor] = Move::EAST;
-    }
-    neighbor = currNode->south;
-    if (neighbor && visited.find(neighbor) == visited.end())
-    {
-      setCost(neighbor);
-      frontiers.push(neighbor);
-      came_from[neighbor] = currNode;
-      move[neighbor] = Move::SOUTH;
-    }
-    neighbor = currNode->west;
-    if (neighbor && visited.find(neighbor) == visited.end())
-    {
-      setCost(neighbor);
-      frontiers.push(neighbor);
-      came_from[neighbor] = currNode;
-      move[neighbor] = Move::WEST;
-    }
-    neighbor = currNode->north;
-    if (neighbor && visited.find(neighbor) == visited.end())
-    {
-      setCost(neighbor);
-      frontiers.push(neighbor);
-      came_from[neighbor] = currNode;
-      move[neighbor] = Move::NORTH;
+      neighbor = currNode->next[direction];
+      if (neighbor && visited.find(neighbor) == visited.end())
+      {
+        setCost(neighbor);
+        frontiers.push(neighbor);
+        neighbor->prev = currNode;
+        neighbor->move = direction;
+      }
     }
   }
 

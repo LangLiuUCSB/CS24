@@ -16,8 +16,10 @@ struct Node
 {
   short x, y, z;
   unsigned short cost;
-  Node *east, *south, *west, *north;
-  Node(unsigned short x, unsigned short y, unsigned short z) : x(x), y(y), z(z), east(nullptr), south(nullptr), west(nullptr), north(nullptr) {}
+  Node *next[4] = {nullptr, nullptr, nullptr, nullptr};
+  Node *prev;
+  Move move;
+  Node(unsigned short x, unsigned short y, unsigned short z) : x(x), y(y), z(z) {}
 };
 
 class VoxMap
