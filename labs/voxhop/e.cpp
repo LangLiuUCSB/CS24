@@ -23,7 +23,7 @@ static const Point source[] = {
     Point(7, 7, 4),
     Point(7, 5, 6),
     Point(11, 6, 1),
-    Point(7, 11, 1),
+    Point(6, 6, 2),
     Point(37, 44, 67),
     Point(9, 49, 22), //(71, 4, 22),
     Point(9, 3, 1)};
@@ -34,7 +34,7 @@ static const Point destination[] = {
     Point(1, 1, 1),
     Point(0, 0, 1),
     Point(0, 0, 6),
-    Point(5, 5, 3),
+    Point(0, 5, 1),
     Point(36, 54, 19),
     Point(7, 6, 36), //(32, 23, 51),
     Point(7, 10, 3)};
