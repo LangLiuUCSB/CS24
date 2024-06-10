@@ -136,6 +136,7 @@ VoxMap::~VoxMap()
     if (graph[i])
       delete graph[i];
   delete[] graph;
+  delete frontiers;
 }
 
 Route VoxMap::route(Point src, Point dst)
