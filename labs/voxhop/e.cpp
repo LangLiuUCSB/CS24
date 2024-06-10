@@ -88,5 +88,42 @@ int main()
 
         stream.close();
     }
+
+    std::ifstream stream("scripts/skywalk.vox");
+    std::cout << "\n"
+              << std::setw(15) << std::left << "skywalk";
+    if (stream.fail())
+        return 1;
+
+    start = std::chrono::steady_clock::now(); //!
+    VoxMap map(stream);
+    end = std::chrono::steady_clock::now(); //!
+    elapsed_seconds = end - start;
+    std::cout << "parse time: " << std::setw(8) << std::right << short(elapsed_seconds.count() * 1000000) << " μs  "
+              << Point(126, 94, 1) << "->" << Point(1, 1, 93) << "\n";
+
+    try
+    {
+        start = std::chrono::steady_clock::now();
+        Route route = map.route(Point(126, 94, 1), Point(1, 1, 93));
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end - start;
+        std::cout << "            pathfind time: " << std::setw(8) << std::right << short(elapsed_seconds.count() * 1000000) << " μs\n";
+        std::cout << route << '\n';
+    }
+    catch (const InvalidPoint &err)
+    {
+        std::cout << "Invalid point: " << err.point() << '\n';
+    }
+    catch (const NoRoute &err)
+    {
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end - start;
+        std::cout << "            pathfind time: " << std::setw(8) << std::right << short(elapsed_seconds.count() * 1000000) << " μs\n";
+        std::cout << "No route\n";
+    }
+
+    stream.close();
+
     return 0;
 }

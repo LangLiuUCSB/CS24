@@ -1,7 +1,8 @@
 #include "VoxMap.h"
 #include "Errors.h"
 
-#define out std::cout
+#define out std::cout <<
+#define nl << std::endl
 
 VoxMap::VoxMap(std::istream &stream)
 {
@@ -126,6 +127,7 @@ VoxMap::VoxMap(std::istream &stream)
     }
     volume_below += map_area;
   }
+  frontiers = new OpenSet(map_volume >> 8);
 }
 
 VoxMap::~VoxMap()
@@ -135,8 +137,6 @@ VoxMap::~VoxMap()
       delete graph[i];
   delete[] graph;
 }
-
-static constexpr Move cardinal_directions[4] = {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH};
 
 Route VoxMap::route(Point src, Point dst)
 {
@@ -161,8 +161,6 @@ Route VoxMap::route(Point src, Point dst)
 
   setCost(srcNode);
 
-  OpenSet frontiers(map_volume / 7);
-
   //! first iteration
   for (Move direction : cardinal_directions)
   {
@@ -171,24 +169,25 @@ Route VoxMap::route(Point src, Point dst)
     {
       adjNode->visit = currVisit;
       setCost(adjNode);
-      frontiers.push(adjNode);
+      frontiers->push(adjNode);
       adjNode->prev = srcNode;
       adjNode->move = direction;
     }
   }
   //! first iteration
-  while (!frontiers.empty())
+  while (!frontiers->empty())
   {
-    currNode = frontiers.pop();
+    currNode = frontiers->pop();
     if (currNode == dstNode)
     {
+      frontiers->clear();
+      ++currVisit;
       while (currNode != srcNode)
       {
         path.push_back(currNode->move);
         currNode = currNode->prev;
       }
       std::reverse(path.begin(), path.end());
-      ++currVisit;
       return path;
     }
     for (Move direction : cardinal_directions)
@@ -198,12 +197,13 @@ Route VoxMap::route(Point src, Point dst)
       {
         adjNode->visit = currVisit;
         setCost(adjNode);
-        frontiers.push(adjNode);
+        frontiers->push(adjNode);
         adjNode->prev = currNode;
         adjNode->move = direction;
       }
     }
   }
+  frontiers->clear();
   ++currVisit;
   throw NoRoute(src, dst);
 }

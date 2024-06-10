@@ -26,8 +26,8 @@ struct CompareNode
 
 class OpenSet
 {
-  size_t maxSize;
   size_t size;
+  size_t maxSize;
   Node **heap;
 
   void heapifyUp(size_t index)
@@ -58,7 +58,7 @@ class OpenSet
   }
 
 public:
-  OpenSet(size_t maxSize) : maxSize(maxSize), size(0), heap(new Node *[maxSize]) {}
+  OpenSet(size_t maxSize) : size(0), maxSize(maxSize), heap(new Node *[maxSize]) {}
   ~OpenSet() { delete[] heap; }
 
   void push(Node *node)
@@ -75,12 +75,6 @@ public:
       heapifyDown(0);
     }
   }
-  Node *top() const
-  {
-    if (size > 0)
-      return heap[0];
-    return nullptr;
-  }
   Node *pop()
   {
     if (size > 0)
@@ -94,7 +88,7 @@ public:
     return nullptr;
   }
   bool empty() const { return size == 0; }
-  size_t getSize() const { return size; }
+  void clear() { size = 0; }
 };
 
 class VoxMap
@@ -103,7 +97,9 @@ class VoxMap
   unsigned short xLim, yLim, zLim;
   size_t map_area, map_volume;
   Node **graph;
+  OpenSet *frontiers;
   Node *srcNode, *dstNode, *currNode, *adjNode;
+  static constexpr Move cardinal_directions[4] = {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH};
   unsigned char currVisit = 1;
 
   // Helper Functions
