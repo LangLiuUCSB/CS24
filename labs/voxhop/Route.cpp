@@ -1,12 +1,11 @@
 #include "Route.h"
 
-std::ostream& operator << (std::ostream& stream, Move move) {
+std::ostream &operator<<(std::ostream &stream, Move move)
+{
   char c;
 
-  switch(move) {
-  case Move::NORTH:
-    c = 'n';
-    break;
+  switch (move)
+  {
   case Move::EAST:
     c = 'e';
     break;
@@ -17,14 +16,16 @@ std::ostream& operator << (std::ostream& stream, Move move) {
     c = 'w';
     break;
   default:
-    c = '?';
+    c = 'n';
   }
 
   return stream << c;
 }
 
-std::ostream& operator << (std::ostream& stream, const Route& route) {
-  for(Move move: route) {
+std::ostream &operator<<(std::ostream &stream, const Route &route)
+{
+  for (Move move : route)
+  {
     stream << move;
   }
 

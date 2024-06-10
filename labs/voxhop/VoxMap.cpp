@@ -138,43 +138,51 @@ VoxMap::~VoxMap()
   delete[] graph;
 }
 
+static constexpr Move cardinal_directions[4] = {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH};
+
 Route VoxMap::route(Point src, Point dst)
 {
-  const short xs = src.x;
-  const short ys = src.y;
-  const short zs = src.z;
+  if (!inBounds(src.x, src.y, src.z) || !(srcNode = getNode(src.x, src.y, src.z)))
+    throw InvalidPoint(src);
+
   const short xd = dst.x;
   const short yd = dst.y;
   const short zd = dst.z;
-
-  if (!inBounds3D(xs, ys, zs) || !(srcNode = getNode(xs, ys, zs)))
-    throw InvalidPoint(src);
-  if (!inBounds3D(xd, yd, zd) || !(dstNode = getNode(xd, yd, zd)))
+  if (!inBounds(xd, yd, zd) || !(dstNode = getNode(xd, yd, zd)))
     throw InvalidPoint(dst);
 
   Route path;
   if (srcNode == dstNode)
     return path;
 
+  dstNode->cost = 0;
+
   auto setCost = [xd, yd, zd](Node *n)
   { n->cost = abs(xd - n->x) + abs(yd - n->y) + abs(zd - n->z); }; // Manhattan Distance from Destination
   setCost(srcNode);
-  dstNode->cost = 0;
 
-  auto compare = [](Node *const &n1, Node *const &n2)
-  { return n1->cost > n2->cost; };
-  std::priority_queue<Node *, std::vector<Node *>, decltype(compare)> frontiers(compare);
-  frontiers.push(srcNode);
+  OpenSet frontiers(map_volume / 6); // open set
 
-  std::unordered_set<Node *> visited;
+  std::unordered_set<Node *> visited; // closed set
   visited.insert(srcNode);
 
-  Node *currNode;
-  Node *adjNode;
+  //! first iteration
+  for (Move direction : cardinal_directions)
+  {
+    adjNode = srcNode->next[direction];
+    if (adjNode)
+    {
+      setCost(adjNode);
+      frontiers.push(adjNode);
+      visited.insert(adjNode);
+      adjNode->prev = srcNode;
+      adjNode->move = direction;
+    }
+  }
+  //! first iteration
   while (!frontiers.empty())
   {
-    currNode = frontiers.top();
-    frontiers.pop();
+    currNode = frontiers.pop();
 
     if (currNode == dstNode)
     {
@@ -187,7 +195,7 @@ Route VoxMap::route(Point src, Point dst)
       return path;
     }
 
-    for (Move direction : {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH})
+    for (Move direction : cardinal_directions)
     {
       adjNode = currNode->next[direction];
       if (adjNode && visited.find(adjNode) == visited.end())
@@ -200,83 +208,5 @@ Route VoxMap::route(Point src, Point dst)
       }
     }
   }
-
   throw NoRoute(src, dst);
 }
-
-/*
-
-      // TODO print scheme
-      for (size_t i = 0; i < 0; i++)
-      {
-        switch (schem[i + xLim * y])
-        {
-        case 0b000:
-          out << ".";
-          break;
-        case 0b001:
-          out << ":";
-          break;
-        case 0b010:
-          out << "+";
-          break;
-        case 0b100:
-          out << "#";
-          break;
-        default:
-          out << "_";
-        }
-      }
-      // out << "\n"; // TODO print scheme
-*/
-
-/*
-
-  // out << "\nNODES IN GRAPH\n"; // TODO print graph
-  for (u2byte z = 0; z < 0; z++)
-  {
-    for (u2byte y = 0; y < yLim; y++)
-    {
-      for (u2byte x = 0; x < yLim; x++)
-      {
-        if (graph[x + xLim * (y + yLim * z)])
-        {
-          // out << "O";
-          if (graph[x + xLim * (y + yLim * z)]->east)
-          {
-            out << "east(";
-            out << graph[x + xLim * (y + yLim * z)]->east->x << ",";
-            out << graph[x + xLim * (y + yLim * z)]->east->y << ",";
-            out << graph[x + xLim * (y + yLim * z)]->east->z << ") ";
-          }
-          if (graph[x + xLim * (y + yLim * z)]->south)
-          {
-            out << "south(";
-            out << graph[x + xLim * (y + yLim * z)]->south->x << ",";
-            out << graph[x + xLim * (y + yLim * z)]->south->y << ",";
-            out << graph[x + xLim * (y + yLim * z)]->south->z << ") ";
-          }
-          if (graph[x + xLim * (y + yLim * z)]->west)
-          {
-            out << "west(";
-            out << graph[x + xLim * (y + yLim * z)]->west->x << ",";
-            out << graph[x + xLim * (y + yLim * z)]->west->y << ",";
-            out << graph[x + xLim * (y + yLim * z)]->west->z << ") ";
-          }
-          if (graph[x + xLim * (y + yLim * z)]->north)
-          {
-            out << "north(";
-            out << graph[x + xLim * (y + yLim * z)]->north->x << ",";
-            out << graph[x + xLim * (y + yLim * z)]->north->y << ",";
-            out << graph[x + xLim * (y + yLim * z)]->north->z << ") ";
-          }
-          out << "\n";
-        }
-        // else // TODO print graph
-        //   out << "_";
-      }
-      out << "\n";
-    }
-    out << "\n";
-  }
-*/

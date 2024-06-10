@@ -18,7 +18,85 @@ struct Node
   Node *next[4] = {nullptr, nullptr, nullptr, nullptr};
   Node *prev;
   Move move;
-  Node(unsigned short x, unsigned short y, unsigned short z) : x(x), y(y), z(z) {}
+  Node(short x, short y, short z) : x(x), y(y), z(z) {}
+};
+
+struct CompareNode
+{
+  bool operator()(const Node &n1, const Node &n2) { return n1.cost > n2.cost; }
+};
+
+class OpenSet
+{
+  size_t maxSize;
+  size_t size;
+  Node **heap;
+
+  void heapifyUp(size_t index)
+  {
+    while (index > 0)
+    {
+      size_t parentIndex = (index - 1) / 2;
+      if (heap[index]->cost >= heap[parentIndex]->cost)
+        break;
+      std::swap(heap[index], heap[parentIndex]);
+      index = parentIndex;
+    }
+  }
+  void heapifyDown(size_t index)
+  {
+    size_t smallest = index;
+    size_t left = 2 * index + 1;
+    size_t right = 2 * index + 2;
+    if (left < size && heap[left]->cost < heap[smallest]->cost)
+      smallest = left;
+    if (right < size && heap[right]->cost < heap[smallest]->cost)
+      smallest = right;
+    if (smallest != index)
+    {
+      std::swap(heap[index], heap[smallest]);
+      heapifyDown(smallest);
+    }
+  }
+
+public:
+  OpenSet(size_t maxSize) : maxSize(maxSize), size(0), heap(new Node *[maxSize]) {}
+  ~OpenSet() { delete[] heap; }
+
+  void push(Node *node)
+  {
+    if (size < maxSize)
+    {
+      heap[size] = node;
+      heapifyUp(size);
+      size++;
+    }
+    else if (node->cost < heap[0]->cost)
+    {
+      heap[0] = node;
+      heapifyDown(0);
+    }
+  }
+  Node *top() const
+  {
+    if (size > 0)
+      return heap[0];
+    return nullptr;
+  }
+  Node *pop()
+  {
+    if (size > 0)
+    {
+      Node *popped_node = heap[0];
+      heap[0] = heap[size - 1];
+      size--;
+      heapifyDown(0);
+      return popped_node;
+    }
+    return nullptr;
+  }
+  bool empty() const { return size == 0; }
+  size_t getSize() const { return size; }
 };
 
 class VoxMap
@@ -27,22 +105,12 @@ class VoxMap
   unsigned short xLim, yLim, zLim;
   size_t map_area, map_volume;
   Node **graph;
-
-  Node *srcNode, *dstNode;
+  Node *srcNode, *dstNode, *currNode, *adjNode;
 
   // Helper Functions
   inline char hexToDec(char hex) const { return (hex <= '9') ? hex - '0' : hex - 'W'; }
-  inline bool inBounds2D(short x, short y) const { return 0 <= x && x < xLim && 0 <= y && y < yLim; }
-  inline bool inBounds3D(short x, short y, short z) const
-  {
-    return 0 <= x && x < xLim && 0 <= y && y < yLim && 0 < z && z < zLim;
-  }
   Node *getNode(short x, short y, short z) const { return graph[x + xLim * (y + yLim * z)]; };
-  Node *setCost(short x, short y, short z, unsigned short cost)
-  {
-    graph[x + xLim * (y + yLim * z)]->cost = cost;
-    return graph[x + xLim * (y + yLim * z)];
-  };
+  inline bool inBounds(short x, short y, short z) { return x < xLim && y < yLim && z < zLim; }
 
 public:
   VoxMap(std::istream &stream);

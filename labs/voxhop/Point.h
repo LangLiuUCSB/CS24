@@ -5,22 +5,12 @@
 
 struct Point
 {
-  short x, y, z;
-  unsigned short cost;
+  int x;
+  int y;
+  int z;
 
   Point() {}
-  Point(short x, short y, short z) : x(x), y(y), z(z) {}
-
-  bool operator==(const Point &other) const { return other.x == x && other.y == y && other.z == z; }
-  bool operator!=(const Point &other) const { return other.x != x || other.y != y || other.z != z; }
-  Point operator+(const Point &other) const { return Point(x + other.x, y + other.y, z + other.z); }
-  Point &operator+=(const Point &other)
-  {
-    x += other.x;
-    y += other.y;
-    z += other.z;
-    return *this;
-  }
+  Point(int x, int y, int z) : x(x), y(y), z(z) {}
 };
 
 std::istream &operator>>(std::istream &stream, Point &point);
