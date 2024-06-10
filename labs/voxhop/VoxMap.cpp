@@ -127,7 +127,7 @@ VoxMap::VoxMap(std::istream &stream)
     }
     volume_below += map_area;
   }
-  frontiers = new OpenSet(map_volume >> 3);
+  frontiers = new OpenSet(map_volume / 8);
 }
 
 VoxMap::~VoxMap()
