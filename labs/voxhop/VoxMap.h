@@ -3,9 +3,6 @@
 
 #include <istream>
 #include <cstring>
-#include <vector>
-#include <queue>
-#include <unordered_set>
 #include <algorithm>
 
 #include "Point.h"
@@ -18,6 +15,7 @@ struct Node
   Node *next[4] = {nullptr, nullptr, nullptr, nullptr};
   Node *prev;
   Move move;
+  unsigned char visit = 0;
   Node(short x, short y, short z) : x(x), y(y), z(z) {}
 };
 
@@ -106,6 +104,7 @@ class VoxMap
   size_t map_area, map_volume;
   Node **graph;
   Node *srcNode, *dstNode, *currNode, *adjNode;
+  unsigned char currVisit = 1;
 
   // Helper Functions
   inline char hexToDec(char hex) const { return (hex <= '9') ? hex - '0' : hex - 'W'; }

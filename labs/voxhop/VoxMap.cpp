@@ -3,8 +3,6 @@
 
 #define out std::cout
 
-typedef unsigned short u2byte;
-
 VoxMap::VoxMap(std::istream &stream)
 {
   stream >> xLim >> yLim >> zLim;
@@ -155,16 +153,15 @@ Route VoxMap::route(Point src, Point dst)
   if (srcNode == dstNode)
     return path;
 
+  srcNode->visit = currVisit;
   dstNode->cost = 0;
 
   auto setCost = [xd, yd, zd](Node *n)
   { n->cost = abs(xd - n->x) + abs(yd - n->y) + abs(zd - n->z); }; // Manhattan Distance from Destination
+
   setCost(srcNode);
 
-  OpenSet frontiers(map_volume / 6); // open set
-
-  std::unordered_set<Node *> visited; // closed set
-  visited.insert(srcNode);
+  OpenSet frontiers(map_volume / 7);
 
   //! first iteration
   for (Move direction : cardinal_directions)
@@ -172,9 +169,9 @@ Route VoxMap::route(Point src, Point dst)
     adjNode = srcNode->next[direction];
     if (adjNode)
     {
+      adjNode->visit = currVisit;
       setCost(adjNode);
       frontiers.push(adjNode);
-      visited.insert(adjNode);
       adjNode->prev = srcNode;
       adjNode->move = direction;
     }
@@ -183,7 +180,6 @@ Route VoxMap::route(Point src, Point dst)
   while (!frontiers.empty())
   {
     currNode = frontiers.pop();
-
     if (currNode == dstNode)
     {
       while (currNode != srcNode)
@@ -192,21 +188,22 @@ Route VoxMap::route(Point src, Point dst)
         currNode = currNode->prev;
       }
       std::reverse(path.begin(), path.end());
+      ++currVisit;
       return path;
     }
-
     for (Move direction : cardinal_directions)
     {
       adjNode = currNode->next[direction];
-      if (adjNode && visited.find(adjNode) == visited.end())
+      if (adjNode && adjNode->visit != currVisit)
       {
+        adjNode->visit = currVisit;
         setCost(adjNode);
         frontiers.push(adjNode);
-        visited.insert(adjNode);
         adjNode->prev = currNode;
         adjNode->move = direction;
       }
     }
   }
+  ++currVisit;
   throw NoRoute(src, dst);
 }
