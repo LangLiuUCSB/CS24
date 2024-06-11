@@ -127,7 +127,7 @@ VoxMap::VoxMap(std::istream &stream)
     }
     volume_below += map_area;
   }
-  frontiers = new OpenSet(map_volume >> 3);
+  frontiers = new OpenSet(map_volume >> 4);
 }
 
 VoxMap::~VoxMap()
@@ -188,7 +188,6 @@ Route VoxMap::route(Point src, Point dst)
         path.push_back(currNode->move);
         currNode = currNode->prev;
       }
-      std::reverse(path.begin(), path.end());
       return path;
     }
     for (Move direction : cardinal_directions)

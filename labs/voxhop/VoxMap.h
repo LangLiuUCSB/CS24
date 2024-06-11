@@ -3,7 +3,6 @@
 
 #include <istream>
 #include <cstring>
-#include <algorithm>
 
 #include "Point.h"
 #include "Route.h"

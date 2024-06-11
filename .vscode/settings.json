@@ -56,6 +56,7 @@
     "deque": "cpp",
     "queue": "cpp",
     "unordered_set": "cpp",
-    "charconv": "cpp"
+    "charconv": "cpp",
+    "span": "cpp"
   }
 }

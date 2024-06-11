@@ -21,7 +21,7 @@ std::ostream &operator<<(std::ostream &stream, Move move)
 
 std::ostream &operator<<(std::ostream &stream, const Route &route)
 {
-  for (Move move : route)
-    stream << move;
+  for (auto it = route.rbegin(); it != route.rend(); ++it)
+    stream << *it;
   return stream;
 }
