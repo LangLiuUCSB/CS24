@@ -19,16 +19,16 @@ struct Node
   Node(short x, short y, short z) : x(x), y(y), z(z) {}
 };
 
-struct CompareNode
-{
-  bool operator()(const Node &n1, const Node &n2) { return n1.cost > n2.cost; }
-};
-
 class OpenSet
 {
   size_t size;
   size_t maxSize;
   Node **heap;
+
+  struct CompareNode
+  {
+    bool operator()(const Node &n1, const Node &n2) { return n1.cost > n2.cost; }
+  };
 
   void heapifyUp(size_t index)
   {
