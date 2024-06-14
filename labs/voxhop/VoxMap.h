@@ -18,22 +18,16 @@ struct Node
   Node(short x, short y, short z) : x(x), y(y), z(z) {}
 };
 
-class OpenSet
+class Pairing_heap
 {
-  size_t size;
-  size_t maxSize;
   Node **heap;
-
-  struct CompareNode
-  {
-    bool operator()(const Node &n1, const Node &n2) { return n1.cost > n2.cost; }
-  };
+  size_t count, parentIndex, smallest, left, right;
 
   void heapifyUp(size_t index)
   {
     while (index > 0)
     {
-      size_t parentIndex = (index - 1) / 2;
+      parentIndex = (index - 1) / 2;
       if (heap[index]->cost >= heap[parentIndex]->cost)
         break;
       std::swap(heap[index], heap[parentIndex]);
@@ -42,12 +36,12 @@ class OpenSet
   }
   void heapifyDown(size_t index)
   {
-    size_t smallest = index;
-    size_t left = 2 * index + 1;
-    size_t right = 2 * index + 2;
-    if (left < size && heap[left]->cost < heap[smallest]->cost)
+    smallest = index;
+    left = 2 * index + 1;
+    right = left + 1;
+    if (left < count && heap[left]->cost < heap[smallest]->cost)
       smallest = left;
-    if (right < size && heap[right]->cost < heap[smallest]->cost)
+    if (right < count && heap[right]->cost < heap[smallest]->cost)
       smallest = right;
     if (smallest != index)
     {
@@ -57,37 +51,25 @@ class OpenSet
   }
 
 public:
-  OpenSet(size_t maxSize) : size(0), maxSize(maxSize), heap(new Node *[maxSize]) {}
-  ~OpenSet() { delete[] heap; }
+  Pairing_heap(size_t maxSize) : heap(new Node *[maxSize]), count(0) {}
+  ~Pairing_heap() { delete[] heap; }
 
-  void push(Node *node)
+  inline void push(Node *node)
   {
-    if (size < maxSize)
-    {
-      heap[size] = node;
-      heapifyUp(size);
-      size++;
-    }
-    else if (node->cost < heap[0]->cost)
-    {
-      heap[0] = node;
-      heapifyDown(0);
-    }
+    heap[count] = node;
+    heapifyUp(count);
+    count++;
   }
-  Node *pop()
+  inline Node *pop()
   {
-    if (size > 0)
-    {
-      Node *popped_node = heap[0];
-      heap[0] = heap[size - 1];
-      size--;
-      heapifyDown(0);
-      return popped_node;
-    }
-    return nullptr;
+    Node *popped_node = heap[0];
+    heap[0] = heap[count - 1];
+    count--;
+    heapifyDown(0);
+    return popped_node;
   }
-  bool empty() const { return size == 0; }
-  void clear() { size = 0; }
+  inline bool empty() const { return count == 0; }
+  inline void clear() { count = 0; }
 };
 
 class VoxMap
@@ -96,7 +78,8 @@ class VoxMap
   unsigned short xLim, yLim, zLim;
   size_t map_area, map_volume;
   Node **graph;
-  OpenSet *frontiers;
+  Pairing_heap *frontiers;
+
   Node *srcNode, *dstNode, *currNode, *adjNode;
   static constexpr Move cardinal_directions[4] = {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH};
   unsigned char currVisit = 1;
