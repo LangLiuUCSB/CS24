@@ -5,10 +5,12 @@
 
 struct Point
 {
-  short x, y, z;
+  int x;
+  int y;
+  int z;
 
   Point() {}
-  Point(short x, short y, short z) : x(x), y(y), z(z) {}
+  Point(int x, int y, int z) : x(x), y(y), z(z) {}
 };
 
 std::istream &operator>>(std::istream &stream, Point &point);

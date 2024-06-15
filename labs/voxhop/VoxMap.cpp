@@ -127,12 +127,12 @@ VoxMap::VoxMap(std::istream &stream)
     }
     volume_below += map_area;
   }
-  frontiers = new Pairing_heap(map_area); // TODO use graph 0-map_area as the open set
+  frontiers = new OpenSet(map_volume >> 3);
 }
 
 VoxMap::~VoxMap()
 {
-  for (size_t i = map_area; i < map_volume; i++)
+  for (size_t i = 0; i < map_volume; i++)
     if (graph[i])
       delete graph[i];
   delete[] graph;
@@ -188,6 +188,7 @@ Route VoxMap::route(Point src, Point dst)
         path.push_back(currNode->move);
         currNode = currNode->prev;
       }
+      std::reverse(path.begin(), path.end());
       return path;
     }
     for (Move direction : cardinal_directions)

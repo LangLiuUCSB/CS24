@@ -2,26 +2,32 @@
 
 std::ostream &operator<<(std::ostream &stream, Move move)
 {
+  char c;
+
   switch (move)
   {
   case Move::EAST:
-    return stream << 'e';
+    c = 'e';
     break;
   case Move::SOUTH:
-    return stream << 's';
+    c = 's';
     break;
   case Move::WEST:
-    return stream << 'w';
+    c = 'w';
     break;
   default:
-    return stream << 'n';
+    c = 'n';
   }
-  return stream;
+
+  return stream << c;
 }
 
 std::ostream &operator<<(std::ostream &stream, const Route &route)
 {
-  for (auto it = route.rbegin(); it != route.rend(); ++it)
-    stream << *it;
+  for (Move move : route)
+  {
+    stream << move;
+  }
+
   return stream;
 }
