@@ -24,71 +24,93 @@ struct CompareNode
   bool operator()(const Node &n1, const Node &n2) { return n1.cost > n2.cost; }
 };
 
-class OpenSet
+struct PairingHeapNode
 {
-  size_t size;
-  size_t maxSize;
-  Node **heap;
+  Node *data;
+  PairingHeapNode *child;
+  PairingHeapNode *sibling;
+  PairingHeapNode *prev;
 
-  void heapifyUp(size_t index)
+  PairingHeapNode(Node *node) : data(node), child(nullptr), sibling(nullptr), prev(nullptr) {}
+};
+
+class PairingHeap
+{
+private:
+  PairingHeapNode *root;
+
+  PairingHeapNode *merge(PairingHeapNode *node1, PairingHeapNode *node2)
   {
-    while (index > 0)
+    if (!node1)
+      return node2;
+    if (!node2)
+      return node1;
+
+    if (node1->data->cost < node2->data->cost)
     {
-      size_t parentIndex = (index - 1) / 2;
-      if (heap[index]->cost >= heap[parentIndex]->cost)
-        break;
-      std::swap(heap[index], heap[parentIndex]);
-      index = parentIndex;
+      node2->prev = node1;
+      node2->sibling = node1->child;
+      if (node2->sibling)
+        node2->sibling->prev = node2;
+      node1->child = node2;
+      return node1;
+    }
+    else
+    {
+      node1->prev = node2;
+      node1->sibling = node2->child;
+      if (node1->sibling)
+        node1->sibling->prev = node1;
+      node2->child = node1;
+      return node2;
     }
   }
-  void heapifyDown(size_t index)
+
+  PairingHeapNode *mergePairs(PairingHeapNode *node)
   {
-    size_t smallest = index;
-    size_t left = 2 * index + 1;
-    size_t right = 2 * index + 2;
-    if (left < size && heap[left]->cost < heap[smallest]->cost)
-      smallest = left;
-    if (right < size && heap[right]->cost < heap[smallest]->cost)
-      smallest = right;
-    if (smallest != index)
-    {
-      std::swap(heap[index], heap[smallest]);
-      heapifyDown(smallest);
-    }
+    if (!node || !node->sibling)
+      return node;
+
+    PairingHeapNode *next = node->sibling->sibling;
+    PairingHeapNode *merged = merge(node, node->sibling);
+
+    return merge(merged, mergePairs(next));
   }
 
 public:
-  OpenSet(size_t maxSize) : size(0), maxSize(maxSize), heap(new Node *[maxSize]) {}
-  ~OpenSet() { delete[] heap; }
+  PairingHeap() : root(nullptr) {}
 
   void push(Node *node)
   {
-    if (size < maxSize)
-    {
-      heap[size] = node;
-      heapifyUp(size);
-      size++;
-    }
-    else if (node->cost < heap[0]->cost)
-    {
-      heap[0] = node;
-      heapifyDown(0);
-    }
+    PairingHeapNode *newNode = new PairingHeapNode(node);
+    root = merge(root, newNode);
   }
+
   Node *pop()
   {
-    if (size > 0)
-    {
-      Node *popped_node = heap[0];
-      heap[0] = heap[size - 1];
-      size--;
-      heapifyDown(0);
-      return popped_node;
-    }
-    return nullptr;
+    if (!root)
+      return nullptr;
+    Node *minNode = root->data;
+    PairingHeapNode *oldRoot = root;
+    root = mergePairs(root->child);
+    if (root)
+      root->prev = nullptr;
+    delete oldRoot;
+    return minNode;
   }
-  bool empty() const { return size == 0; }
-  void clear() { size = 0; }
+
+  bool empty() const
+  {
+    return root == nullptr;
+  }
+
+  void clear()
+  {
+    while (!empty())
+    {
+      pop();
+    }
+  }
 };
 
 class VoxMap
@@ -97,7 +119,7 @@ class VoxMap
   unsigned short xLim, yLim, zLim;
   size_t map_area, map_volume;
   Node **graph;
-  OpenSet *frontiers;
+  PairingHeap *frontiers;
   Node *srcNode, *dstNode, *currNode, *adjNode;
   static constexpr Move cardinal_directions[4] = {Move::EAST, Move::SOUTH, Move::WEST, Move::NORTH};
   unsigned char currVisit = 1;
