@@ -158,7 +158,7 @@ Route VoxMap::route(Point src, Point dst)
   dstNode->cost = 0;
 
   auto setCost = [xd, yd, zd](Node *n)
-  { n->cost = abs(xd - n->x) + abs(yd - n->y) + abs(zd - n->z); }; // Manhattan Distance from Destination
+  { n->cost = abs(xd - n->x) + abs(yd - n->y) + (zd < n->z) ? 11 * abs(zd - n->z) / 10 : abs(zd - n->z); }; // Manhattan Distance from Destination
 
   setCost(srcNode);
 
